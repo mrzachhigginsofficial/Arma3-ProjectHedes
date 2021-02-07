@@ -1,0 +1,18 @@
+{
+	"title": "Project Hedes",
+	"name": "ProjectHedes",
+	"author": "ZanchoElGrande",
+	"website": "http://yourwebsite.tld",
+	"version": "0.0.1",
+	"buildPath": "build",
+	"privateKey": "",
+	"serverDirs": [
+		"src/HedesServerMod"
+	],
+	"serverUse32bit": false,
+	"clientDirs": [
+		"src/HedesClientMod"
+	],
+	"clientMods": [],
+	"ftpConnection": {}
+}
