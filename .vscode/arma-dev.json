@@ -11,8 +11,12 @@
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
-		"src/HedesClientMod"
+		"src/HedesClientMod",
+		"src/HedesServerMod"
 	],
-	"clientMods": [],
+	"clientMods": [
+		"!Workshop\\@Enhanced Debug Console",
+		"!Workshop\\@CBA_A3"
+	],
 	"ftpConnection": {}
 }
