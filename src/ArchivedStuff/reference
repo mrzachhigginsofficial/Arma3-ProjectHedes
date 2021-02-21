@@ -1,0 +1,46 @@
+// COLLECT COMPOSITIONS FROM EDITOR
+
+_allObjects = allMissionObjects "ALL";
+
+_stringOutput = '';
+{
+    _objectPos = getPosATL _x;
+    _objectFormat = [typeOf _x, _objectPos, getDir _x];
+    _stringOutput = _stringOutput + (str _objectFormat) + (toString [44]) + (toString [10]);
+} forEach _allObjects;
+
+copyToClipboard _stringOutput;
+_stringOutput;
+
+// PLACE IB ARTY FOR FAKE FIRE 
+missionConfigFile[this] spawn {
+  while{1==1}do{
+   _this commandArtilleryFire [getPos (selectRandom[POORTOWN1,POORTOWN2,POORTOWN3,POORTOWN4,POORTOWN5]), "2Rnd_155mm_Mo_Cluster", random 4];
+    sleep random 30;
+  };
+};
+
+// AMBIENT HAPPY THINGS AROUND LITTLE TOWN
+{[_x,"red"] call HEDESServer_fnc_3p_alambientbattle_tracer} foreach [POORTOWN1,POORTOWN2,POORTOWN3,POORTOWN4,POORTOWN5]
+
+
+
+
+{[_x,false] call HEDESServer_fnc_3p_alambientbattle_searchlight} foreach [SPOTLIGHT1, SPOTLIGHT2];
+{[_x,"green"] call HEDESServer_fnc_3p_alambientbattle_tracer} foreach [TRACER1, TRACER2, TRACER3];
+{[_x] call HEDESServer_fnc_3p_alambientbattle_flaks} foreach [AA1, AA2];
+{[_x] call HEDESServer_fnc_3p_alambientbattle_missiles} foreach [MISSILE1, MISSILE2];
+
+
+
+
+
+
+
+
+
+
+
+
+
+

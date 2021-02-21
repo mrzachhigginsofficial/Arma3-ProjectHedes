@@ -7,16 +7,17 @@
 	"buildPath": "build",
 	"privateKey": "",
 	"serverDirs": [
-		"src/HedesServerMod"
+		"src/HedesServer"
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
-		"src/HedesClientMod",
-		"src/HedesServerMod"
+		"src/HedesClient",
+		"src/HedesServer"
 	],
 	"clientMods": [
 		"!Workshop\\@Enhanced Debug Console",
-		"!Workshop\\@CBA_A3"
+		"!Workshop\\@CBA_A3",
+		"!Workshop\\@3den Enhanced"
 	],
 	"ftpConnection": {}
 }
