@@ -1,3 +1,15 @@
+RESET SERVERS QUICK CMDS
+missionNamespace setvariable ["HEDESServer_Profile_PlayerMissionTracker",[]]
+
+
+
+
+
+
+
+
+
+
 // COLLECT COMPOSITIONS FROM EDITOR
 
 _allObjects = allMissionObjects "ALL";
