@@ -1,66 +1,44 @@
-HEDESServer_fnc_appendplayerMissionObject = {
-    private _uid = param[0, getplayerUID player];
-    private _missionvarstr = param[1, "HEDESServer_Profile_playerMissionTracker"];
-    private _objarray = param[2, [netId group player]];
-    
-    private _missionvar = missionnamespace getVariable _missionvarstr;
-    private _missionvarelement = "";
-    
-    if(!(_uid in (_missionvar apply {
-        _x select 0
-    }))) then {
-        exit
-    };
-    
-    private _i = _missionvar apply {
-        _x select 0
-    } find _uid;
-    
+addMissionEventHandler ["playerConnected",
     {
-        switch (typeName _x) do
-        {
-            case "GROUP" : {
-                _missionvarelement = _missionvar select _i select 3;
-                _missionvarelement append (units _x);
-                _missionvar select _i set [3, _missionvarelement];
+        params ["_id", "_uid", "_name", "_jip", "_owner", "_idstr"];
+        
+        _uid spawn {
+            waitUntil {
+                (alive (_this call BIS_fnc_getUnitByUid));
             };
-            case "OBJECT" : {
-                _missionvarelement = _missionvar select _i select 3;
-                _missionvarelement pushBack _x;
-                _missionvar select _i set [3, _missionvarelement];
-            };
-            case "STRING" : {
-                switch (true) do {
-                    case (!isNull groupFromnetId _x):{
-                        (units(groupFromnetId _x) apply {
-                            _missionvarelement = _missionvar select _i select 3;
-                            _missionvarelement pushBack _x;
-                            _missionvar select _i set [3, _missionvarelement];
-                        })
+            
+            call compile format["%1isFirstspawn = true", _this];
+            
+            (_this call BIS_fnc_getUnitByUid) addEventHandler ["Respawn", {
+                params ["_unit", "_corpse"];
+                
+                if (missionnamespace getVariable format["%1isFirstspawn", getplayerUID _unit]) then {
+                    _unit call HEDESServer_fnc_setupNewplayer;
+                } else {
+                    private _groupid = netId (group _unit);
+                    private _trackervarname = gettext(configFile >> "CfgHedesMissions" >> "playermissiontrackerglobal");
+                    private _getmissionstatefnc = gettext(configFile >> "CfgHedesMissions" >> "playermissionstategetterfnc");
+                    private _getmissionnamefnc = gettext(configFile >> "CfgHedesMissions" >> "playermissionnamegetterfnc");
+                    if (call compile format["['%1', '%2'] call %3", _groupid, _trackervarname, _getmissionstatefnc]) then {
+                        private _missiontype = call compile format["['%1', '%2'] call %3", _groupid, _trackervarname, _getmissionnamefnc];
+                        private _missionaoargs = [configFile >> "CfgHedesMissions" >> _missiontype, "missiontargetareaargs"] call HEDESServer_fnc_GetMissionArgProperties;
+                        private _ingresspos = call compile format["%2 call %1", "HEDESServer_fnc_GetLocationPosByname", _missionaoargs];
+                        private _ingresexpression = gettext(configFile >> "CfgHedesMissions" >> _missiontype >> "missiondingressambientexpre");
+                        hint "Mission in progress... transporting you back to AO in 5 seconds.";
+                        [_unit, _ingresspos, _ingresexpression]  spawn {
+                            sleep 5;
+                            (_this select 0) setPos (selectRandom(selectBestPlaces [(_this select 1), 50, (_this select 2), 1, 5]) select 0);
+                        };                        
                     };
                 };
-            };
+            }];
         };
-    } forEach _objarray;
-};
-
-HEDESServer_fnc_setplayerTasklist = {
-    private _player = param[0, player];
-    private _missionvarstr = param[1, "HEDESServer_Global_playerMissionTracker"];
-    private _taskname = param[1, ""];
+    }];
     
-    private _uid = getplayerUID _player;
-    private _missionvar = call compile _missionvarstr;
-    
-    if(!(_uid in (_missionvar apply {
-        _x select 0
-    }))) then {
-        exit
-    };
-    
-    private _i = _missionvar apply {
-        _x select 0
-    } find _uid;
-    
-    _missionvar select _i select 4 pushBack _taskname;
-};
+    HEDESServer_fnc_setupNewplayer = {
+        [_this] joinSilent (creategroup [west, true]);
+        call compile format["%1isFirstspawn = false", getplayerUID _this];
+        {
+            [_x, group _this] call BIS_fnc_deleteTask;
+        } forEach (_this call BIS_fnc_tasksUnit);
+    }

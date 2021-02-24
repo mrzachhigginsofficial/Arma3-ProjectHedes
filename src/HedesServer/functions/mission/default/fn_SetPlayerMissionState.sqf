@@ -9,7 +9,7 @@ States:
 private _uid = param[0, getPlayerUID player];
 private _state = param[1, 0];
 private _mission = param[2, nil];
-private _profilevar = param[3, "HEDESServer_Global_playerMissionTracker"];
+private _profilevar = param[3, "HEDESServer_Profile_playerMissionTracker"];
 
 with missionNamespace do {
     if (isnil _profilevar) then {

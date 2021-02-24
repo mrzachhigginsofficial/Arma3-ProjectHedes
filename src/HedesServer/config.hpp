@@ -37,13 +37,26 @@ class CfgFunctions
 			class CreateKillTask						{recompile = 1;};
 			class SpawnEnemySquad						{recompile = 1;};
 			class SetGroupSurrenderEffect				{recompile = 1;};
+			class AppendPlayerMissionObject				{recompile = 1;};
+			class SetPlayerTaskList						{recompile = 1;};
+			class GetPlayerMissionName 					{recompile = 1;};
 		}
 	};
 };
 
+class CfgHedesSessionManagers
+{
+	
+}
+
 
 class CfgHedesMissions
 {
+	playermissiontrackerglobal	= "HEDESServer_Profile_PlayerMissionTracker"; //  structure - [group,state,mission,objs,tasks]
+	playermissionstatesetterfnc = "HEDESServer_fnc_SetPlayerMissionState";
+	playermissionstategetterfnc = "HEDESServer_fnc_GetPlayerMissionState";
+	playermissionnamegetterfnc = "HEDESServer_fnc_GetPlayerMissionName";
+
 	class default {
 		/* 
 			Default Mission Class - To be used as a template and demo.
@@ -133,9 +146,6 @@ class CfgHedesMissions
 			"O_G_officer_F"
 		};
 		missionenemyunitspawnfnc	= "HEDESServer_fnc_SpawnEnemySquad"; // params - [group,enemytypearray,spawnpos,number of enemies]
-		playermissiontrackerglobal	= "HEDESServer_Profile_PlayerMissionTracker"; //  structure - [group,state,mission,objs]
-		playermissionstatesetterfnc = "HEDESServer_fnc_SetPlayerMissionState";
-		playermissionstategetterfnc = "HEDESServer_fnc_GetPlayerMissionState";
 		tasks[]						= {
 			/*
 			Task generation systems works in 3 phases	
@@ -194,3 +204,5 @@ class CfgHedesMissions
 
 	};
 };
+
+

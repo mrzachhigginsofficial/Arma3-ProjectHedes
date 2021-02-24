@@ -9,7 +9,7 @@ class CfgPatches
 		fileName = "HEDESClientMod.pbo";
         units[] = {};
 		weapons[] = {};
-        requiredAddons[] = { };
+        requiredAddons[] = {};
 	};
 };
 
@@ -40,3 +40,4 @@ class CfgRemoteExec
 };
 
 #include "config.hpp"
+#include "factions.hpp"

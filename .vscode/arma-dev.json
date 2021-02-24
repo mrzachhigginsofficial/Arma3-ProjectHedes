@@ -17,7 +17,10 @@
 	"clientMods": [
 		"!Workshop\\@Enhanced Debug Console",
 		"!Workshop\\@CBA_A3",
-		"!Workshop\\@3den Enhanced"
+		"!Workshop\\@3den Enhanced",
+		"!Workshop\\@CUP Weapons",
+		"!Workshop\\@CUP Units",
+		"!Workshop\\@CUP Vehicles"
 	],
 	"ftpConnection": {}
 }
