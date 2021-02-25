@@ -19,6 +19,8 @@ if (!(call compile _getplayerinmissioncmd)) then {
     private _missionhqargs = [configFile >> "CfgHedesMissions" >> _missiontype, "missionhqargs"] call HEDESServer_fnc_GetMissionArgProperties;
     private _taskarray = getArray(configFile >> "CfgHedesMissions" >> _missiontype >> "tasks");
     private _taskeffects = getArray(configFile >> "CfgHedesMissions" >> _missiontype >> "taskeffectsfnc");
+    private _compilecamfnc = gettext(configFile >> "CfgHedesSessionManagers" >> "compileplayertransitioncamfnc");
+    private _appendplayermissionobjfnc = gettext(configFile >> "CfgHedesMissions" >> "appendplayermissionobjectfnc");
     
     // -1. Prepare compiled Commands
     private _setplayeroutofmissioncmd = format["['%1', 0, '%2', '%3'] call %4", _groupid, _missiontype, _trackervarname, _setmissionstatefnc];
@@ -46,14 +48,14 @@ if (!(call compile _getplayerinmissioncmd)) then {
     
     // 2. Camera Transition Out (Deploy Start)
     {
-        [_missiontype, "deploycam", owner _x] call HEDESServer_fnc_compileplayerTransitionCamera;
+        call compile format["['%1','deploycam',%2] call %3",_missiontype, owner _x, _compilecamfnc];
     } forEach (units(groupFromNetId _groupid) select {_x in allPlayers});
     sleep 2;
     
     // 3. move group to Mission AO
     {
         _x setPos (selectRandom(selectBestPlaces [_ingresspos, 50, _ingresexpression, 1, 5]) select 0);
-        [_missiontype, "missionStartcam", owner _x] call HEDESServer_fnc_compileplayerTransitionCamera;
+        call compile format["['%1','missionStartcam',%2] call %3",_missiontype, owner _x, _compilecamfnc];
     } forEach (units(groupFromNetId _groupid) select {_x in allPlayers});
     
     // 4. Mark group As in Active Mission
@@ -78,14 +80,16 @@ if (!(call compile _getplayerinmissioncmd)) then {
             
             // Apply Effects
             {
-                call compile format["%1 call %2", _checktskargs, _x];
+                call compile format["'%1' call %2", _checktskargs, _x];
             } forEach _taskeffects;
             
             // Add Task Objects to Tracking Mission Variable
-            ([_groupid, _trackervarname, _checktskargs]) call HEDESServer_fnc_AppendPlayerMissionObject;
-            
+            systemChat format["['%1','%2', %3] call %4",_groupid,_trackervarname,_checktskargs,_appendplayermissionobjfnc];
+            call compile format["['%1','%2', %3] call %4",_groupid,_trackervarname,_checktskargs,_appendplayermissionobjfnc];
+                        
             // Evaluate Task Status
             _checktskargs pushBack _groupid;
+            systemChat format["%1 call %2", _checktskargs, _checktaskfnc];
             call compile format["%1 call %2", _checktskargs, _checktaskfnc];
             
             // Delete Task
@@ -114,14 +118,14 @@ if (!(call compile _getplayerinmissioncmd)) then {
     
     // Final - Transition Out of Mission
     {
-        [_missiontype, "finishedcam", owner _x] call HEDESServer_fnc_compileplayerTransitionCamera;
+        call compile format["[%1,'finishedcam',%2] call %3",_missiontype, owner _x, _compilecamfnc];
     } forEach (units(groupFromNetId _groupid) select {_x in allPlayers});
     sleep 2;
     
     // Final - move group Back to HQ
     {
         _x setPos (selectRandom(selectBestPlaces [_hqposition, 50, _ingresexpression, 1, 5]) select 0);
-        [_missiontype, "returncam", owner _x] call HEDESServer_fnc_compileplayerTransitionCamera;
+        call compile format["[%1,'returncam',%2] call %3",_missiontype, owner _x, _compilecamfnc];
     } forEach (units(groupFromNetId _groupid) select {_x in allPlayers});
     
     call compile _setplayeroutofmissioncmd;

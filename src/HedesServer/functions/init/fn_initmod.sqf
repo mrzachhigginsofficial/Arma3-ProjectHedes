@@ -11,34 +11,18 @@ addMissionEventHandler ["playerConnected",
             
             (_this call BIS_fnc_getUnitByUid) addEventHandler ["Respawn", {
                 params ["_unit", "_corpse"];
+
+                private _uid = getPlayerUID _unit;
+                private _spawnnewfnc = gettext(configFile >> "CfgHedesSessionManagers" >> "spawnnewplayerfnc");
+                private _respawnfnc = gettext(configFile >> "CfgHedesSessionManagers" >> "respawnplayerfnc");
+                private _spawnnewcmd = format["'%1' call %2", _uid, _spawnnewfnc];
+                private _respawncmd = format["'%1' call %2", _uid, _respawnfnc];
                 
-                if (missionnamespace getVariable format["%1isFirstspawn", getplayerUID _unit]) then {
-                    _unit call HEDESServer_fnc_setupNewplayer;
+                if (missionnamespace getVariable format["%1isFirstspawn", _uid]) then {
+                    call compile _spawnnewcmd;
                 } else {
-                    private _groupid = netId (group _unit);
-                    private _trackervarname = gettext(configFile >> "CfgHedesMissions" >> "playermissiontrackerglobal");
-                    private _getmissionstatefnc = gettext(configFile >> "CfgHedesMissions" >> "playermissionstategetterfnc");
-                    private _getmissionnamefnc = gettext(configFile >> "CfgHedesMissions" >> "playermissionnamegetterfnc");
-                    if (call compile format["['%1', '%2'] call %3", _groupid, _trackervarname, _getmissionstatefnc]) then {
-                        private _missiontype = call compile format["['%1', '%2'] call %3", _groupid, _trackervarname, _getmissionnamefnc];
-                        private _missionaoargs = [configFile >> "CfgHedesMissions" >> _missiontype, "missiontargetareaargs"] call HEDESServer_fnc_GetMissionArgProperties;
-                        private _ingresspos = call compile format["%2 call %1", "HEDESServer_fnc_GetLocationPosByname", _missionaoargs];
-                        private _ingresexpression = gettext(configFile >> "CfgHedesMissions" >> _missiontype >> "missiondingressambientexpre");
-                        hint "Mission in progress... transporting you back to AO in 5 seconds.";
-                        [_unit, _ingresspos, _ingresexpression]  spawn {
-                            sleep 5;
-                            (_this select 0) setPos (selectRandom(selectBestPlaces [(_this select 1), 50, (_this select 2), 1, 5]) select 0);
-                        };                        
-                    };
+                    call compile _respawncmd;
                 };
             }];
         };
     }];
-    
-    HEDESServer_fnc_setupNewplayer = {
-        [_this] joinSilent (creategroup [west, true]);
-        call compile format["%1isFirstspawn = false", getplayerUID _this];
-        {
-            [_x, group _this] call BIS_fnc_deleteTask;
-        } forEach (_this call BIS_fnc_tasksUnit);
-    }

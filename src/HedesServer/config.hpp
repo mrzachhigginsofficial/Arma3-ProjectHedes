@@ -23,6 +23,15 @@ class CfgFunctions
 			class alambientbattle_searchlight 			{recompile = 1;};
 		};
 
+		class session 
+		{
+			file = "x\HedesServer\functions\session";
+
+			class MovePlayerInMission					{recompile = 1;};
+			class RespawnPlayer 						{recompile = 1;};
+			class SetupNewPlayer 						{recompile = 1;};
+		};
+
 		class missions 
 		{
 			file = "x\HedesServer\functions\mission\default";
@@ -46,16 +55,20 @@ class CfgFunctions
 
 class CfgHedesSessionManagers
 {
-	
+	spawnnewplayerfnc 				= "HEDESServer_fnc_setupNewplayer";
+	respawnplayerfnc 				= "HEDESServer_fnc_RespawnPlayer";
+	moveplayerfnc					= "HEDESServer_fnc_moveplayerinMission";
+	compileplayertransitioncamfnc	= "HEDESServer_fnc_compileplayerTransitionCamera";
 }
 
 
 class CfgHedesMissions
 {
-	playermissiontrackerglobal	= "HEDESServer_Profile_PlayerMissionTracker"; //  structure - [group,state,mission,objs,tasks]
-	playermissionstatesetterfnc = "HEDESServer_fnc_SetPlayerMissionState";
-	playermissionstategetterfnc = "HEDESServer_fnc_GetPlayerMissionState";
-	playermissionnamegetterfnc = "HEDESServer_fnc_GetPlayerMissionName";
+	playermissiontrackerglobal		= "HEDESServer_Profile_PlayerMissionTracker"; //  structure - [group,state,mission,objs,tasks]
+	playermissionstatesetterfnc 	= "HEDESServer_fnc_SetPlayerMissionState";
+	playermissionstategetterfnc 	= "HEDESServer_fnc_GetPlayerMissionState";
+	playermissionnamegetterfnc 		= "HEDESServer_fnc_GetPlayerMissionName";
+	appendplayermissionobjectfnc 	= "HEDESServer_fnc_AppendPlayerMissionObject";
 
 	class default {
 		/* 
@@ -183,6 +196,16 @@ class CfgHedesMissions
 			"HEDESServer_fnc_SetGroupSurrenderEffect"
 		};
 	};
+
+	class vehiclerange : default
+	{
+		missiontargetarea 			= "vehicle range";
+		missiontargetareatype		= "nameLocal";
+		missiontargetareaargs[]	= {
+			"missiontargetarea",
+			"missiontargetareatype"
+		};
+	}
 
 	class patrol : default {
 

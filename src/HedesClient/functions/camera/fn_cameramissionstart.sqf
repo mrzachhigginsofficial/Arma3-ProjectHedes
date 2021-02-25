@@ -19,7 +19,7 @@ waitUntil {
 };
 
 // Transition
-_camera camPrepareRelPos [random 50, random 50, 8];
+_camera camPrepareRelPos [random 50, random 50, 3];
 _camera camCommitPrepared 5;
 waitUntil {
     camCommitted _camera
