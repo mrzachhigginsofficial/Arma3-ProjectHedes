@@ -69,31 +69,24 @@ if (!(call compile _getplayerinmissioncmd)) then {
             private _checktaskfnc = _x select 2;
             
             // Create Task
-            private _task = call compile format["['%1'] call %2", _groupid, _createTaskfnc];
-            private _taskposition = _task select 0;
-            private _taskname = _task select 1;
+            private _task = call compile format["['%1'] call %2", _groupid, _createTaskfnc];   
             
             // Create Task Obj
-            private _taskspawnargs = [configFile >> "CfgHedesMissions" >> _missiontype, "taskspawnargs"] call HEDESServer_fnc_GetMissionArgProperties;
-            _taskspawnargs pushBack _taskposition;
-            private _checktskargs = call compile format["%1 call %2", _taskspawnargs, _spawnobjfnc];
+            private _checktskargs = call compile format["%1 call %2", [_missiontype] + _task, _spawnobjfnc];
             
             // Apply Effects
             {
-                call compile format["'%1' call %2", _checktskargs, _x];
+                call compile format["%1 call %2", _checktskargs, _x];
             } forEach _taskeffects;
             
             // Add Task Objects to Tracking Mission Variable
-            systemChat format["['%1','%2', %3] call %4",_groupid,_trackervarname,_checktskargs,_appendplayermissionobjfnc];
             call compile format["['%1','%2', %3] call %4",_groupid,_trackervarname,_checktskargs,_appendplayermissionobjfnc];
                         
             // Evaluate Task Status
-            _checktskargs pushBack _groupid;
-            systemChat format["%1 call %2", _checktskargs, _checktaskfnc];
-            call compile format["%1 call %2", _checktskargs, _checktaskfnc];
+            call compile format["%1 call %2", [_groupid] + _checktskargs, _checktaskfnc];
             
             // Delete Task
-            [_taskname] call BIS_fnc_deleteTask;
+            [_task select 1] call BIS_fnc_deleteTask;
         }
         catch {
             echo _exception;

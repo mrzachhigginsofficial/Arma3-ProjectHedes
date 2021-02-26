@@ -42,6 +42,11 @@ private _i = _missionvar apply {
 						_missionvar select _i set [3, _missionvarelement];
 					})
 				};
+				case (!isNull objectFromNetId _x):{
+					_missionvarelement = _missionvar select _i select 3;
+					_missionvarelement pushBack _x;
+					_missionvar select _i set [3, _missionvarelement];
+				};
 			};
 		};
 	};

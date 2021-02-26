@@ -10,4 +10,4 @@ while {count (units _enemygroup) < _amount} do {
 [_enemygroup, getPos (leader _enemygroup), 20] call BIS_fnc_taskPatrol;
 _enemygroup allowFleeing 0;
 
-[netId _enemygroup]
+_enemygroup

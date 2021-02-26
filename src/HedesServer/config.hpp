@@ -42,13 +42,15 @@ class CfgFunctions
 			class GetLocationPosByName					{recompile = 1;};
 			class SetPlayerMissionState					{recompile = 1;};
 			class GetPlayerMissionState					{recompile = 1;};
-			class CheckKillTask							{recompile = 1;};
-			class CreateKillTask						{recompile = 1;};
+			class CheckTask								{recompile = 1;};
+			class CreateTask							{recompile = 1;};
 			class SpawnEnemySquad						{recompile = 1;};
 			class SetGroupSurrenderEffect				{recompile = 1;};
 			class AppendPlayerMissionObject				{recompile = 1;};
 			class SetPlayerTaskList						{recompile = 1;};
 			class GetPlayerMissionName 					{recompile = 1;};
+			class SpawnEnemyObject						{recompile = 1;};
+			class SpawnObjectiveArea					{recompile = 1;};
 		}
 	};
 };
@@ -128,6 +130,7 @@ class CfgHedesMissions
 		missiondingressambientexpre = "sea - waterDepth + (waterDepth factor [0.05, 0.5])"; // Helps find a suitable location to start players - https://community.bistudio.com/wiki/Ambient_Parameters
 		missiontargetarea 			= "camp remnants";	// Name of location as it appears on the map
 		missiontargetareatype		= "nameLocal";		// Location type - refer to https://community.bistudio.com/wiki/Location
+		missiontargetarearelpos[]	= {0,0};
 		missiontargetareaargs[]	= {
 			"missiontargetarea",
 			"missiontargetareatype"
@@ -176,22 +179,24 @@ class CfgHedesMissions
 				The example below creates a task chain of 2 tasks for this mission
 			*/
 			{
-				"HEDESServer_fnc_CreateKillTask",		// 1. Creates a kill task - input: _groupnetid(owner) - output: [_missionpos, _missionTask]
-				"HEDESServer_fnc_SpawnEnemySquad",		// 2. Creates mission object - input: _taskspawnargs[] pushBack _position - ouput: enemy squad netid
-				"HEDESServer_fnc_CheckKillTask"			// 3. Waits Until Objective Complete - input: output of objectspawner - output: true
+				"HEDESServer_fnc_CreateTask",				// 1. Creates a kill task - input: _groupnetid(owner) - output: [_missionpos, _missionTask]
+				"HEDESServer_fnc_SpawnObjectiveArea",		// 2. Creates mission object - input: _taskspawnargs[] pushBack _position - ouput: enemy squad netid
+				"HEDESServer_fnc_CheckTask"					// 3. Waits Until Objective Complete - input: output of objectspawner - output: true
 				},
 			{
-				"HEDESServer_fnc_CreateKillTask",
-				"HEDESServer_fnc_SpawnEnemySquad",
-				"HEDESServer_fnc_CheckKillTask"
+				"HEDESServer_fnc_CreateTask",
+				"HEDESServer_fnc_SpawnObjectiveArea",
+				"HEDESServer_fnc_CheckTask"
 				}
 		};
 		taskspawnargs[]				= {
 			"missionenemyunitpool",
 			"missionunitspersquad"
 		};
-		taskeffectsfnc[]=
-		{
+		tasktitl					= "Steal the enemy intel";
+		taskdesc					= "Find and take the enemy intel. Try to bring it back in one piece.";
+		taskitem					= "Item_Laptop_Unfolded";
+		taskeffectsfnc[]			= {
 			// [task object] call <function> syntax
 			"HEDESServer_fnc_SetGroupSurrenderEffect"
 		};
