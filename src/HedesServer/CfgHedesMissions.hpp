@@ -81,73 +81,29 @@ class CfgHedesMissions
 			"O_G_officer_F"
 		};
 		missionenemyunitspawnfnc	= "HEDESServer_fnc_SpawnEnemySquad"; // params - [group,enemytypearray,spawnpos,number of enemies]
-		tasks[]						= {
-			/*
-			Task generation systems works in 3 phases	
-				1. taskgeneration - Creates the task
-				2. object creation - Creates the focus object of the task
-				3. check task - Evaluates the focus object from #2 and emits true when satisfied
-			Example: {"taskgeneration","objectspawner","taskevaluation"}
-				Taskgeneration function should output [position, taskname]
-					1. Outputs array [position, taskname]
-				Objectspawner creates the object or group that is to be evaluated. The output is passed to taskevaluation.
-					1. Accepts all mission params defined in taskspawnargs + position of task
-					2. Example [configParam1,configParam2,_position]
-				Taskevaluation function will paused until task complete 
-					1. Takes all output from Objectspawner as parameters
-				The example below creates a task chain of 2 tasks for this mission
-			*/
-			{
-				"HEDESServer_fnc_CreateTask",				// 1. Creates a kill task - input: _groupnetid(owner) - output: [_missionpos, _missionTask]
-				"HEDESServer_fnc_SpawnObjectiveArea",		// 2. Creates mission object - input: _taskspawnargs[] pushBack _position - ouput: enemy squad netid
-				"HEDESServer_fnc_CheckTask"					// 3. Waits Until Objective Complete - input: output of objectspawner - output: true
-				},
-			{
-				"HEDESServer_fnc_CreateTask",
-				"HEDESServer_fnc_SpawnObjectiveArea",
-				"HEDESServer_fnc_CheckTask"
-				};
-		};
 		taskspawnargs[]				= {
 			"missionenemyunitpool",
 			"missionunitspersquad"
 		};
-		tasktitl					= "Steal the enemy intel";
-		taskdesc					= "Find and take the enemy intel. Try to bring it back in one piece.";
-		taskitem					= "Item_Laptop_Unfolded";
 		taskeffectsfnc[]			= {
 			// [task object] call <function> syntax
 			"HEDESServer_fnc_SetGroupSurrenderEffect"
 		};
-	};
 
-	class vehiclerange : default
-	{
-		missiontargetarea 			= "vehicle range";
-		missiontargetareatype		= "nameLocal";
-		missiontargetareaargs[]	= {
-			"missiontargetarea",
-			"missiontargetareatype"
+		class tasks 
+		{
+			class kill
+			{
+				createtaskfnc = "HEDESServer_fnc_CreateTask";
+				createareafnc = "HEDESServer_fnc_SpawnObjectiveArea";
+				checktaskfnc = "HEDESServer_fnc_CheckTask";
+			};
+			class destroy
+			{
+				createtaskfnc = "HEDESServer_fnc_CreateTask";
+				createareafnc = "HEDESServer_fnc_SpawnObjectiveArea";
+				checktaskfnc = "HEDESServer_fnc_CheckTask";
+			};
 		};
-	};
-
-	class patrol : default {
-
-	};
-
-	class destroy : default {
-
-	};
-
-	class defend : default {
-
-	};
-
-	class assassinate : default {
-
-	};
-
-	class rescue : default {
-
 	};
 };

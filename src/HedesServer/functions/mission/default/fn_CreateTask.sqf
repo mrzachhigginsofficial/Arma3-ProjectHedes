@@ -16,7 +16,7 @@ if (count _randomPosEmpty > 0) then {
     _randomPos = _randomPosEmpty
 };
 
-[_group, [_missionTask], [_tasktitl, _taskdesc], _randomPos, 1, 3, true, "kill"] call BIS_fnc_taskCreate;
+[_group, [_missionTask], [_tasktitl, _taskdesc], _randomPos, 1, 3, true, "destroy"] call BIS_fnc_taskCreate;
 [_missionTask, "ASSIGNED"] call BIS_fnc_tasksetState;
 
 [_randomPos, _missionTask]

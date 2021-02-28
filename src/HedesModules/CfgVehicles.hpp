@@ -90,6 +90,53 @@ class CfgVehicles
 		};
 	};
 
+	class HEDES_MissionModule_TASK: HEDES_MissionModule_BASE
+	{
+		displayName 		= "Mission Task Module";
+		function			= "HEDESModules_fnc_InitMissionSystemModule";
+
+		class Attributes: AttributesBase
+		{
+			class TaskType : Combo
+			{
+				property 			= "HEDES_MissionModule_TaskType";
+				displayName 		= "Task Type";
+				tooltip 			= "The task the mission will spawn.";
+				defaultValue 		= "'destory'";
+				
+				class Values
+				{
+					class default	{
+						name 			= "Destory Mission"; 
+						value 			= "destroy";
+					};
+				};
+			};
+
+			class TaskName : Edit
+			{
+				property 			= "HEDES_MissionModule_TaskName";
+				displayName 		= "Mission Manager Name";
+				tooltip 			= "Mission manager name. This doesn't really serve a purpose yet.";
+				defaultValue 		= """Task Name""";
+			};
+
+			class TaskDescription : Edit
+			{
+				property 			= "HEDES_MissionModule_TaskDesc";
+				displayName 		= "Mission Manager Name";
+				tooltip 			= "Mission manager name. This doesn't really serve a purpose yet.";
+				defaultValue 		= """Task Description""";
+			};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description 		= "This is a short description of the mission manager module.";
+			sync[] 				= {"HEDES_MissionModule_BASE","AnyBrain"};
+		};
+	};
+
 	class HEDES_MissionModule_MANAGER: HEDES_MissionModule_BASE
 	{
 		displayName 		= "Mission Manager Module";
@@ -105,8 +152,8 @@ class CfgVehicles
 				
 				class Values
 				{
-					class destory	{
-						name 			= "Search and Destroy"; 
+					class default	{
+						name 			= "Default Mission Manager"; 
 						value 			= "default";
 					};
 				};

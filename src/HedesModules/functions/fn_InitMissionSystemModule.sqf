@@ -11,6 +11,7 @@ private _missiongivers = synchronizedObjects _logic select {
     private _missiontype = _x getVariable ["Missiontype", "default"];
     private _missiondesc = _x getVariable ["MissionManagername", "default"];
     private _missionobject = _x getVariable ["MissionManagerObjecttype", "land_CratesWooden_F"];
+    private _missiontasks = [];
     
     {
         private _object = _x;
@@ -27,6 +28,12 @@ private _missiongivers = synchronizedObjects _logic select {
             case (typeOf _x == "HEDES_Missionmodule_inGRESS"): {
                 _ingressmodule = _x;
             };
+            case (typeOf _x == "HEDES_MissionModule_TASK"): {
+                _tasktype = _x getVariable ["TaskType",""];
+                _taskname = _x getVariable ["TaskName",""];
+                _taskdesc = _x getVariable ["TaskDescription",""];
+                _missiontasks pushBack [_tasktype, _taskname, _taskdesc];
+            };
         };
     } forEach (synchronizedObjects _x);
     
@@ -42,10 +49,11 @@ private _missiongivers = synchronizedObjects _logic select {
                     _ingressmodule = _this select 3 select 2;
                     _missiontype = _this select 3 select 3;
                     _missionobject = _this select 3 select 4;
+                    _missiontasks = _this select 3 select 5;
                     
-                    [_player, _hqmodule, _deploymodule, _ingressmodule, _missiontype, _missionobject] remoteExec ["HEDESServer_fnc_defaultgroupMissionManager", 2];
+                    [_player, _hqmodule, _deploymodule, _ingressmodule, _missiontype, _missionobject,_missiontasks] remoteExec ["HEDESServer_fnc_defaultgroupMissionManager", 2];
                 },
-                [_hqmodule, _deploymodule, _ingressmodule, _missiontype, _missionobject],
+                [_hqmodule, _deploymodule, _ingressmodule, _missiontype, _missionobject,_missiontasks],
                 1.5,
                 false,
                 false,
