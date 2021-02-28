@@ -7,7 +7,10 @@ class CfgPatches
 		url = "";
 		requiredVersion = 0.1;
 		fileName = "HEDESServerMod.pbo";
-        units[] = {};
+        units[] = {
+			"UnterKomando_1",
+			
+		};
 		weapons[] = {};
         requiredAddons[] = {};
 	};
@@ -27,4 +30,6 @@ class CfgRemoteExec
 	};
 };
 
-#include "config.hpp"
+#include "CfgFunctions.hpp"
+#include "CfgHedesMissions.hpp"
+#include "CfgHedesSessionManagers.hpp"

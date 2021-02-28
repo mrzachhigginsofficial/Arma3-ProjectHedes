@@ -25,10 +25,13 @@ class CfgRemoteExec
 
 	class Functions
 	{
-		mode = 0;
-		jip = 0;													// no functions can use jip
+		mode = 1;
 
-		class BIS_fnc_setRank 										{ allowedTargets = 1; };	// execute only on clients, server execution denied
+		class BIS_fnc_setRank 										{ allowedTargets = 0; };
+		class BIS_fnc_effectKilledAirDestruction					{ allowedTargets = 0; jip = 0; };
+		class BIS_fnc_effectKilledSecondaries						{ allowedTargets = 0; jip = 0; };
+		class BIS_fnc_objectVar										{ allowedTargets = 0; jip = 0; };
+		class BIS_fnc_setCustomSoundController						{ allowedTargets = 0; jip = 0; };
 		class HEDESClient_fnc_cameradeploystart						{ allowedTargets = 1; };
 		class HEDESClient_fnc_cameramissionstart					{ allowedTargets = 1; };
 		class HEDESClient_fnc_3p_alambientbattle_tracer_effect		{ jip = 1 };
@@ -40,4 +43,3 @@ class CfgRemoteExec
 };
 
 #include "config.hpp"
-#include "factions.hpp"

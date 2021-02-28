@@ -1,11 +1,11 @@
 /*
-Determines if player group is in mission or not
+Returns player mission objects.
 */
 
-private _id = param[0, getPlayerUID player];
+private _id = param[0, netId group player];
 private _profilevar = param[1, "HEDESServer_Profile_playerMissionTracker"];
 
-private _result = false;
+private _result = [];
 
 with missionNamespace do {
     if (isnil _profilevar) then {
@@ -21,7 +21,7 @@ with missionNamespace do {
             _x select 0
         } find _id;
         
-		_result = _var select _i select 2;
+		_result = _var select _i select 3;
     };
 };
 

@@ -1,26 +1,3 @@
-class CfgEditorCategories
-{
-    class OJSK
-    {
-        displayName = "OberJägerSchützeKommandos";
-        Priority = 0;
-        side = 1;
-    };
-};
-
-
-class cfgFactionClasses
-{
-	class OJSK
-	{
-		displayName = "OberJägerSchützeKommandos";
-		icon = "x\HedesClient\assets\flags\ober_flag.paa";
-		priority = 1;
-		side = 1;
-	};
-};
-
-
 class CfgVehicles
 {
 	class B_G_Soldier_M_F;

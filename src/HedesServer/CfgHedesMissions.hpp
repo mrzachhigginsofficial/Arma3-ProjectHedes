@@ -1,76 +1,12 @@
-class CfgFunctions 
-{
-	class HEDESServer
-	{
-		class init
-		{
-			file = "x\HedesServer\functions\init";
-
-			class initmod {	
-				postinit = 1;
-				recompile = 1;
-			};
-		};
-
-		class ALambientbattle
-		{
-			file = "x\HedesServer\functions\ALambientbattle";
-
-			class alambientbattle_tracer 				{recompile = 1;};
-			class alambientbattle_flaks 				{recompile = 1;};
-			class alambientbattle_missiles 				{recompile = 1;};
-			class alambientbattle_artillery 			{recompile = 1;};
-			class alambientbattle_searchlight 			{recompile = 1;};
-		};
-
-		class session 
-		{
-			file = "x\HedesServer\functions\session";
-
-			class MovePlayerInMission					{recompile = 1;};
-			class RespawnPlayer 						{recompile = 1;};
-			class SetupNewPlayer 						{recompile = 1;};
-		};
-
-		class missions 
-		{
-			file = "x\HedesServer\functions\mission\default";
-
-			class GetMissionArgProperties 				{recompile = 1;};
-			class CompilePlayerTransitionCamera			{recompile = 1;};
-			class DefaultGroupMissionManager			{recompile = 1;};
-			class GetLocationPosByName					{recompile = 1;};
-			class SetPlayerMissionState					{recompile = 1;};
-			class GetPlayerMissionState					{recompile = 1;};
-			class CheckTask								{recompile = 1;};
-			class CreateTask							{recompile = 1;};
-			class SpawnEnemySquad						{recompile = 1;};
-			class SetGroupSurrenderEffect				{recompile = 1;};
-			class AppendPlayerMissionObject				{recompile = 1;};
-			class SetPlayerTaskList						{recompile = 1;};
-			class GetPlayerMissionName 					{recompile = 1;};
-			class SpawnEnemyObject						{recompile = 1;};
-			class SpawnObjectiveArea					{recompile = 1;};
-		}
-	};
-};
-
-class CfgHedesSessionManagers
-{
-	spawnnewplayerfnc 				= "HEDESServer_fnc_setupNewplayer";
-	respawnplayerfnc 				= "HEDESServer_fnc_RespawnPlayer";
-	moveplayerfnc					= "HEDESServer_fnc_moveplayerinMission";
-	compileplayertransitioncamfnc	= "HEDESServer_fnc_compileplayerTransitionCamera";
-}
-
-
 class CfgHedesMissions
 {
 	playermissiontrackerglobal		= "HEDESServer_Profile_PlayerMissionTracker"; //  structure - [group,state,mission,objs,tasks]
 	playermissionstatesetterfnc 	= "HEDESServer_fnc_SetPlayerMissionState";
 	playermissionstategetterfnc 	= "HEDESServer_fnc_GetPlayerMissionState";
 	playermissionnamegetterfnc 		= "HEDESServer_fnc_GetPlayerMissionName";
+	playermissionobjectsgetfnc		= "HEDESServer_fnc_GetPlayerMissionObjects";
 	appendplayermissionobjectfnc 	= "HEDESServer_fnc_AppendPlayerMissionObject";
+	cleanupmissionplayerobjectfnc	= "HEDESServer_fnc_SpawnObjectCleanupThread";
 
 	class default {
 		/* 
@@ -125,23 +61,6 @@ class CfgHedesMissions
 		ambientbattleeffectsfnc		= ""; 	// Function that controls the ambient battle effects (client side function)
 		ambientcivillians			= 0; 	// Should there be a civilian presence around the AO - 1 true, 0 false
 		missionmanagerfnc			= "HEDESServer_fnc_DefaultGroupMissionManager"; 	// Function that bootstraps the mission and manages all mission objects for team
-		missiondeployobjtype		= "B_Boat_Transport_01_F";
-		missionextractobjtype		= "B_Boat_Transport_01_F";
-		missiondingressambientexpre = "sea - waterDepth + (waterDepth factor [0.05, 0.5])"; // Helps find a suitable location to start players - https://community.bistudio.com/wiki/Ambient_Parameters
-		missiontargetarea 			= "camp remnants";	// Name of location as it appears on the map
-		missiontargetareatype		= "nameLocal";		// Location type - refer to https://community.bistudio.com/wiki/Location
-		missiontargetarearelpos[]	= {0,0};
-		missiontargetareaargs[]	= {
-			"missiontargetarea",
-			"missiontargetareatype"
-		};
-		missionhq					= "Ile Sainte-Marie";
-		missionhqtype 				= "nameLocal";
-		missionhqargs[]				= {
-			"missionhq",
-			"missionhqtype"
-		};
-		missionenemyambientparam	= ""; //not used yet
 		missionmaxenemysquads		= 3;
 		missionunitspersquad		= 5;
 		missionenemyunitpool[]		= {
@@ -187,7 +106,7 @@ class CfgHedesMissions
 				"HEDESServer_fnc_CreateTask",
 				"HEDESServer_fnc_SpawnObjectiveArea",
 				"HEDESServer_fnc_CheckTask"
-				}
+				};
 		};
 		taskspawnargs[]				= {
 			"missionenemyunitpool",
@@ -210,7 +129,7 @@ class CfgHedesMissions
 			"missiontargetarea",
 			"missiontargetareatype"
 		};
-	}
+	};
 
 	class patrol : default {
 
@@ -232,5 +151,3 @@ class CfgHedesMissions
 
 	};
 };
-
-

@@ -7,12 +7,16 @@
 	"buildPath": "build",
 	"privateKey": "",
 	"serverDirs": [
-		"src/HedesServer"
+		"src/HedesServer",
+		"src/HedesUnits",
+		"src/HedesModules"
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
 		"src/HedesClient",
-		"src/HedesServer"
+		"src/HedesServer",
+		"src/HedesUnits",
+		"src/HedesModules"
 	],
 	"clientMods": [
 		"!Workshop\\@Enhanced Debug Console",

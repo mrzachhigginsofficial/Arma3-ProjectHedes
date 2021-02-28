@@ -3,7 +3,6 @@ in the default scenario, we use a single squad, and an item.
 Objective items will be [_enemysquad, _enemyobject].
 It is encouraged to expand on this in additional mission types.
 */
-systemchat format["%1",_this];
 
 private _missiongroups = _this select {
     !isNull (groupFromnetId _x)
