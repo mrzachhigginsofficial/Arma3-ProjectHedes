@@ -53,6 +53,7 @@ class CfgFunctions
 			class SpawnObjectiveArea					{recompile = 1;};
 			class GetPlayerMissionObjects				{recompile = 1;};
 			class SpawnObjectCleanupThread				{recompile = 1;};
+			class SetObjectExplosion					{recompile = 1;};
 		}
 	};
 };

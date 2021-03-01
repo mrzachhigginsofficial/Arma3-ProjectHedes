@@ -55,11 +55,6 @@ class CfgHedesMissions
 		missionstarttext			= "Mission is a go, I repeat, mission is a go. Command out.";
 		missionstartaudio			= "RadioAmbient5";
 		missiondifficultymultiplier	= 1.2;	// Difficult Multiplier. NPC presence and/or difficult increases when more players join.
-		ambientartillery 			= 1; 	// Should random artillery be landing around AO - 1 true, 0 false
-		ambientartilleryfnc			= ""; 	// Function that controls ambient artillery
-		ambientbattleeffects		= 1; 	// Should ambient battle effects be running around AO - 1 true, 0 false
-		ambientbattleeffectsfnc		= ""; 	// Function that controls the ambient battle effects (client side function)
-		ambientcivillians			= 0; 	// Should there be a civilian presence around the AO - 1 true, 0 false
 		missionmanagerfnc			= "HEDESServer_fnc_DefaultGroupMissionManager"; 	// Function that bootstraps the mission and manages all mission objects for team
 		missionmaxenemysquads		= 3;
 		missionunitspersquad		= 5;
@@ -80,14 +75,14 @@ class CfgHedesMissions
 		missionenemyunitvippool[]	= {
 			"O_G_officer_F"
 		};
-		missionenemyunitspawnfnc	= "HEDESServer_fnc_SpawnEnemySquad"; // params - [group,enemytypearray,spawnpos,number of enemies]
 		taskspawnargs[]				= {
 			"missionenemyunitpool",
 			"missionunitspersquad"
 		};
 		taskeffectsfnc[]			= {
 			// [task object] call <function> syntax
-			"HEDESServer_fnc_SetGroupSurrenderEffect"
+			"HEDESServer_fnc_SetGroupSurrenderEffect",
+			"HEDESServer_fnc_SetObjectExplosion"
 		};
 
 		class tasks 

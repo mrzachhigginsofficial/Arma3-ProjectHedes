@@ -22,21 +22,23 @@ class HEDES_MissionGiverDialog
 			colorBackground[] = {0,0,0,0.5};
 		};
 
-		class MissionAccept: RscButtonMenuOK
+		class MissionAccept: RscButton
 		{
 			idc = HEDESGUI_MISSIONDIALOG_OKBTN;
 			x = 25.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 22 * GUI_GRID_H + GUI_GRID_Y;
 			w = 10 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
+			text = "Accept";
 		};
-		class MissionCancel: RscButtonMenuCancel
+		class MissionCancel: RscButton
 		{
 			idc = HEDESGUI_MISSIONDIALOG_CANCELBTN;
 			x = 5 * GUI_GRID_W + GUI_GRID_X;
 			y = 22 * GUI_GRID_H + GUI_GRID_Y;
 			w = 10 * GUI_GRID_W;
 			h = 1 * GUI_GRID_H;
+			text = "Decline";
 		};
 		class MissionGiverAvatar: RscPicture
 		{
@@ -50,7 +52,7 @@ class HEDES_MissionGiverDialog
 		class MissionGiverName: RscText
 		{
 			idc = HEDESGUI_MISSIONDIALOG_NAME;
-			text = "Mission Giver Name"; //--- ToDo: Localize;
+			text = "Mission Giver Name";
 			x = 9.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 4 * GUI_GRID_H + GUI_GRID_Y;
 			w = 21 * GUI_GRID_W;
@@ -61,7 +63,7 @@ class HEDES_MissionGiverDialog
 		class MissionGiverDialog: RscText
 		{
 			idc = HEDESGUI_MISSIONDIALOG_DIALOG;
-			text = """Hey, I got a couple things I need done. Interested?"""; //--- ToDo: Localize;
+			text = """Hey, I got a couple things I need done. Interested?""";
 			x = 9.5 * GUI_GRID_W + GUI_GRID_X;
 			y = 5.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 26 * GUI_GRID_W;

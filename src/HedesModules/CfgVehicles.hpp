@@ -13,6 +13,7 @@ class CfgVehicles
 			class CheckboxNumber;
 			class ModuleDescription;
 			class Units;
+			class EditArray;
 		};
 		class ModuleDescription
 		{
@@ -147,6 +148,14 @@ class CfgVehicles
 				tooltip 			= "Task description...";
 				defaultValue 		= """Task Description""";
 			};
+
+			class TaskEffects : EditArray
+			{
+				property			= "HEDES_MissionModule_Effects";
+				displayName			= "Array of effect commands";
+				tooltip				= "Example: ""HEDESServer_fnc_function1"",""HEDESServer_fnc_function1""";
+				//defaultValue[]		= {"HEDESServer_fnc_SetGroupSurrenderEffect","HEDESServer_fnc_SetObjectExplosion"};
+			}			
 		};
 
 		class ModuleDescription: ModuleDescription
