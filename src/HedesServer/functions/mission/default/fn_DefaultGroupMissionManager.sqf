@@ -1,13 +1,16 @@
-// -- [_player, _hqmodule, _deploymodule, _ingressmodule, _missiontype] call HEDESServer_fnc_defaultMissionManager;
+// -- [_player, _hqmodule, _deploymodule, _ingressmodule, _missionmodule, _missiontaskmodules]; call HEDESServer_fnc_defaultMissionManager;
 
 private _player = param[0, player];
 private _missionhqloc = getPos (param[1, objNull]);
 private _missiondeployloc = getPos (param[2, objNull]);
 private _missioningressloc = getPos (param[3, objNull]);
 private _missionegressloc = getPos (param[3, objNull]);
-private _missiontype = param [4, "default"];
-private _missionobject = param[5, "land_CratesWooden_F"];
-private _missiontasks = param[6, ["destory","test task name","test task desc"]];
+private _missionmodule = param[4,objNull];
+private _missiontaskmodules = param[5,[objNull]];
+
+private _missiontype = _missionmodule getVariable "MissionType";
+private _missionobject = _missionmodule getVariable "MissionManagerObjectType";
+private _missiontasks = _missiontaskmodules;
 
 // load Basic Mission parameters
 private _groupid = netId (group _player);
@@ -74,9 +77,9 @@ if (!([[_groupid, _trackervarname], _getmissionstatefnc] call HEDES_compile_FUNC
     // 5. Start executing and Tracking Tasks
     {
         try{
-            private _tasktype = _x select 0;
-            private _tasktitl = _x select 1;
-            private _taskdesc = _x select 2;
+            private _tasktype = _x getVariable "TaskType";
+            private _tasktitl = _x getVariable "TaskName";
+            private _taskdesc = _x getVariable "TaskDescription";
 
             private _createtaskfnc = getText(configFile >> "CfgHedesMissions" >> _missiontype >> "tasks" >> _tasktype >> "createtaskfnc");
             private _createareafnc = getText(configFile >> "CfgHedesMissions" >> _missiontype >> "tasks" >> _tasktype >> "createareafnc");

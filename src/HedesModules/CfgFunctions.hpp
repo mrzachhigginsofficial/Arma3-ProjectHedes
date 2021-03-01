@@ -7,6 +7,7 @@ class CfgFunctions
 			file = "x\HedesModules\functions";
 
 			class InitMissionSystemModule 				{recompile = 1;};
+			class ShowAvailableMissions					{recompile = 1;};
 		};
 	};
 };

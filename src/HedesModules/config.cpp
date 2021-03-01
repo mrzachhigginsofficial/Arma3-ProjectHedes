@@ -22,3 +22,6 @@ class CfgPatches
 #include "CfgFactionClasses.hpp"
 #include "CfgFunctions.hpp"
 #include "CfgVehicles.hpp"
+
+#include "gui\BaseControlClasses.hpp"
+#include "gui\MissionGiverDialog.hpp"

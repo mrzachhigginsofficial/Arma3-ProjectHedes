@@ -83,6 +83,25 @@ class CfgVehicles
 		displayName 		= "Mission System Module";
 		function			= "HEDESModules_fnc_InitMissionSystemModule";
 
+		class Attributes: AttributesBase
+		{
+			class MissionGiverName : Edit
+			{
+				property 			= "HEDES_MissionSystem_GiverName";
+				displayName 		= "Mission Giver Name";
+				tooltip 			= "The name of the mission giver.";
+				defaultValue 		= """Ivan Wojszyk""";
+			};
+
+			class MissionGiverAvatar : Edit
+			{
+				property 			= "HEDES_MissionSystem_GiverAvatar";
+				displayName 		= "Mission Giver Avatar";
+				tooltip 			= "The avatar of the mission giver.";
+				defaultValue 		= """x\HEDESModules\assets\avatar_missiongiver_generic1.paa""";
+			};
+		};
+
 		class ModuleDescription: ModuleDescription
 		{
 			description 		= "This is a short description of the mission manager module.";
@@ -116,16 +135,16 @@ class CfgVehicles
 			class TaskName : Edit
 			{
 				property 			= "HEDES_MissionModule_TaskName";
-				displayName 		= "Mission Manager Name";
-				tooltip 			= "Mission manager name. This doesn't really serve a purpose yet.";
+				displayName 		= "Task Name";
+				tooltip 			= "Task name...";
 				defaultValue 		= """Task Name""";
 			};
 
 			class TaskDescription : Edit
 			{
 				property 			= "HEDES_MissionModule_TaskDesc";
-				displayName 		= "Mission Manager Name";
-				tooltip 			= "Mission manager name. This doesn't really serve a purpose yet.";
+				displayName 		= "Task Description";
+				tooltip 			= "Task description...";
 				defaultValue 		= """Task Description""";
 			};
 		};
@@ -153,17 +172,25 @@ class CfgVehicles
 				class Values
 				{
 					class default	{
-						name 			= "Default Mission Manager"; 
+						name 			= "Default Mission Manager (Must Define Object)"; 
 						value 			= "default";
 					};
 				};
 			};
 
-			class MissionManagerName : Edit
+			class MissionName : Edit
 			{
 				property 			= "HEDES_MissionModule_Name";
-				displayName 		= "Mission Manager Name";
-				tooltip 			= "Mission manager name. This doesn't really serve a purpose yet.";
+				displayName 		= "Mission Name";
+				tooltip 			= "Mission name as it shows in the mission list dialog.";
+				defaultValue 		= """Attack Mission""";
+			};
+
+			class MissionDescription : Edit
+			{
+				property 			= "HEDES_MissionModule_Description";
+				displayName 		= "Mission Description (Flavor Text)";
+				tooltip 			= "Flavor text that will display in the dialog.";
 				defaultValue 		= """Mission Action Name""";
 			};
 
