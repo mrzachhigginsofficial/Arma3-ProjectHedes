@@ -19,16 +19,15 @@ private _dialog_Cancelbutton = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_CAN
 
 _dialog_name ctrlsettext (_logic getVariable "MissionGivername");
 _dialog_avatar ctrlsettext (_logic getVariable "MissionGiverAvatar");
+_dialog_missiondesc ctrlSetText "Select a mission";
 
 {
-	private _name = (_x select 3) getVariable "MissionName";
+    private _name = (_x select 3) getVariable "missionname";
     private _index = _dialog_missions lbAdd _name;
     private _varname = format["HEDESMissionData_%1", _index];
     _dialog_missions lbsetData [_index, _varname];
     missionnamespace setVariable [_varname, _x];
 } forEach _missionlist;
-
-_dialog_missions lbSetCurSel 0;
 
 HEDESMissiondialogEvent_LBselect = _dialog_missions ctrlAddEventHandler ["LBSelChanged", {
     params ["_control", "_index"];
@@ -57,23 +56,30 @@ HEDESMissiondialogEvent_LBselect = _dialog_missions ctrlAddEventHandler ["LBSelC
     _dialog_missiondesc ctrlsetstructuredtext parsetext ([_missiondescription, _taskdesc] joinstring "<br/><br/>");
 }];
 
-buttonSetAction [HEDESGUI_MISSIONDIALOG_OKBTN,{
-	closeDialog 2;
-	private _guiwindow 	= uiNamespace getVariable "HEDES_MissionGiverdialog";
-	private _dialog_missions = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_LISTBOX;
-	_dialog_missions ctrlRemoveEventHandler ["LBSelChanged",HEDESMissiondialogEvent_LBselect];
-
-	private _index = lbCurSel _dialog_missions;
-	private _varname = format["HEDESMissionData_%1", _index];
+HEDESMissiondialogEvent_OKBUTTON = _dialog_OKbutton ctrlAddEventHandler ["onButtonClick", {
+	closedialog 2;
+    private _guiwindow 	= uiNamespace getVariable "HEDES_MissionGiverdialog";
+    private _dialog_missions = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_LISTBOX;
+	private _dialog_OKbutton = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_OKBTN;
+	private _dialog_Cancelbutton = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_CANCELBTN;
+    _dialog_missions ctrlremoveEventHandler ["LBSelChanged", HEDESMissiondialogEvent_LBselect];
+	_dialog_OKbutton  ctrlremoveEventHandler ["onButtonClick", HEDESMissiondialogEvent_OKBUTTON];
+	_dialog_Cancelbutton  ctrlremoveEventHandler ["onButtonClick", HEDESMissiondialogEvent_CANCELBUTTON];
+    
+    private _index = lbCurSel _dialog_missions;
+    private _varname = format["HEDESMissionData_%1", _index];
     private _mission = missionnamespace getVariable _varname;
-
-	([player] + _mission) remoteExec ["HEDESServer_fnc_defaultgroupMissionManager", 2];
+    
+    ([player] + _mission) remoteExec ["HEDESServer_fnc_defaultgroupMissionManager", 2];
 }];
 
-
-buttonSetAction [HEDESGUI_MISSIONDIALOG_CANCELBTN,{
-	closeDialog 2;
-	private _guiwindow 	= uiNamespace getVariable "HEDES_MissionGiverdialog";
-	private _dialog_missions = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_LISTBOX;
-	_dialog_missions ctrlRemoveEventHandler ["LBSelChanged",HEDESMissiondialogEvent_LBselect];
+HEDESMissiondialogEvent_CANCELBUTTON = _dialog_Cancelbutton ctrlAddEventHandler ["onButtonClick", {
+    closedialog 2;
+    private _guiwindow 	= uiNamespace getVariable "HEDES_MissionGiverdialog";
+    private _dialog_missions = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_LISTBOX;
+	private _dialog_OKbutton = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_OKBTN;
+	private _dialog_Cancelbutton = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_CANCELBTN;
+    _dialog_missions ctrlremoveEventHandler ["LBSelChanged", HEDESMissiondialogEvent_LBselect];
+	_dialog_OKbutton  ctrlremoveEventHandler ["onButtonClick", HEDESMissiondialogEvent_OKBUTTON];
+	_dialog_Cancelbutton  ctrlremoveEventHandler ["onButtonClick", HEDESMissiondialogEvent_CANCELBUTTON];
 }];
