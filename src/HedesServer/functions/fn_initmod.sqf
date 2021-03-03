@@ -10,19 +10,15 @@ addMissionEventHandler ["playerConnected",
             call compile format["%1isFirstspawn = true", _this];
             
             (_this call BIS_fnc_getUnitByUid) addEventHandler ["Respawn", {
+                
                 params ["_unit", "_corpse"];
-
-                private _uid = getPlayerUID _unit;
-                private _spawnnewfnc = gettext(configFile >> "CfgHedesSessionManagers" >> "spawnnewplayerfnc");
-                private _respawnfnc = gettext(configFile >> "CfgHedesSessionManagers" >> "respawnplayerfnc");
-                private _spawnnewcmd = format["'%1' call %2", _uid, _spawnnewfnc];
-                private _respawncmd = format["'%1' call %2", _uid, _respawnfnc];
                 
                 if (missionnamespace getVariable format["%1isFirstspawn", _uid]) then {
-                    call compile _spawnnewcmd;
+                    _unit call HEDESServer_fnc_SetupNewplayer;
                 } else {
-                    call compile _respawncmd;
+                    [_unit, _corpse] call HEDESServer_fnc_RespawnPlayer;
                 };
+
             }];
         };
     }];

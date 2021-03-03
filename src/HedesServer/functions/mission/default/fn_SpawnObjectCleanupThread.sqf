@@ -1,3 +1,21 @@
+/* 
+--------------------------------------------------------------------
+Object Cleanup Thread
+
+Description:
+    Spawns an object cleanup thread. Waits until players are away 
+    from object.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
+*/
+
+#include "\x\HEDESServer\macros.h"
+
 {
     _x spawn {
         while{

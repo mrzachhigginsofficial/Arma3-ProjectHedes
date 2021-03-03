@@ -1,6 +1,4 @@
-﻿#include "..\defines.h"
-
-//Default Arma UI Resources
+﻿//Default Arma UI Resources
 //Exported via BIS_fnc_exportGUIBaseClasses
 //Fixed Inheritance and missing RscControlsTable
 //by Larrow

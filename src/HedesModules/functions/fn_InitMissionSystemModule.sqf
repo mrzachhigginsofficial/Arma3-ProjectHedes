@@ -1,3 +1,21 @@
+/* 
+--------------------------------------------------------------------
+Initialize Mission System Module. 
+
+Description:
+    Initializes the mission system module.
+
+Notes: 
+    This script needs parameterized as much as possible...
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
+*/
+
+#include "..\macros.h"
+#include "..\defines.h"
+
 private _logic = param [0, objNull, [objNull]];
 private _missionlist = [];
 private _missiongivers = synchronizedObjects _logic select {

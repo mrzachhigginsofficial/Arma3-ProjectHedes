@@ -1,13 +1,26 @@
-/*
-Appends any element type to array. This shouldnt really need changed except for parm types expanded on.
-The collection this is appended to is used to clean objects at garbage collection.
+/* 
+--------------------------------------------------------------------
+Append Objects To Group Mission Tracker. 
+
+Description:
+	Appends any element type to array. This shouldnt really need 
+	changed except for parm types expanded on. The collection this 
+	is appended to is used to clean objects at garbage collection.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
 */
 
-private _uid = param[0, getplayerUID player];
-private _missionvarstr = param[1, "HEDESServer_Profile_playerMissionTracker"];
-private _objarray = param[2, [netId group player]];
+#include "\x\HEDESServer\macros.h"
 
-private _missionvar = missionnamespace getVariable _missionvarstr;
+private _uid = param[0, getplayerUID player];
+private _objarray = param[1, [netId group player]];
+
+private _missionvar = missionnamespace getVariable GLOBALMISSIONTRACKERNAME;
 private _missionvarelement = "";
 
 if(!(_uid in (_missionvar apply {

@@ -1,11 +1,24 @@
-/*
-Reads Required Mission Args and returns their values as an array.
-To be passed to a function.
-[arg properties from config] call <function from config>
+/* 
+--------------------------------------------------------------------
+Get Mission Arg Properties. 
+
+Description:
+    Reads Required Mission Args and returns their values as an array.
+    To be passed to a function.
+    [arg properties from config] call <function from config>
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
 */
 
-private _cfgpath = param[0,configfile >> "CfgHedesMissions" >> "default"];
-private _argsname = param[1,"deploycamargs"];
+#include "\x\HEDESServer\macros.h"
+
+private _cfgpath        = param[0,configfile >> "CfgHedesMissions" >> "default"];
+private _argsname       = param[1,"deploycamargs"];
 
 (getArray(_cfgpath >> _argsname)) apply {
     private _cfg = _cfgpath >> _x;

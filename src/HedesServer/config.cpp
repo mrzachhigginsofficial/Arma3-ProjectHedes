@@ -1,3 +1,5 @@
+#include "macros.h"
+
 class CfgPatches
 {
 	class ProjectHedesServer
@@ -16,20 +18,5 @@ class CfgPatches
 	};
 };
 
-class CfgRemoteExec
-{
-	class Commands
-	{
-		mode = 1;
-	};
-
-	class Functions
-	{
-		mode = 0;
-		jip = 0;
-	};
-};
-
+#include "CfgRemoteExec.hpp"
 #include "CfgFunctions.hpp"
-#include "CfgHedesMissions.hpp"
-#include "CfgHedesSessionManagers.hpp"

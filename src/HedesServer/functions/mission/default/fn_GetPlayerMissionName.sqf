@@ -1,18 +1,29 @@
-/*
-Determines if player group is in mission or not
+/* 
+--------------------------------------------------------------------
+Get Player Mission Name.
+
+Description:
+    Gets player mission name from global mission tracker.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
 */
 
-private _id = param[0, getPlayerUID player];
-private _profilevar = param[1, "HEDESServer_Profile_playerMissionTracker"];
+#include "\x\HEDESServer\macros.h"
 
-private _result = false;
+private _id         = param[0, getPlayerUID player];
+private _result     = false;
 
 with missionNamespace do {
-    if (isnil _profilevar) then {
-        currentnamespace setVariable [_profilevar, []];
+    if (isnil GLOBALMISSIONTRACKERNAME) then {
+        currentnamespace setVariable [GLOBALMISSIONTRACKERNAME, []];
     };
     
-    private _var = currentnamespace getVariable _profilevar;
+    private _var = currentnamespace getVariable GLOBALMISSIONTRACKERNAME;
     
     if (_id in (_var apply {
         _x select 0

@@ -1,3 +1,6 @@
+#include "macros.h"
+#include "defines.h"
+
 class CfgPatches
 {
 	class ProjectHedesClient

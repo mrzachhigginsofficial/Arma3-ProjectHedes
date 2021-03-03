@@ -1,3 +1,21 @@
+/* 
+--------------------------------------------------------------------
+Create Meet Task 
+
+Description:
+	Create destroy task in random location and return taskname +
+    location.
+
+Notes: 
+    None
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
+*/
+
+#include "\x\HEDESServer\macros.h"
+
 private _id = param[0, netId (group player)];
 private _missiontype = param[1, "_default"];
 private _tasktitl = param[2, "New task title"];

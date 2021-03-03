@@ -1,10 +1,27 @@
+/* 
+--------------------------------------------------------------------
+Show Available Missions GUI
+
+Description:
+    Shows the available missions GUI for specific NPC. Action is 
+    added through initmissionsystemmodule.sqf
+
+Notes: 
+    This script needs parameterized as much as possible...
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
+*/
+
+#include "..\macros.h"
 #include "..\defines.h"
 
-private _logic = param[0, objNull];
-private _missionlist = param[1, []];
-// _missionlist contents [_hqmodule, _deploymodule, _ingressmodule, _missionmodule, _missiontaskmodules];
+private _logic          = param[0, objNull];
+private _missionlist    = param[1, []];
 
 createdialog "HEDES_MissionGiverdialog";
+
 waitUntil {
     !isNull (uiNamespace getVariable "HEDES_MissionGiverdialog")
 };
@@ -21,15 +38,7 @@ _dialog_name ctrlsettext (_logic getVariable "MissionGivername");
 _dialog_avatar ctrlsettext (_logic getVariable "MissionGiverAvatar");
 _dialog_missiondesc ctrlSetText "Select a mission";
 
-{
-    private _name = (_x select 3) getVariable "missionname";
-    private _index = _dialog_missions lbAdd _name;
-    private _varname = format["HEDESMissionData_%1", _index];
-    _dialog_missions lbsetData [_index, _varname];
-    missionnamespace setVariable [_varname, _x];
-} forEach _missionlist;
-
-HEDESMissionDialogEvent_LBselect = _dialog_missions ctrlAddEventHandler ["LBSelChanged", {
+HEDESMissionDialogCode_LBelect = {
     params ["_control", "_index"];
     private _guiwindow 	= uiNamespace getVariable "HEDES_MissionGiverdialog";
     private _dialog_missiondesc = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_DESCRIPTION;
@@ -54,7 +63,9 @@ HEDESMissionDialogEvent_LBselect = _dialog_missions ctrlAddEventHandler ["LBSelC
     _taskdesc = _taskDescriptions joinstring "<br/><br/>";
     
     _dialog_missiondesc ctrlsetstructuredtext parsetext ([_missiondescription, _taskdesc] joinstring "<br/><br/>");
-}];
+};
+
+HEDESMissionDialogEvent_LBselect = _dialog_missions ctrlAddEventHandler ["LBSelChanged", HEDESMissionDialogCode_LBelect];
 
 HEDESMissionDialogEvent_OKBUTTON = _dialog_OKbutton ctrlAddEventHandler ["ButtonClick", {
 	closedialog 2;
@@ -84,3 +95,14 @@ HEDESMissionDialogEvent_CANCELBUTTON = _dialog_Cancelbutton ctrlAddEventHandler 
 	_dialog_OKbutton  ctrlremoveEventHandler ["onButtonClick", HEDESMissionDialogEvent_OKBUTTON];
 	_dialog_Cancelbutton  ctrlremoveEventHandler ["onButtonClick", HEDESMissionDialogEvent_CANCELBUTTON];
 }];
+
+{
+    private _name = (_x select 3) getVariable "missionname";
+    private _index = _dialog_missions lbAdd _name;
+    private _varname = format["HEDESMissionData_%1", _index];
+    _dialog_missions lbsetData [_index, _varname];
+    missionnamespace setVariable [_varname, _x];
+} forEach _missionlist;
+
+_dialog_missions lbSetCurSel 0;
+[objNull, 0] call HEDESMissionDialogCode_LBelect;

@@ -1,5 +1,3 @@
-#include "..\defines.h"
-
 class HEDES_MissionGiverDialog
 {
 	idd = -1;
@@ -12,6 +10,16 @@ class HEDES_MissionGiverDialog
 
 	class controls
 	{
+		class LargeBackground: RscPicture
+		{
+			idc = HEDESGUI_MISSIONDIALOG_BACKGROUND2;
+			text = "x\HEDESModules\assets\dialog_bg.paa";
+			x = -4.5 * GUI_GRID_W + GUI_GRID_X;
+			y = -13.5 * GUI_GRID_H + GUI_GRID_Y;
+			w = 50 * GUI_GRID_W;
+			h = 50 * GUI_GRID_H;
+		};
+
 		class Background: RscText
 		{
 			idc = HEDESGUI_MISSIONDIALOG_BACKGROUND;

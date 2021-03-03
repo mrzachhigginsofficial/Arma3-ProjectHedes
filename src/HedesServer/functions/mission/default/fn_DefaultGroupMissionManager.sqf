@@ -1,152 +1,197 @@
-// -- [_player, _hqmodule, _deploymodule, _ingressmodule, _missionmodule, _missiontaskmodules]; call HEDESServer_fnc_defaultMissionManager;
+/* 
+--------------------------------------------------------------------
+Default Mission Manager. 
 
-private _player = param[0, player];
-private _missionhqloc = getPos (param[1, objNull]);
-private _missiondeployloc = getPos (param[2, objNull]);
-private _missioningressloc = getPos (param[3, objNull]);
-private _missionegressloc = getPos (param[3, objNull]);
-private _missionmodule = param[4,objNull];
-private _missiontaskmodules = param[5,[objNull]];
+Description:
+    This is the default mission manager that is used in the Project 
+    Hedes mission manager framework.
 
-private _missiontype = _missionmodule getVariable "MissionType";
-private _missionobject = _missionmodule getVariable "MissionManagerObjectType";
-private _missiontasks = _missiontaskmodules;
+Notes: 
+    This script needs parameterized as much as possible...
 
-// load Basic Mission parameters
-private _groupid = netId (group _player);
-private _trackervarname = gettext(configFile >> "CfgHedesMissions" >> "playermissiontrackerglobal");
-private _getmissionstatefnc = gettext(configFile >> "CfgHedesMissions" >> "playermissionstategetterfnc");
+Author: ZanchoElGrande
 
-HEDES_compile_FUNCTION_CMD = {
-    private _params = param[0];
-    private _function = param[1];
+--------------------------------------------------------------------
+*/
+
+#include "\x\HEDESServer\macros.h"
+
+private _player                 = param[0, player];
+private _missionhqloc           = getPos (param[1, objNull]);
+private _missiondeployloc       = getPos (param[2, objNull]);
+private _missioningressloc      = getPos (param[3, objNull]);
+private _missionegressloc       = getPos (param[3, objNull]);
+private _missionmodule          = param[4, objNull];
+private _missiontaskmodules     = param[5, [objNull]];
+
+private _missiontype            = _missionmodule getVariable "Missiontype";
+private _missionobject          = _missionmodule getVariable "MissionManagerObjecttype";
+
+private _groupid                = netId (group _player);
+private _groupstate             = [_groupid] call FUNC(GetplayerMissionState);
+
+private _taskspawnargs = [
+    [
+        "O_G_Soldier_F",
+        "O_G_Soldier_lite_F",
+        "O_G_Soldier_SL_F",
+        "O_G_Soldier_TL_F",
+        "O_G_Soldier_AR_F",
+        "O_G_medic_F",
+        "O_G_engineer_F",
+        "O_G_Soldier_exp_F",
+        "O_G_Soldier_GL_F",
+        "O_G_Soldier_M_F",
+        "O_G_Soldier_LAT_F",
+        "O_G_Soldier_A_F"
+    ],
+    5
+];
+
+if (_groupstate == 0) then {
+
+    [_groupid, 1, _missiontype] call FUNC(setplayerMissionState);
     
-    call compile format["%1 call %2", _params, _function];
-};
-
-if (!([[_groupid, _trackervarname], _getmissionstatefnc] call HEDES_compile_FUNCTION_CMD)) then {
-    // -1. Prepare Mission parameters
-    private _playermissionstatesetterfnc = gettext(configFile >> "CfgHedesMissions" >> "playermissionstatesetterfnc");
-    private _compileplayertransitioncamfnc = gettext(configFile >> "CfgHedesSessionManagers" >> "compileplayertransitioncamfnc");
-    private _appendplayermissionobjectfnc = gettext(configFile >> "CfgHedesMissions" >> "appendplayermissionobjectfnc");
-    private _playermissionobjectsgetfnc = gettext(configFile >> "CfgHedesMissions" >> "playermissionobjectsgetfnc");
-    private _cleanupmissionplayerobjectfnc = gettext(configFile >> "CfgHedesMissions" >> "cleanupmissionplayerobjectfnc");
-    private _taskeffectsfnc = getArray(configFile >> "CfgHedesMissions" >> _missiontype >> "taskeffectsfnc");
-    private _taskspawnargs = [configFile >> "CfgHedesMissions" >> _missiontype, "taskspawnargs"] call HEDESServer_fnc_GetMissionArgProperties;
-    private _missionDifficultymultiplier = getNumber(configFile >> "CfgHedesMissions" >> _missiontype >> "missionDifficultymultiplier");
-    private _missionmaxenemysquads = getNumber(configFile >> "CfgHedesMissions" >> _missiontype >> "missionmaxenemysquads") * _missionDifficultymultiplier;
+    /* 
+    ---------------------------------------------------------------
+    Phase 1. Create Mission Deploy Task And Wait For Player Group
+    ---------------------------------------------------------------
+    */
+        
+    [group _player, _missiondeployloc] call FUNC(CreateMeetTask);
     
-    // 1. Create Mission Deploy Task
-    [[_groupid, '1', _missiontype, _trackervarname], _playermissionstatesetterfnc] call HEDES_compile_FUNCTION_CMD;
-    private _missionTask = format["%1_beginmissiontask", _groupid];
-    private _deploytasktitle = "Begin Mission";
-    private _deploytaskdesc = "move all players in squad to marker to begin mission.";
-    private _markername = "cookiemarker";
-    [groupFromnetId _groupid, [_missionTask], [_deploytaskdesc, _deploytasktitle, _markername], _missiondeployloc, 1, 2, true, "meet"] call BIS_fnc_taskCreate;
-    while {
-        count (units (groupFromnetId _groupid) select {
-            _x in allplayers
-        } select {
-            _x distance _missiondeployloc > 10
-        }) > 0
-    } do
+    /* 
+    ---------------------------------------------------------------
+    Phase 2. Camera Transition Out (Deploy Start)
+    ---------------------------------------------------------------
+    */
+
     {
-        sleep 1;
-    };
-    [_missionTask] call BIS_fnc_deleteTask;
-    
-    // 2. Camera Transition Out (Deploy Start)
-    {
-        [[_missiontype, 'deploycam', owner _x], _compileplayertransitioncamfnc] call HEDES_compile_FUNCTION_CMD;
-    } forEach (units(groupFromnetId _groupid) select {
-        _x in allplayers
-    });
+        [_x, "fade", "", "Deploying..."] call FUNC(CompilePlayerTransitionCamera);
+    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
     sleep 2;
     
-    // 3. move group to Mission AO
+    /* 
+    ---------------------------------------------------------------
+    Phase 3. Move Player And Show Cinematic Zoom Camera
+    ---------------------------------------------------------------
+    */
+
     {
-        _x setPos _missioningressloc;
-        [[_missiontype, 'missionStartcam', owner _x], _compileplayertransitioncamfnc] call HEDES_compile_FUNCTION_CMD;
-    } forEach (units(groupFromnetId _groupid) select {
-        _x in allplayers
-    });
+        [_x, "zoom", "HQ", "Mission is a go..."] call FUNC(CompilePlayerTransitionCamera);
+    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
+    sleep 2;
+
+    /* 
+    ---------------------------------------------------------------
+    Phase 4. Mark group As in Active Mission
+    ---------------------------------------------------------------
+    */
+
+    [_groupid, 2, _missiontype] call FUNC(setplayerMissionState);
+    missionNamespace setVariable [format["mission_%1_ingress",getPlayerUID _player], _missiondeployloc];
+    missionNamespace setVariable [format["mission_%1_ingress",getPlayerUID _player], _missioningressloc];
     
-    // 4. Mark group As in Active Mission
-    [[_groupid, '2', _missiontype, _trackervarname], _playermissionstatesetterfnc] call HEDES_compile_FUNCTION_CMD;
-    
-    // 5. Start executing and Tracking Tasks
+    /* 
+    ---------------------------------------------------------------
+    Phase 5. Start executing and Tracking Tasks (Mission Loop)
+    ---------------------------------------------------------------
+    */
+
     {
         try{
+
+            // -- Read Task Module Properties
+
             private _tasktype = _x getVariable "TaskType";
             private _tasktitl = _x getVariable "TaskName";
             private _taskdesc = _x getVariable "TaskDescription";
-
-            private _createtaskfnc = getText(configFile >> "CfgHedesMissions" >> _missiontype >> "tasks" >> _tasktype >> "createtaskfnc");
-            private _createareafnc = getText(configFile >> "CfgHedesMissions" >> _missiontype >> "tasks" >> _tasktype >> "createareafnc");
-            private _checktaskfnc = getText(configFile >> "CfgHedesMissions" >> _missiontype >> "tasks" >> _tasktype >> "checktaskfnc");
             
-            // Create Task
-            private _task = [[_groupid, _missiontype, _tasktitl, _taskdesc], _createTaskfnc] call HEDES_compile_FUNCTION_CMD;
+            private _createTaskfnc = "";
+            private _createareafnc = "";
+            private _checktaskfnc = "";
             
-            // Create Task Obj
-            private _checktskargs = [[_missiontype, _missionobject] + _task + [_taskspawnargs], _createareafnc] call HEDES_compile_FUNCTION_CMD;
-            
-            // apply Effects
+            switch (_missiontype) do
             {
-                [_checktskargs, _x] call HEDES_compile_FUNCTION_CMD;
-            } forEach _taskeffectsfnc;
+                case("kill"): {
+                    _createTaskfnc  = FUNC(CreateDestroyTask);
+                    _createareafnc  = FUNC(SpawnObjectiveArea);
+                    _checktaskfnc   = FUNC(CheckTask);
+                };
+                case("destroy"): {
+                    _createTaskfnc  = FUNC(CreateDestroyTask);
+                    _createareafnc  = FUNC(SpawnObjectiveArea);
+                    _checktaskfnc   = FUNC(CheckTask);
+                };
+            };
             
-            // Add Task Objects to Tracking Mission Variable
-            [[_groupid, _trackervarname, _checktskargs], _appendplayermissionobjectfnc] call HEDES_compile_FUNCTION_CMD;
+            // -- Run Create Task Function
+            private _task = [_groupid, _missiontype, _tasktitl, _taskdesc] call _createTaskfnc;
             
-            // Evaluate Task Status
-            [[_groupid] + _checktskargs, _checktaskfnc] call HEDES_compile_FUNCTION_CMD;
+            // -- Create Mission Task Objectives
+            private _checktskargs = [_missiontype, _missionobject] + _task + [_taskspawnargs] call _createareafnc;
             
-            // Delete Task
+            // -- Apply Effects To Missions Objects
+            [_checktskargs, _x] call FUNC(SetGroupSurrenderEffect);
+            [_checktskargs, _x] call FUNC(SetObjectExplosion);
+            
+            // -- Add Task Objects to Tracking Mission Variable
+            [_groupid, _checktskargs] call FUNC(AppendPlayerMissionObject);
+            
+            // -- Evaluate Task Status
+            ([_groupid] + _checktskargs) call _checktaskfnc;
+            
+            // -- Delete Task
             [_task select 1] call BIS_fnc_deleteTask;
         }
         catch {
-            systemChat _exception;
+            echo _exception;
         };
         sleep 5;
-    } forEach _missiontasks;
+
+    } forEach _missiontaskmodules;
     
-    // Final - Extraction (Mission End)
-    private _endMissionTask = format["%1_endMissiontask", _groupid];
-    private _extracttasktitle = "move to Extraction";
-    private _extracttaskdesc = "move all group members to extraction area to end mission.";
-    [groupFromnetId _groupid, [_endMissionTask], [_extracttaskdesc, _extracttasktitle, _markername], _missionegressloc, 1, 2, true, "meet"] call BIS_fnc_taskCreate;
-    while {
-        count (units (groupFromnetId _groupid) select {
-            _x in allplayers
-        } select {
-            _x distance _missionegressloc > 10
-        }) > 0
-    } do
+    /* 
+    ---------------------------------------------------------------
+    FINAL PHASE 1. Create Meet Mission Task For Exfil
+    ---------------------------------------------------------------
+    */
+
+    private _title = "Move to Extraction";
+    private _desc = "move all group members to extraction area to end mission.";
+    [group _player, _missiondeployloc,_title,_desc] call FUNC(CreateMeetTask);
+
+    /* 
+    ---------------------------------------------------------------
+    FINAL PHASE 2. Camera Transition Out of Mission
+    ---------------------------------------------------------------
+    */
+
     {
-        sleep 1;
-    };
-    
-    // Final - Transition Out of Mission
-    {
-        [[_missiontype, 'finishedcam', owner _x], _compileplayertransitioncamfnc] call HEDES_compile_FUNCTION_CMD;
-    } forEach (units(groupFromnetId _groupid) select {
-        _x in allplayers
-    });
+        [_x, "fade", "", "Returning to base..."] call FUNC(CompilePlayerTransitionCamera);
+    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
     sleep 2;
     
-    // Final - move group Back to HQ
+    /* 
+    ---------------------------------------------------------------
+    FINAL PHASE 3. Move Player & Camera Zoom Down
+    ---------------------------------------------------------------
+    */
+
     {
-        _x setPos _missionhqloc;
-        [[_missiontype, 'returncam', owner _x], _compileplayertransitioncamfnc] call HEDES_compile_FUNCTION_CMD;
-    } forEach (units(groupFromnetId _groupid) select {
-        _x in allplayers
-    });
+        [_x, "zoom", "", ""] call FUNC(CompilePlayerTransitionCamera);
+    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
+    sleep 2;
     
-    // Cleanup
-    private _leftovers = [[_groupid, _trackervarname], _playermissionobjectsgetfnc] call HEDES_compile_FUNCTION_CMD;
-    [_leftovers, _cleanupmissionplayerobjectfnc] call HEDES_compile_FUNCTION_CMD;
+    /* 
+    ---------------------------------------------------------------
+    CLEANUP PHASE - MISSION OVER
+    ---------------------------------------------------------------
+    */
+
+    private _leftovers = [_groupid] call FUNC(GetplayerMissionObjects);
+    _leftovers call FUNC(SpawnObjectCleanupThread);
     
-    [[_groupid, '0', _missiontype, _trackervarname], _playermissionstatesetterfnc] call HEDES_compile_FUNCTION_CMD;
+    [_groupid, 0, _missiontype] call FUNC(setplayerMissionState);
     [_endMissionTask] call BIS_fnc_deleteTask;
 };

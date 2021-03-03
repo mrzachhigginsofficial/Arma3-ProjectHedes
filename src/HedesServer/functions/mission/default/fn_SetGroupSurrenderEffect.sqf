@@ -1,6 +1,19 @@
-/*
-finds all group IDs in array and applies effect
+/* 
+--------------------------------------------------------------------
+Group Surrender Effect
+
+Description:
+    Makes the group surrender when leader morale reduces.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
 */
+
+#include "\x\HEDESServer\macros.h"
 
 {
     (groupFromnetId _x) spawn {
@@ -20,7 +33,7 @@ finds all group IDs in array and applies effect
                         _this playMoveNow "ApanPknlMstpSnonWnonDnon_G03";
                         
                         waitUntil {
-                            count(_this nearEntities ["Man", 50] select {
+                            count(_this nearEntities ["Man", 200] select {
                                 _x in allplayers
                             }) == 0;
                         };

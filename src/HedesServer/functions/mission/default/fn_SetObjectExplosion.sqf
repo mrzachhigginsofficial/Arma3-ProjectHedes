@@ -1,6 +1,20 @@
-/*
-finds all group IDs in array and applies effect
+/* 
+--------------------------------------------------------------------
+Object Detonate/Explosion Effect
+
+Description:
+    Applies local explosion detonate action and explosion effect to 
+    object for group players.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
 */
+
+#include "\x\HEDESServer\macros.h"
 
 {
     [

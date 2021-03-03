@@ -1,20 +1,32 @@
-/*
-Configures, compiles, remoteExecs the cinamatic camera transitions for players starting a mission.
-The possible camera types are:
-1. deploycam
-2. missionStartcam
-Refer to the configuration for mission types.
+/* 
+--------------------------------------------------------------------
+Player Transition Script
+
+Description:
+	Takes several arguements that are execute remote scripts on then
+	target player client machines to perform a camera transition.
+
+Notes: 
+    None
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
 */
 
-private _missiontype = param[0, "default"];
-private _cameratype = param[1, "deploycam"];
-private _target = param[2, clientowner];
+#include "\x\HEDESServer\macros.h"
 
-// Lookup Camera Args and execute Command
-private _cameraargsname = format["%1args", _cameratype];
-private _camerafncname = format["%1fnc", _cameratype];
-private _camargs = [configFile >> "CfgHedesMissions" >> _missiontype, _cameraargsname] call HEDESServer_fnc_GetMissionArgProperties;
-private _camfnc = gettext(configFile >> "CfgHedesMissions" >> _missiontype >> _camerafncname);
+private _player 	= param[0,player];
+private _type 		= param[1,"fade"];
+private _commander  = param[2,"HQ"];
+private _text 		= param[3,""];
 
-// execute Camera Function on Remote Machines
-call compile (format["%1 remoteExec ['%2', %3]", _camargs, _camfnc, _target]);
+switch (_type) do
+{
+	case ('fade'):{
+		["OMComputerSystemStart",_text,"BLACK OUT",2] remoteExec ["HEDESClient_fnc_cameradeploystart", owner _player];
+	};
+	case ('zoom'): {
+		[_commander, _text,"radioAmbient5"] remoteExec ["HEDESClient_fnc_cameramissionstart", owner _player];
+	};
+};

@@ -99,7 +99,7 @@ class CfgVehicles
 				property 			= "HEDES_MissionSystem_GiverAvatar";
 				displayName 		= "Mission Giver Avatar";
 				tooltip 			= "The avatar of the mission giver.";
-				defaultValue 		= """x\HEDESModules\assets\avatar_missiongiver_generic1.paa""";
+				defaultValue 		= """\assets\avatar_missiongiver_generic1.paa""";
 			};
 		};
 

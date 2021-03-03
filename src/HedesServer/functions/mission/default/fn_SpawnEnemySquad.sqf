@@ -1,8 +1,25 @@
-private _enemytypes = param[0, []];
-private _amount = param[1, 5];
-private _position = param[2, []];
+/* 
+--------------------------------------------------------------------
+Spawn Enemy Squad
 
-private _enemygroup = creategroup [east, true];
+Description:
+    Spawns an enemy squad.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
+*/
+
+#include "\x\HEDESServer\macros.h"
+
+private _enemytypes         = param[0, []];
+private _amount             = param[1, 5];
+private _position           = param[2, []];
+
+private _enemygroup         = creategroup [east, true];
 
 {
     systemChat format["%1", _x];

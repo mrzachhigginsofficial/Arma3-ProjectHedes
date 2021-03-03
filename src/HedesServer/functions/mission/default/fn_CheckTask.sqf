@@ -1,8 +1,20 @@
-/*
-in the default scenario, we use a single squad, and an item.
-Objective items will be [_enemysquad, _enemyobject].
-It is encouraged to expand on this in additional mission types.
+/* 
+--------------------------------------------------------------------
+Append Objects To Group Mission Tracker. 
+
+Description:
+    Default task checker. Checks to see if mission tasks are still 
+    active.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
 */
+
+#include "\x\HEDESServer\macros.h"
 
 private _missiongroups = _this select {
     !isNull (groupFromnetId _x)

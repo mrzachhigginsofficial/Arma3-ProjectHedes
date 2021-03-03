@@ -1,13 +1,29 @@
 /*
-This adds a list of tasks to the player tracking variable. This shouldnt need changed.
+
 */
 
-private _player = param[0, player];
-private _missionvarstr = param[1, "HEDESServer_Global_playerMissionTracker"];
-private _taskname = param[1, ""];
+/* 
+--------------------------------------------------------------------
+Set Player Mission Current Task Name In Tracker
 
-private _uid = getplayerUID _player;
-private _missionvar = call compile _missionvarstr;
+Description:
+    Sets the current player task name in tracker.
+
+Notes: 
+    None.
+
+Author: ZanchoElGrande
+
+--------------------------------------------------------------------
+*/
+
+#include "\x\HEDESServer\macros.h"
+
+private _player 		= param[0, player];
+private _taskname 		= param[1, ""];
+
+private _uid 			= getplayerUID _player;
+private _missionvar 	= call compile GLOBALMISSIONTRACKERNAME;
 
 if(!(_uid in (_missionvar apply {
 	_x select 0
