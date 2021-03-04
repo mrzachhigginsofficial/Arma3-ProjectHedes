@@ -81,13 +81,20 @@ class CfgVehicles
 				tooltip 			= "The avatar of the mission giver.";
 				defaultValue 		= """\assets\avatar_missiongiver_generic1.paa""";
 			};
+
+			class MissionGiverRandomize : Checkbox
+			{
+				property 			= "HEDES_MissionSystem_Randomize";
+				displayName 		= "Randomize Missions?";
+				tooltip 			= "Should the mission system randomize the missions?";
+				defaultValue 		= "true";
+			}
 		};
 	};
 
 	class HEDES_MissionModule_TASK: HEDES_MissionModule_BASE
 	{
 		displayName 		= "Mission Task Module";
-		function			= "HEDESModules_fnc_InitMissionSystemModule";
 
 		class Attributes: AttributesBase
 		{
@@ -122,6 +129,7 @@ class CfgVehicles
 				displayName 		= "Task Description";
 				tooltip 			= "Task description...";
 				defaultValue 		= """Task Description""";
+				expression 			= "_this setVariable ['%s',_value];";
 			};
 		};
 	};
@@ -201,6 +209,7 @@ class CfgVehicles
 				displayName 		= "Mission Description (Flavor Text)";
 				tooltip 			= "Flavor text that will display in the dialog.";
 				defaultValue 		= """Mission Description Goes Here""";
+				expression 			= "_this setVariable ['%s',_value];";
 			};
 		};
 
@@ -224,6 +233,7 @@ class CfgVehicles
 				displayName 		= "Array of unit types.";
 				tooltip 			= "Array of units. Must be formatted as code: ['var1','var2']";
 				defaultValue 		= "['unittype1','unittype2']";
+				expression 			= "_this setVariable ['%s',_value];";
 			};		
 		};
 	};

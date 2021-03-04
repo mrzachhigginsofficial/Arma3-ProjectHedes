@@ -31,22 +31,19 @@ private _missiongivers = synchronizedObjects _logic select {
 
     private _missiontaskmodules = [];
     
-    {
-        private _object = _x;
-        private _type = typeOf _x;
-        
+    {        
         switch (true) do
         {
-            case (typeOf _x == "HEDES_Missionmodule_HQ"): {
+            case (typeOf _x == "HEDES_MissionModule_HQ"): {
                 _hqmodule = _x;
             };
-            case (typeOf _x == "HEDES_Missionmodule_DEPLOY"): {
+            case (typeOf _x == "HEDES_MissionModule_DEPLOY"): {
                 _deploymodule = _x;
             };
-            case (typeOf _x == "HEDES_Missionmodule_inGRESS"): {
+            case (typeOf _x == "HEDES_MissionModule_INGRESS"): {
                 _ingressmodule = _x;
             };
-            case (typeOf _x == "HEDES_Missionmodule_TASK"): {
+            case (typeOf _x == "HEDES_MissionModule_TASK"): {
                 _missiontaskmodules pushBack _x;
             };
         };

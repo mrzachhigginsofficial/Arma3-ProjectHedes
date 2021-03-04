@@ -30,24 +30,6 @@ private _missionobject          = _missionmodule getVariable "MissionManagerObje
 private _groupid                = netId (group _player);
 private _groupstate             = [_groupid] call FUNC(GetplayerMissionState);
 
-private _taskspawnargs = [
-    [
-        "O_G_Soldier_F",
-        "O_G_Soldier_lite_F",
-        "O_G_Soldier_SL_F",
-        "O_G_Soldier_TL_F",
-        "O_G_Soldier_AR_F",
-        "O_G_medic_F",
-        "O_G_engineer_F",
-        "O_G_Soldier_exp_F",
-        "O_G_Soldier_GL_F",
-        "O_G_Soldier_M_F",
-        "O_G_Soldier_LAT_F",
-        "O_G_Soldier_A_F"
-    ],
-    5
-];
-
 if (_groupstate == 0) then {
 
     [_groupid, 1, _missiontype] call FUNC(SetPlayerMissionState);
@@ -108,8 +90,10 @@ if (_groupstate == 0) then {
             private _tasktype = _x getVariable "TaskType";
             private _tasktitl = _x getVariable "TaskName";
             private _taskdesc = _x getVariable "TaskDescription";
-            private _unitpool = synchronizedObjects _x select {typeOf _x == "HEDES_GenericModule_UNITPOOL"}
-                select 0 getVariable "UnitPool";
+            private _unitpool = (synchronizedObjects _x select {typeOf _x == "HEDES_GenericModule_UNITPOOL"}
+                select 0) getVariable "UnitPool";
+
+            systemChat format["%1",_unitpool];
             
             private _createTaskfnc  = {};
             private _createareafnc  = {};
@@ -128,7 +112,7 @@ if (_groupstate == 0) then {
             private _task = [_groupid, _missiontype, _tasktitl, _taskdesc] call _createTaskfnc;
             
             // -- Create Mission Task Objectives
-            private _checktskargs = [_missiontype, _missionobject, _unitpool] + _task + [_taskspawnargs] call _createareafnc;
+            private _checktskargs = [_missiontype, _missionobject] + _task + [_unitpool,5] call _createareafnc;
             
             // -- Apply Effects To Missions Objects
             synchronizedObjects _x select { typeOf _x == "HEDES_MissionModule_TASKEFFECT" } apply {

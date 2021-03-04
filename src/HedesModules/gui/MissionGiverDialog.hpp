@@ -97,14 +97,49 @@ class HEDES_MissionGiverDialog
 			h = 12 * GUI_GRID_H;
 			colorBackground[] = {0,0,0,0.5};
 		};
-		class MissionDescription: RscStructuredText
+
+		class MissionDescriptionControlGroup: RscControlsGroup
 		{
-			idc = HEDESGUI_MISSIONDIALOG_DESCRIPTION;
+			type = CT_CONTROLS_GROUP;
+			idc = -1;
 			x = 5 * GUI_GRID_W + GUI_GRID_X;
 			y = 9 * GUI_GRID_H + GUI_GRID_Y;
 			w = 20 * GUI_GRID_W;
 			h = 12 * GUI_GRID_H;
-			colorBackground[] = {0,0,0,0.5};
+			shadow = 0;
+			style = ST_MULTI;
+
+			class VScrollbar
+			{
+				width = 1 * GUI_GRID_W;
+				color[] = {1,1,1,1};
+				autoScrollEnabled = 1;
+				colorActive[] = {1,1,1,1};
+				colorDisabled[] = {1,1,1,0.3};
+				thumb = "\A3\ui_f\data\gui\cfg\scrollbar\thumb_ca.paa";
+				arrowEmpty = "\A3\ui_f\data\gui\cfg\scrollbar\arrowEmpty_ca.paa";
+				arrowFull = "\A3\ui_f\data\gui\cfg\scrollbar\arrowFull_ca.paa";
+				border = "\A3\ui_f\data\gui\cfg\scrollbar\border_ca.paa";
+				shadow = 0;
+				scrollSpeed = 0.06;
+				height = 12 * GUI_GRID_H;
+				autoScrollSpeed = -1;
+				autoScrollDelay = 5;
+				autoScrollRewind = 0;
+			};
+
+			class Controls
+			{
+				class MissionDescription: RscStructuredText
+				{
+					idc = HEDESGUI_MISSIONDIALOG_DESCRIPTION;
+					x = 0;
+					y = 0;
+					w = 20 * GUI_GRID_W;
+					h = 24 * GUI_GRID_H;
+					colorBackground[] = {0,0,0,0.5};			
+				};
+			};
 		};
 	};
 };

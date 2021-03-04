@@ -42,6 +42,7 @@ HEDESMissionDialogCode_LBelect = {
     params ["_control", "_index"];
     private _guiwindow 	= uiNamespace getVariable "HEDES_MissionGiverdialog";
     private _dialog_missiondesc = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_DESCRIPTION;
+
     private _varname = format["HEDESMissionData_%1", _index];
     private _mission = missionnamespace getVariable _varname;
     
@@ -52,17 +53,19 @@ HEDESMissionDialogCode_LBelect = {
     private _taskdesc = "";
     private _index = 0;
     {
-        private _index = _index + 1;
+        _index = _index + 1;
         private _tasktype = _x getVariable ["tasktype", ""];
         private _taskname = _x getVariable ["Taskname", ""];
         private _taskdesc = _x getVariable ["taskDescription", ""];
         _taskDescriptions pushBack format["%1.) [%2] %3:<br/> %4", _index, _tasktype, _taskname, _taskdesc];
     } forEach _missiontaskmodules;
     
-    private _missiondescription = format["%1 <br/><br/>You have %2 tasks. Here's the job...", _missionmodule getVariable "MissionDescription", count(_missiontaskmodules)];
-    _taskdesc = _taskDescriptions joinstring "<br/><br/>";
+    private _missiondescription = format[
+        "%1 <br/><br/><t size='2'>You have %2 tasks. Here's the job...</t>", _missionmodule getVariable "MissionDescription", count(_missiontaskmodules)
+        ];
     
-    _dialog_missiondesc ctrlsetstructuredtext parsetext ([_missiondescription, _taskdesc] joinstring "<br/><br/>");
+    _dialog_missiondesc ctrlsetstructuredtext parsetext 
+        ([_missiondescription, _taskDescriptions joinstring "<br/><br/>"] joinstring "<br/><br/>");
 };
 
 HEDESMissionDialogEvent_LBselect = _dialog_missions ctrlAddEventHandler ["LBSelChanged", HEDESMissionDialogCode_LBelect];
