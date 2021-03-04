@@ -6,19 +6,17 @@ class CfgVehicles
 	{
 		class AttributesBase
 		{
-			class Default;
-			class Edit;
-			class Combo;
 			class Checkbox;
 			class CheckboxNumber;
+			class Combo;
+			class Default;
+			class Edit;
 			class ModuleDescription;
+			class StructuredText;
 			class Units;
-			class EditArray;
 		};
-		class ModuleDescription
-		{
-			class AnyBrain;
-		};
+
+		class ModuleDescription;
 	};
 
 	class HEDES_MissionModule_BASE : Module_F
@@ -35,7 +33,7 @@ class CfgVehicles
 		{
 			class Units: Units
 			{
-				property = "HEDES_MissionModule_Units";
+				property 		= "HEDES_MissionModule_Units";
 			};
 		};
 
@@ -49,34 +47,16 @@ class CfgVehicles
 	class HEDES_MissionModule_HQ : HEDES_MissionModule_BASE
 	{
 		displayName 		= "Mission Manager HQ";
-
-		class ModuleDescription: ModuleDescription
-		{
-			description 		= "This is a short description of the mission manager module.";
-			sync[] 				= {"HEDES_MissionModule_BASE"};
-		};
 	};
 
 	class HEDES_MissionModule_DEPLOY : HEDES_MissionModule_BASE
 	{
 		displayName 		= "Mission Deploy Area";
-
-		class ModuleDescription: ModuleDescription
-		{
-			description 		= "This is a short description of the mission manager module.";
-			sync[] 				= {"HEDES_MissionModule_BASE"};
-		};
 	};
 
 	class HEDES_MissionModule_INGRESS : HEDES_MissionModule_BASE
 	{
 		displayName 		= "Mission Ingress";
-
-		class ModuleDescription: ModuleDescription
-		{
-			description 		= "This is a short description of the mission manager module.";
-			sync[] 				= {"HEDES_MissionModule_BASE"};
-		};
 	};
 
 	class HEDES_MissionModule_SYSTEM: HEDES_MissionModule_BASE
@@ -101,12 +81,6 @@ class CfgVehicles
 				tooltip 			= "The avatar of the mission giver.";
 				defaultValue 		= """\assets\avatar_missiongiver_generic1.paa""";
 			};
-		};
-
-		class ModuleDescription: ModuleDescription
-		{
-			description 		= "This is a short description of the mission manager module.";
-			sync[] 				= {"HEDES_MissionModule_BASE","AnyBrain"};
 		};
 	};
 
@@ -141,27 +115,43 @@ class CfgVehicles
 				defaultValue 		= """Task Name""";
 			};
 
-			class TaskDescription : Edit
+			class TaskDescription
 			{
 				property 			= "HEDES_MissionModule_TaskDesc";
+				control 			= "EditMulti5";
 				displayName 		= "Task Description";
 				tooltip 			= "Task description...";
 				defaultValue 		= """Task Description""";
 			};
-
-			class TaskEffects : EditArray
-			{
-				property			= "HEDES_MissionModule_Effects";
-				displayName			= "Array of effect commands";
-				tooltip				= "Example: ""HEDESServer_fnc_function1"",""HEDESServer_fnc_function1""";
-				//defaultValue[]		= {"HEDESServer_fnc_SetGroupSurrenderEffect","HEDESServer_fnc_SetObjectExplosion"};
-			}			
 		};
+	};
 
-		class ModuleDescription: ModuleDescription
+	class HEDES_MissionModule_TASKEFFECT: HEDES_MissionModule_BASE
+	{
+		displayName 		= "Mission Task Effect Module";
+
+		class Attributes: AttributesBase
 		{
-			description 		= "This is a short description of the mission manager module.";
-			sync[] 				= {"HEDES_MissionModule_BASE","AnyBrain"};
+			class EffectType : Combo
+			{
+				property 			= "HEDES_MissionModule_EffectType";
+				displayName 		= "Task Effect Type";
+				tooltip 			= "Type of task effect to add.";
+				defaultValue 		= "";
+				
+				class Values
+				{
+					class explosive	{
+						name 			= "Plant Explosive Action On Objects"; 
+						value 			= FUNC(SetObjectExplosion);
+					};
+
+					class surrender	{
+						name 			= "Enemies Can Surrender On Low Morale"; 
+						value 			= FUNC(SetGroupSurrenderEffect);
+					};
+				};
+			};
 		};
 	};
 
@@ -171,6 +161,7 @@ class CfgVehicles
 
 		class Attributes: AttributesBase
 		{
+
 			class MissionType : Combo
 			{
 				property 			= "HEDES_MissionModule_Type";
@@ -187,6 +178,14 @@ class CfgVehicles
 				};
 			};
 
+			class MissionManagerObjectType : Edit
+			{
+				property 			= "HEDES_MissionModule_ObjectType";
+				displayName 		= "Mission Manager Objective Object";
+				tooltip 			= "Only required if objective requires object.";
+				defaultValue 		= """Land_CratesWooden_F""";
+			};
+
 			class MissionName : Edit
 			{
 				property 			= "HEDES_MissionModule_Name";
@@ -195,20 +194,13 @@ class CfgVehicles
 				defaultValue 		= """Attack Mission""";
 			};
 
-			class MissionDescription : Edit
+			class MissionDescription
 			{
 				property 			= "HEDES_MissionModule_Description";
+				control 			= "EditMulti5";
 				displayName 		= "Mission Description (Flavor Text)";
 				tooltip 			= "Flavor text that will display in the dialog.";
-				defaultValue 		= """Mission Action Name""";
-			};
-
-			class MissionManagerObjectType : Edit
-			{
-				property 			= "HEDES_MissionModule_ObjectType";
-				displayName 		= "Mission Manager Object Type";
-				tooltip 			= "Only required if objective requires object.";
-				defaultValue 		= """Land_CratesWooden_F""";
+				defaultValue 		= """Mission Description Goes Here""";
 			};
 		};
 
@@ -216,6 +208,23 @@ class CfgVehicles
 		{
 			description 		= "This is a short description of the mission manager module.";
 			sync[] 				= {"HEDES_MissionModule_BASE"};
+		};
+	};
+
+	class HEDES_GenericModule_UNITPOOL: HEDES_MissionModule_BASE
+	{
+		displayName			= "Unit Pool Module";
+
+		class Attributes : AttributesBase
+		{
+			class UnitPool
+			{
+				property 			= "HEDES_Generic_UnitPool";
+				control 			= "EditCodeMulti5";
+				displayName 		= "Array of unit types.";
+				tooltip 			= "Array of units. Must be formatted as code: ['var1','var2']";
+				defaultValue 		= "['unittype1','unittype2']";
+			};		
 		};
 	};
 };

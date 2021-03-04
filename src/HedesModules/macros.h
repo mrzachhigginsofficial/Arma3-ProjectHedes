@@ -15,7 +15,7 @@
 
 #define QUOTE(VAR1) #VAR1
 
-#define FUNC(FUNC) CONCAT2(MODNAME_fnc_,FUNC)
+#define FUNC(FUNC) CONCAT3(MODNAME,_fnc_,FUNC)
 
 #define PATHTO_FUNC(FUNC) class FUNC {\
     file = QUOTE(CONCAT3(PREFIX\MODNAME\functions\fn_,FUNC,.sqf));\

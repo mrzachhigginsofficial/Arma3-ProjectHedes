@@ -50,7 +50,7 @@ private _taskspawnargs = [
 
 if (_groupstate == 0) then {
 
-    [_groupid, 1, _missiontype] call FUNC(setplayerMissionState);
+    [_groupid, 1, _missiontype] call FUNC(SetPlayerMissionState);
     
     /* 
     ---------------------------------------------------------------
@@ -62,7 +62,7 @@ if (_groupstate == 0) then {
     
     /* 
     ---------------------------------------------------------------
-    Phase 2. Camera Transition Out (Deploy Start)
+    Phase 2. Camera Transition Out (Deploy Start) and Move Players
     ---------------------------------------------------------------
     */
 
@@ -70,6 +70,8 @@ if (_groupstate == 0) then {
         [_x, "fade", "", "Deploying..."] call FUNC(CompilePlayerTransitionCamera);
     } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
     sleep 2;
+
+    units(groupFromNetId _groupid) apply {_x setPos _missioningressloc};
     
     /* 
     ---------------------------------------------------------------
@@ -88,7 +90,7 @@ if (_groupstate == 0) then {
     ---------------------------------------------------------------
     */
 
-    [_groupid, 2, _missiontype] call FUNC(setplayerMissionState);
+    [_groupid, 2, _missiontype] call FUNC(SetPlayerMissionState);
     missionNamespace setVariable [format["mission_%1_ingress",getPlayerUID _player], _missiondeployloc];
     missionNamespace setVariable [format["mission_%1_ingress",getPlayerUID _player], _missioningressloc];
     
@@ -106,19 +108,16 @@ if (_groupstate == 0) then {
             private _tasktype = _x getVariable "TaskType";
             private _tasktitl = _x getVariable "TaskName";
             private _taskdesc = _x getVariable "TaskDescription";
+            private _unitpool = synchronizedObjects _x select {typeOf _x == "HEDES_GenericModule_UNITPOOL"}
+                select 0 getVariable "UnitPool";
             
-            private _createTaskfnc = "";
-            private _createareafnc = "";
-            private _checktaskfnc = "";
+            private _createTaskfnc  = {};
+            private _createareafnc  = {};
+            private _checktaskfnc   = {};
             
             switch (_missiontype) do
             {
-                case("kill"): {
-                    _createTaskfnc  = FUNC(CreateDestroyTask);
-                    _createareafnc  = FUNC(SpawnObjectiveArea);
-                    _checktaskfnc   = FUNC(CheckTask);
-                };
-                case("destroy"): {
+                case("default"): {
                     _createTaskfnc  = FUNC(CreateDestroyTask);
                     _createareafnc  = FUNC(SpawnObjectiveArea);
                     _checktaskfnc   = FUNC(CheckTask);
@@ -129,11 +128,12 @@ if (_groupstate == 0) then {
             private _task = [_groupid, _missiontype, _tasktitl, _taskdesc] call _createTaskfnc;
             
             // -- Create Mission Task Objectives
-            private _checktskargs = [_missiontype, _missionobject] + _task + [_taskspawnargs] call _createareafnc;
+            private _checktskargs = [_missiontype, _missionobject, _unitpool] + _task + [_taskspawnargs] call _createareafnc;
             
             // -- Apply Effects To Missions Objects
-            [_checktskargs, _x] call FUNC(SetGroupSurrenderEffect);
-            [_checktskargs, _x] call FUNC(SetObjectExplosion);
+            synchronizedObjects _x select { typeOf _x == "HEDES_MissionModule_TASKEFFECT" } apply {
+                [_checktskargs] call (_x getVariable "EffectType")
+            };
             
             // -- Add Task Objects to Tracking Mission Variable
             [_groupid, _checktskargs] call FUNC(AppendPlayerMissionObject);
