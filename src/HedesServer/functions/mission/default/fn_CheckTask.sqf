@@ -15,6 +15,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _missiongroups = _this select {
     !isNull (groupFromnetId _x)

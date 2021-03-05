@@ -14,8 +14,9 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
-private _enemytypes         = param[0, []];
+private _enemytypes         = call compile param[0, []];
 private _amount             = param[1, 5];
 private _position           = param[2, []];
 

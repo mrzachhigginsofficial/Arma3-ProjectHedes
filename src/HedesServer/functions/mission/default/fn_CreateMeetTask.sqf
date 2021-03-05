@@ -15,6 +15,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _group 			= param[0,objNull];
 private _pos 			= param[1,[]];

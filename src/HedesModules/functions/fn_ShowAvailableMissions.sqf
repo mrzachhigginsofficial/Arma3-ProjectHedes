@@ -3,11 +3,11 @@
 Show Available Missions GUI
 
 Description:
-    Shows the available missions GUI for specific NPC. Action is 
-    added through initmissionsystemmodule.sqf
+    Shows the available missions GUI for specific NPC. Action to
+    execute this script clientside is added through 
+    initmissionsystemmodule.sqf (executed from server).
 
 Notes: 
-    This script needs parameterized as much as possible...
 
 Author: ZanchoElGrande
 
@@ -61,7 +61,7 @@ HEDESMissionDialogCode_LBelect = {
     } forEach _missiontaskmodules;
     
     private _missiondescription = format[
-        "%1 <br/><br/><t size='2'>You have %2 tasks. Here's the job...</t>", _missionmodule getVariable "MissionDescription", count(_missiontaskmodules)
+        "%1 <br/><br/><t size='2'>You have %2 tasks. Here's the job:</t>", _missionmodule getVariable "MissionDescription", count(_missiontaskmodules)
         ];
     
     _dialog_missiondesc ctrlsetstructuredtext parsetext 

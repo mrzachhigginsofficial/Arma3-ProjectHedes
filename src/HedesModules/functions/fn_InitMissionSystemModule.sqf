@@ -21,58 +21,107 @@ private _missionlist = [];
 private _missiongivers = synchronizedObjects _logic select {
     _x isKindOf "Man"
 };
+private _randomize = _logic getVariable "MissionGiverRandomize";
 
-// -- Detect Mission Giver modules
+while {
+    true
+} do
 {
-    private _hqmodule = objNull;
-    private _deploymodule = objNull;
-    private _ingressmodule = objNull;
-    private _missionmodule = _x;    
+    private _missionmanagers = synchronizedObjects _logic select { typeOf _x == "HEDES_Missionmodule_MANAGER" };
 
-    private _missiontaskmodules = [];
-    
-    {        
-        switch (true) do
-        {
-            case (typeOf _x == "HEDES_MissionModule_HQ"): {
-                _hqmodule = _x;
-            };
-            case (typeOf _x == "HEDES_MissionModule_DEPLOY"): {
-                _deploymodule = _x;
-            };
-            case (typeOf _x == "HEDES_MissionModule_INGRESS"): {
-                _ingressmodule = _x;
-            };
-            case (typeOf _x == "HEDES_MissionModule_TASK"): {
-                _missiontaskmodules pushBack _x;
-            };
+    // -- If Randomize Missions Enabled
+    if(_randomize) then
+    {
+        private _rndmax = count(_missionmanagers);
+        private _rndmid = _rndmax/2;
+        private _rnd = floor random[0,_rndmid, _rndmax];
+        
+        if (count(_missionmanagers) > _rndmax) then {
+            echo "Not enough mission managers attached to randomize.";
+            continue;
         };
-    } forEach (synchronizedObjects _x);
-    
-    _missionlist pushBack [_hqmodule, _deploymodule, _ingressmodule, _missionmodule, _missiontaskmodules];
+        
+        private _rndmissionmanagers = [];
+        while { count(_rndmissionmanagers) < _rnd } do 
+        {
+            _rndmissionmanagers pushback (selectRandom (_missionmanagers select {!(_x in _rndmissionmanagers)}));
+        };
+        _missionmanagers = _rndmissionmanagers;
+    };
 
-} forEach (synchronizedObjects _logic select {
-    typeOf _x == "HEDES_Missionmodule_MANAGER"
-});
+    // -- Detect Mission Giver modules
+    {
+        private _hqmodule = objNull;
+        private _deploymodule = objNull;
+        private _ingressmodule = objNull;
+        private _missionmodule = _x;    
+        private _maxtasks = 5;
 
-// -- Add Mission System dialog to NPC
-{
-    [
-        _x,
-        [
-            "Open Mission dialog",
+        private _missiontaskmodules = [];
+        
+        {        
+            switch (true) do
             {
-                _logic = _this select 3 select 0;
-                _missionlist = _this select 3 select 1;
-                
-                [_logic, _missionlist] spawn HEDESmodules_fnc_ShowAvailableMissions;
-            },
-            [_logic,_missionlist],
-            1.5,
-            true,
-            false,
-            "",
-            "player == leader(group player)", 5
-        ]
-    ] remoteExec ["addAction"];
-} forEach _missiongivers;
+                case (typeOf _x == "HEDES_MissionModule_HQ"): {
+                    _hqmodule = _x;
+                };
+                case (typeOf _x == "HEDES_MissionModule_DEPLOY"): {
+                    _deploymodule = _x;
+                };
+                case (typeOf _x == "HEDES_MissionModule_INGRESS"): {
+                    _ingressmodule = _x;
+                };
+                case (typeOf _x == "HEDES_MissionModule_TASK"): {
+                    _missiontaskmodules pushBack _x;
+                };
+            };
+        } forEach (synchronizedObjects _x);
+        
+        if (_randomize) then
+        {
+            private _rnd = floor random[0,_maxtasks/2,_maxtasks];
+            private _newtaskarray = [];
+            while {count(_newtaskarray) <= _maxtasks} do
+            {
+                _newtaskarray pushback (selectRandom _missiontaskmodules);
+            };
+            _missiontaskmodules = _newtaskarray;
+        };
+
+        _missionlist pushBack [_hqmodule, _deploymodule, _ingressmodule, _missionmodule, _missiontaskmodules];
+
+    } forEach _missionmanagers;
+
+    // -- Add Mission System dialog to NPC
+    {
+        private _i = [
+            _x,
+            [
+                "Open Mission dialog",
+                {
+                    _logic = _this select 3 select 0;
+                    _missionlist = _this select 3 select 1;
+                    
+                    [_logic, _missionlist] spawn HEDESmodules_fnc_ShowAvailableMissions;
+                },
+                [_logic,_missionlist],
+                1.5,
+                true,
+                false,
+                "",
+                "player == leader(group player)", 5
+            ]
+        ] remoteExec ["addAction",0,true];
+
+        missionnamespace setvariable [format["MISSIONACTION_%1_%2",netid _x, netid _logic], _i]
+    } forEach _missiongivers;
+
+    // -- Interval Between Refresh
+    sleep 360;
+
+    // -- Remove Action
+    {
+        private _i = missionnamespace getVariable format["MISSIONACTION_%1_%2",netid _x, netid _logic];
+        [x,_i] remoteExec ["removeAction",0,true];
+    } forEach _missiongivers;
+};

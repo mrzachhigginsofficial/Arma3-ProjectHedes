@@ -14,6 +14,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _locname        = param[0, 'Ile Sainte-Marie'];
 private _loctype        = param[1, 'namelocal'];

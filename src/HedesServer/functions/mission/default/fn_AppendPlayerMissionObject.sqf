@@ -16,6 +16,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _uid = param[0, getplayerUID player];
 private _objarray = param[1, [netId group player]];

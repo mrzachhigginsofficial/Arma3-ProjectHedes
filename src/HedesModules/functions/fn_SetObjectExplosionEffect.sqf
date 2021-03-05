@@ -42,7 +42,7 @@ Author: ZanchoElGrande
         ]
     ] remoteExec ["addAction"];
 } forEach ((_this select {
-    typeName _x == "strinG"
+    typeName _x == "STRING"
 }) select {
     (!isNull objectFromNetId _x)
 })

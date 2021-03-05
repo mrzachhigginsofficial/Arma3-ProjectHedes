@@ -16,6 +16,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _cfgpath        = param[0,configfile >> "CfgHedesMissions" >> "default"];
 private _argsname       = param[1,"deploycamargs"];

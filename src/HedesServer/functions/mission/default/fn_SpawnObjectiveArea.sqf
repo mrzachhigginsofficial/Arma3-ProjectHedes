@@ -15,6 +15,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _missiontype        = param[0,"default"];
 private _missionobject      = param[1,"Land_CratesWooden_F"];

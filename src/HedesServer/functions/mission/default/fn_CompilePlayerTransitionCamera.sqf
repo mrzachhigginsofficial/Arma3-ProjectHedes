@@ -15,6 +15,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _player 	= param[0,player];
 private _type 		= param[1,"fade"];

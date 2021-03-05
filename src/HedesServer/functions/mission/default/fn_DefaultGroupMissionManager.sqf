@@ -15,6 +15,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _player                 = param[0, player];
 private _missionhqloc           = getPos (param[1, objNull]);
@@ -29,6 +30,13 @@ private _missionobject          = _missionmodule getVariable "MissionManagerObje
 
 private _groupid                = netId (group _player);
 private _groupstate             = [_groupid] call FUNC(GetplayerMissionState);
+
+HEDES_COMPILE_FUNCTION_CMD = {
+    private _params = param[0];
+    private _function = param[1];
+    
+    call compile format["%1 call %2", _params, _function];
+};
 
 if (_groupstate == 0) then {
 
@@ -92,8 +100,6 @@ if (_groupstate == 0) then {
             private _taskdesc = _x getVariable "TaskDescription";
             private _unitpool = (synchronizedObjects _x select {typeOf _x == "HEDES_GenericModule_UNITPOOL"}
                 select 0) getVariable "UnitPool";
-
-            systemChat format["%1",_unitpool];
             
             private _createTaskfnc  = {};
             private _createareafnc  = {};
@@ -112,18 +118,18 @@ if (_groupstate == 0) then {
             private _task = [_groupid, _missiontype, _tasktitl, _taskdesc] call _createTaskfnc;
             
             // -- Create Mission Task Objectives
-            private _checktskargs = [_missiontype, _missionobject] + _task + [_unitpool,5] call _createareafnc;
+            private _aoobjs = [_missiontype, _missionobject] + _task + [[_unitpool,5]] call _createareafnc;
             
             // -- Apply Effects To Missions Objects
             synchronizedObjects _x select { typeOf _x == "HEDES_MissionModule_TASKEFFECT" } apply {
-                [_checktskargs] call (_x getVariable "EffectType")
+                [_aoobjs, _x getVariable "EffectType"] call HEDES_compile_FUNCTION_CMD;
             };
             
             // -- Add Task Objects to Tracking Mission Variable
-            [_groupid, _checktskargs] call FUNC(AppendPlayerMissionObject);
+            [_groupid, _aoobjs] call FUNC(AppendPlayerMissionObject);
             
             // -- Evaluate Task Status
-            ([_groupid] + _checktskargs) call _checktaskfnc;
+            ([_groupid] + _aoobjs) call _checktaskfnc;
             
             // -- Delete Task
             [_task select 1] call BIS_fnc_deleteTask;
@@ -142,8 +148,8 @@ if (_groupstate == 0) then {
     */
 
     private _title = "Move to Extraction";
-    private _desc = "move all group members to extraction area to end mission.";
-    [group _player, _missiondeployloc,_title,_desc] call FUNC(CreateMeetTask);
+    private _desc = "Move all group members to extraction area to end mission.";
+    [group _player, _missionegressloc,_title,_desc] call FUNC(CreateMeetTask);
 
     /* 
     ---------------------------------------------------------------
@@ -162,6 +168,7 @@ if (_groupstate == 0) then {
     ---------------------------------------------------------------
     */
 
+    units(groupFromNetId _groupid) apply {_x setPos _missionhqloc};
     {
         [_x, "zoom", "", ""] call FUNC(CompilePlayerTransitionCamera);
     } forEach (units(groupFromnetId _groupid) select {_x in allplayers});

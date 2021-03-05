@@ -14,6 +14,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 private _id         = param[0, getPlayerUID player];
 private _result     = false;
