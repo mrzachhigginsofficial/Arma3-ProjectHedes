@@ -81,7 +81,7 @@ while {
         {
             private _rnd = floor random[0,_maxtasks/2,_maxtasks];
             private _newtaskarray = [];
-            while {count(_newtaskarray) <= _maxtasks} do
+            while {count(_newtaskarray) <= _rnd} do
             {
                 _newtaskarray pushback (selectRandom _missiontaskmodules);
             };
@@ -122,6 +122,6 @@ while {
     // -- Remove Action
     {
         private _i = missionnamespace getVariable format["MISSIONACTION_%1_%2",netid _x, netid _logic];
-        [x,_i] remoteExec ["removeAction",0,true];
+        [_x,_i] remoteExec ["removeAction",0,true];
     } forEach _missiongivers;
 };

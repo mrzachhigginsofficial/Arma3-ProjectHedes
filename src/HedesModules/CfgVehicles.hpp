@@ -111,6 +111,11 @@ class CfgVehicles
 						name = "Destory Mission"; 
 						value = "destroy";
 					};
+
+					class assassinate	{
+						name = "Kill VIP"; 
+						value = "assassinate";
+					};
 				};
 			};
 

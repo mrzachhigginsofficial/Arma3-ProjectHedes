@@ -107,10 +107,20 @@ if (_groupstate == 0) then {
             
             switch (_missiontype) do
             {
-                case("default"): {
+                case("destroy"): {
                     _createTaskfnc  = FUNC(CreateDestroyTask);
                     _createareafnc  = FUNC(SpawnObjectiveArea);
                     _checktaskfnc   = FUNC(CheckTask);
+                };
+                case("assassinate"): {
+                    _createTaskfnc  = FUNC(CreateAssassinateTask);
+                    _createareafnc  = FUNC(SpawnAssassinateObjective);
+                    _checktaskfnc   = FUNC(CheckAssassinateTask);                    
+                };
+                case("killnumber"): {
+                    _createTaskfnc  = FUNC(CreateDestroyTask);
+                    _createareafnc  = FUNC(SpawnObjectiveArea);
+                    _checktaskfnc   = FUNC(CheckTask);                    
                 };
             };
             
@@ -121,8 +131,12 @@ if (_groupstate == 0) then {
             private _aoobjs = [_missiontype, _missionobject] + _task + [[_unitpool,5]] call _createareafnc;
             
             // -- Apply Effects To Missions Objects
-            synchronizedObjects _x select { typeOf _x == "HEDES_MissionModule_TASKEFFECT" } apply {
-                [_aoobjs, _x getVariable "EffectType"] call HEDES_compile_FUNCTION_CMD;
+            private _effects = synchronizedObjects _x select { typeOf _x == "HEDES_MissionModule_TASKEFFECT" };
+            if (count(_effects) > 0) then 
+            {
+                _effects apply {
+                    [_aoobjs, _x getVariable "EffectType"] call HEDES_compile_FUNCTION_CMD;
+                };
             };
             
             // -- Add Task Objects to Tracking Mission Variable

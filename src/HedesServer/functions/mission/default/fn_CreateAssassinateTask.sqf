@@ -1,6 +1,6 @@
 /* 
 --------------------------------------------------------------------
-Create Destory Task 
+Create Assassinate Task 
 
 Description:
 	Create destroy task in random location and return taskname +
@@ -17,4 +17,4 @@ Author: ZanchoElGrande
 #include "\x\HEDESServer\macros.h"
 if (!isServer) exitWith {};
 
-(_this + ["destory"]) call FUNC(CreateMissionTask)
+(_this + ["kill"]) call FUNC(CreateMissionTask)
