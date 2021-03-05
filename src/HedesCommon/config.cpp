@@ -4,16 +4,15 @@ class CfgPatches
 {
 	class ProjectHedesClient
 	{
-        name = "Project Hedes Client";
+        name = "Project Hedes Common";
 		author = "ZanchoElGrande";
 		url = "";
 		requiredVersion = 0.1;
-		fileName = "HEDESClientMod.pbo";
+		fileName = "HEDESCommonMod.pbo";
         units[] = {};
 		weapons[] = {};
         requiredAddons[] = {};
 	};
 };
 
-
-#include "CfgFunctions.hpp"
+#include "CfgRemoteExec.hpp"

@@ -117,7 +117,7 @@ while {
     } forEach _missiongivers;
 
     // -- Interval Between Refresh
-    sleep 360;
+    sleep 5;
 
     // -- Remove Action
     {
