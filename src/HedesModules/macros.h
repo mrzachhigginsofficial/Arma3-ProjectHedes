@@ -1,2 +1,2 @@
-#define MODNAME HEDESModules
+#define ADDON HEDESModules
 #include "\x\HEDESCommon\macros.h"

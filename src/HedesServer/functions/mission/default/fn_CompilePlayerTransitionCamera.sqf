@@ -25,9 +25,9 @@ private _text 		= param[3,""];
 switch (_type) do
 {
 	case ('fade'):{
-		["OMComputerSystemStart",_text,"BLACK OUT",2] remoteExec ["HEDESClient_fnc_cameradeploystart", owner _player];
+		["OMComputerSystemStart",_text,"BLACK OUT",2] remoteExec [QUOTE(FUNC(cameradeploystart)), owner _player];
 	};
 	case ('zoom'): {
-		[_commander, _text,"radioAmbient5"] remoteExec ["HEDESClient_fnc_cameramissionstart", owner _player];
+		[_commander, _text,"radioAmbient5"] remoteExec [QUOTE(FUNC(cameramissionstart)), owner _player];
 	};
 };

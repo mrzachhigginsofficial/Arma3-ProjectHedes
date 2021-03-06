@@ -11,9 +11,11 @@ class CfgPatches
 		fileName = "HEDESClientMod.pbo";
         units[] = {};
 		weapons[] = {};
-        requiredAddons[] = {};
+        requiredAddons[] = {
+			"ProjectHedesCommon",
+			"ProjectHedesModules"
+		};
 	};
 };
-
 
 #include "CfgFunctions.hpp"

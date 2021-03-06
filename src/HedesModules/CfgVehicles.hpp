@@ -40,9 +40,36 @@ class CfgVehicles
 		class ModuleDescription: ModuleDescription
 		{
 			description = "This is a short description of the mission manager module.";
-			sync[] 	= {"HEDES_MissionModule_BASE"};
+			sync[] = {"HEDES_MissionModule_BASE"};
 		};
 	};
+
+	class HEDES_AmbientModule_BASE : Module_F
+	{
+		category = "HEDES_AmbientModules";
+		displayName = "Ambient Modules Base (Empty)";
+		functionPriority = 1;
+		is3DEN = 0;
+		isGlobal = 2;
+		isTriggerActivated 	= 0;
+		scope = 2;
+
+		class Attributes: AttributesBase
+		{
+			class Units: Units
+			{
+				property = "HEDES_MissionModule_Units";
+			};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description = "This is a short description of the mission manager module.";
+			sync[] = {"HEDES_MissionModule_BASE","HEDES_AmbientModule_BASE"};
+		};
+	};
+
+	/* HEDES Mission Modules */
 
 	class HEDES_MissionModule_HQ : HEDES_MissionModule_BASE
 	{
@@ -62,7 +89,7 @@ class CfgVehicles
 	class HEDES_MissionModule_SYSTEM: HEDES_MissionModule_BASE
 	{
 		displayName = "Mission System Module";
-		function = "HEDESModules_fnc_InitMissionSystemModule";
+		function = QUOTE(FUNC(InitMissionSystemModule));
 
 		class Attributes: AttributesBase
 		{
@@ -234,6 +261,50 @@ class CfgVehicles
 				defaultValue = "['CUP_O_TK_INS_Bomber','CUP_O_TK_INS_Mechanic','CUP_O_TK_INS_Commander','CUP_O_TK_INS_Guerilla_Medic','CUP_O_TK_INS_Soldier_MG','CUP_O_TK_INS_Soldier_AR','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier']";
 				expression = "_this setVariable ['%s',_value];";
 			};		
+		};
+	};
+
+	/* HEDES Ambient Modules */
+	class HEDES_AmbientModule_AreaVehPatrol: HEDES_AmbientModule_BASE
+	{
+		displayName = "Area Vehicle Patrol (Roads)";
+		function = QUOTE(FUNC(InitAreaPatrollingVehicles));
+
+		class Attributes: AttributesBase
+		{
+			class NumberOfVehicles : Edit
+			{
+				property = "HEDES_AmbientModule_NumOfVehs";
+				displayName = "Number of vehicles";
+				tooltip = "Number of vehicles that can be in the area at one time.";
+				defaultValue = "5";
+			};
+
+			class VehicleSpeed : Edit
+			{
+				property = "HEDES_AmbientModule_VehSpeed";
+				displayName = "Vehicle Speed";
+				tooltip = "Speed of Vehicle (50 and below is a nice choice)";
+				defaultValue = "25";
+			};
+
+			class MarkerName : Edit
+			{
+				property = "HEDES_AmbientModule_MarkerName";
+				displayName = "Marker Name";
+				tooltip = "Name of marker that the units will patrol inside of.";
+				defaultValue = "Marker Name";
+			};
+
+			class UnitPool
+			{
+				property = "HEDES_AmbientModule_UnitPool";
+				control = "EditCodeMulti5";
+				displayName = "Array of unit types.";
+				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
+				defaultValue = "['CUP_O_LR_MG_TKM','CUP_O_LR_SPG9_TKM']";
+				expression = "_this setVariable ['%s',_value];";
+			};	
 		};
 	};
 };

@@ -1,6 +1,6 @@
 class CfgFunctions 
 {
-	class HEDESServer
+	class MODNAME
 	{
 		class init
 		{

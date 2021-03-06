@@ -19,17 +19,16 @@ if (!isServer) exitwith {};
 
 private _playergroups = groupFromnetId param[0, netId group player];
 private _enemygroup = groupFromnetId param[1, grpNull];
-private _vipgroups = groupFromnetId param[2, grpNull];
+private _vipgroup = groupFromnetId param[2, grpNull];
 
 while {
-    (count(_vipgroups select {
-        count((units _x) select {
-            alive _x
-        }) > 0
-    }) > 0) &&
-    (count(_playergroups select {
-        count(units _x) > 0
-    }) > 0)
+    count((units _vipgroup) select {
+        alive _x
+    }) > 0
+    &&
+    count((units _playergroups) select {
+        _x in allPlayers
+    }) > 0
 } do {
     sleep 1
 };

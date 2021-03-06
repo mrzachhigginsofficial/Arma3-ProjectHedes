@@ -7,12 +7,14 @@
 	"buildPath": "build",
 	"privateKey": "",
 	"serverDirs": [
+		"src/HedesCommon",
 		"src/HedesServer",
 		"src/HedesUnits",
-		"src/HedesModules"
+		"src/HedesModules"	
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
+		"src/HedesCommon",
 		"src/HedesClient",
 		"src/HedesServer",
 		"src/HedesUnits",

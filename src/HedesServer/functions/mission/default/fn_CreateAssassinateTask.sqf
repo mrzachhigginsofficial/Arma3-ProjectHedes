@@ -17,4 +17,5 @@ Author: ZanchoElGrande
 #include "\x\HEDESServer\macros.h"
 if (!isServer) exitWith {};
 
-(_this + ["kill"]) call FUNC(CreateMissionTask)
+private _result = (_this + ["kill"]) call FUNC(CreateMissionTask);
+_result

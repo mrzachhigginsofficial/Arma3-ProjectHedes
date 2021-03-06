@@ -80,7 +80,7 @@ HEDESMissionDialogEvent_OKBUTTON = _dialog_OKbutton ctrlAddEventHandler ["Button
     private _varname = format["HEDESMissionData_%1", _index];
     private _mission = missionnamespace getVariable _varname;
     
-    ([player] + _mission) remoteExec ["HEDESServer_fnc_defaultgroupMissionManager", 2];
+    ([player] + _mission) remoteExec [QUOTE(FUNC(defaultgroupMissionManager)), 2];
 
     _dialog_missions ctrlremoveEventHandler ["LBSelChanged", HEDESMissionDialogEvent_LBselect];
 	_dialog_OKbutton  ctrlremoveEventHandler ["onButtonClick", HEDESMissionDialogEvent_OKBUTTON];

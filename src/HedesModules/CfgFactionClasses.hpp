@@ -5,4 +5,8 @@ class CfgFactionClasses
 	{
 		displayName = "Project Hedes Mission Modules";
 	};
+	class HEDES_AmbientModules: NO_CATEGORY
+	{
+		displayName = "Project Hedes Ambient Modules";
+	};
 };

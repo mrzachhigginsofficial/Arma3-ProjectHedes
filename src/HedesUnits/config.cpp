@@ -1,17 +1,19 @@
 class CfgPatches
 {
-	class ProjectHedesClient
+	class ProjectHedesUnits
 	{
-        name = "Project Hedes Client";
+        name = "Project Hedes Units";
 		author = "ZanchoElGrande";
 		url = "";
 		requiredVersion = 0.1;
 		fileName = "HEDESUnitsMod.pbo";
         units[] = {
 			"UnterKomando_1"
-			};
+		};
 		weapons[] = {};
-        requiredAddons[] = {};
+        requiredAddons[] = {
+			"ProjectHedesCommon"
+		};
 	};
 };
 

@@ -1,6 +1,6 @@
 class CfgFunctions 
 {
-	class HEDESClient
+	class MODNAME
 	{
 		class init
 		{

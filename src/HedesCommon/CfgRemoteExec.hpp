@@ -4,24 +4,20 @@ class CfgRemoteExec
 	{
 		mode = 1;
 
-		class setFuel { 
-			allowedTargets = 2; 
-		};
-
-		class hint 
-		{ 
-			jip = 0; 
-		};
+		ALLOWREMOTE_FUNCWPRE(addaction,2,0)
+		ALLOWREMOTE_FUNCWPRE(removeaction,2,0)
 	};
 
 	class Functions
 	{
-		mode = 2;
+		mode = 1;
 		jip = 0;
 
-		class BIS_fnc_effectKilledAirDestruction	{ allowedTargets = 0; jip = 0; };
-		class BIS_fnc_effectKilledSecondaries		{ allowedTargets = 0; jip = 0; };
-		class BIS_fnc_objectVar						{ allowedTargets = 0; jip = 0; };
-		class BIS_fnc_setCustomSoundController		{ allowedTargets = 0; jip = 0; };
+		ALLOWREMOTE_FUNCWPRE(BIS_fnc_effectKilledAirDestruction,0,0)
+		ALLOWREMOTE_FUNCWPRE(BIS_fnc_effectKilledSecondaries,0,0)
+		ALLOWREMOTE_FUNCWPRE(BIS_fnc_objectVar,0,0)
+		ALLOWREMOTE_FUNCWPRE(BIS_fnc_setCustomSoundController,0,0)
+
+		ALLOWREMOTE_FUNC(DefaultGroupMissionManager,2,0)
 	};
 };

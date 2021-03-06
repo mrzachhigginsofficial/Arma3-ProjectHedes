@@ -2,7 +2,7 @@
 
 class CfgPatches
 {
-	class ProjectHedesClient
+	class ProjectHedesCommon
 	{
         name = "Project Hedes Common";
 		author = "ZanchoElGrande";

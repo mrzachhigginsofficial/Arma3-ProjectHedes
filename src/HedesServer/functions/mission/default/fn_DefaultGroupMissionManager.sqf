@@ -105,22 +105,17 @@ if (_groupstate == 0) then {
             private _createareafnc  = {};
             private _checktaskfnc   = {};
             
-            switch (_missiontype) do
+            switch (_tasktype) do
             {
-                case("destroy"): {
+                case "destroy": {
                     _createTaskfnc  = FUNC(CreateDestroyTask);
                     _createareafnc  = FUNC(SpawnObjectiveArea);
                     _checktaskfnc   = FUNC(CheckTask);
                 };
-                case("assassinate"): {
+                case "assassinate": {
                     _createTaskfnc  = FUNC(CreateAssassinateTask);
                     _createareafnc  = FUNC(SpawnAssassinateObjective);
                     _checktaskfnc   = FUNC(CheckAssassinateTask);                    
-                };
-                case("killnumber"): {
-                    _createTaskfnc  = FUNC(CreateDestroyTask);
-                    _createareafnc  = FUNC(SpawnObjectiveArea);
-                    _checktaskfnc   = FUNC(CheckTask);                    
                 };
             };
             
@@ -128,14 +123,14 @@ if (_groupstate == 0) then {
             private _task = [_groupid, _missiontype, _tasktitl, _taskdesc] call _createTaskfnc;
             
             // -- Create Mission Task Objectives
-            private _aoobjs = [_missiontype, _missionobject] + _task + [[_unitpool,5]] call _createareafnc;
+            private _aoobjs = ([_missiontype, _missionobject] + _task + [[_unitpool,5]]) call _createareafnc;
             
             // -- Apply Effects To Missions Objects
             private _effects = synchronizedObjects _x select { typeOf _x == "HEDES_MissionModule_TASKEFFECT" };
             if (count(_effects) > 0) then 
             {
                 _effects apply {
-                    [_aoobjs, _x getVariable "EffectType"] call HEDES_compile_FUNCTION_CMD;
+                    [_aoobjs, _x getVariable "EffectType"] call HEDES_COMPILE_FUNCTION_CMD;
                 };
             };
             

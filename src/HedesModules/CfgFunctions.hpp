@@ -1,6 +1,6 @@
 class CfgFunctions 
 {
-	class HEDESModules
+	class MODNAME
 	{
 		class ModuleFunctions
 		{
@@ -11,6 +11,9 @@ class CfgFunctions
 			//-- Mission System Task Effects
 			PATHTO_FUNC(SetObjectExplosionEffect)
 			PATHTO_FUNC(SetGroupSurrenderEffect)
+
+			//-- Area Patrols (Ambient Units)
+			PATHTO_FUNC(InitAreaPatrollingVehicles)
 		};
 	};
 };

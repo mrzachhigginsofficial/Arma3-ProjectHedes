@@ -17,17 +17,18 @@ Author: ZanchoElGrande
 #include "..\defines.h"
 
 private _logic = param [0, objNull, [objNull]];
-private _missionlist = [];
 private _missiongivers = synchronizedObjects _logic select {
     _x isKindOf "Man"
 };
 private _randomize = _logic getVariable "MissionGiverRandomize";
+private _refreshtime = _logic getVariable ["MissionGiverRefresh","360"];
 
 while {
     true
 } do
 {
     private _missionmanagers = synchronizedObjects _logic select { typeOf _x == "HEDES_Missionmodule_MANAGER" };
+    private _missionlist = [];
 
     // -- If Randomize Missions Enabled
     if(_randomize) then
@@ -94,7 +95,7 @@ while {
 
     // -- Add Mission System dialog to NPC
     {
-        private _i = [
+        [
             _x,
             [
                 "Open Mission dialog",
@@ -102,7 +103,7 @@ while {
                     _logic = _this select 3 select 0;
                     _missionlist = _this select 3 select 1;
                     
-                    [_logic, _missionlist] spawn HEDESmodules_fnc_ShowAvailableMissions;
+                    [_logic, _missionlist] spawn FUNC(ShowAvailableMissions);
                 },
                 [_logic,_missionlist],
                 1.5,
@@ -112,16 +113,13 @@ while {
                 "player == leader(group player)", 5
             ]
         ] remoteExec ["addAction",0,true];
-
-        missionnamespace setvariable [format["MISSIONACTION_%1_%2",netid _x, netid _logic], _i]
     } forEach _missiongivers;
 
     // -- Interval Between Refresh
-    sleep 5;
+    sleep (call compile _refreshtime);
 
     // -- Remove Action
     {
-        private _i = missionnamespace getVariable format["MISSIONACTION_%1_%2",netid _x, netid _logic];
-        [_x,_i] remoteExec ["removeAction",0,true];
+        [_x] remoteExec ["removeAllActions",0,true];
     } forEach _missiongivers;
 };

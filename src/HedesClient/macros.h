@@ -1,2 +1,2 @@
-#define MODNAME HEDESClient
+#define ADDON HEDESClient
 #include "\x\HEDESCommon\macros.h"

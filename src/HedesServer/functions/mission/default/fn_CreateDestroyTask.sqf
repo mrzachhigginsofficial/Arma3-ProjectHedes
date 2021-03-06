@@ -17,4 +17,5 @@ Author: ZanchoElGrande
 #include "\x\HEDESServer\macros.h"
 if (!isServer) exitWith {};
 
-(_this + ["destory"]) call FUNC(CreateMissionTask)
+private _result = (_this + ["destory"]) call FUNC(CreateMissionTask);
+_result

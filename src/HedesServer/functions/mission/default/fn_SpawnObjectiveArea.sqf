@@ -26,4 +26,4 @@ private _taskspawnargs      = param[4,[]];
 private _enemysquad         = (_taskspawnargs + [_taskposition]) call FUNC(SpawnEnemySquad);
 private _object             = createVehicle [_missionobject, _taskposition, [], 0,""];
 
-[netId _enemysquad, netId _object];
+[netId _enemysquad, netId _object]

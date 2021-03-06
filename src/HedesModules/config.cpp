@@ -3,7 +3,7 @@
 
 class CfgPatches
 {
-	class ProjectHedesClient
+	class ProjectHedesModules
 	{
         name = "Project Hedes Modules";
 		author = "ZanchoElGrande";
@@ -15,10 +15,17 @@ class CfgPatches
 			"HEDES_MissionModule_HQ",
 			"HEDES_MissionModule_DEPLOY",
 			"HEDES_MissionModule_INGRESS",
-			"HEDES_MissionModule_MANAGER"
+			"HEDES_MissionModule_SYSTEM",
+			"HEDES_MissionModule_TASK",
+			"HEDES_MissionModule_TASKEFFECT",
+			"HEDES_MissionModule_MANAGER",
+			"HEDES_GenericModule_UNITPOOL"
 			};
 		weapons[] = {};
-        requiredAddons[] = {};
+        requiredAddons[] = {
+			"ProjectHedesCommon",
+			"ProjectHedesServer"
+		};
 	};
 };
 
