@@ -22,12 +22,6 @@ class CfgFunctions
 			PATHTO_FUNCDIR(SpawnUnitCleanupThread,maintenance)
 		};
 
-		class persistence
-		{
-			PATHTO_FUNCDIR(SaveLoudOut,persistence)
-			PATHTO_FUNCDIR(LoadLoudout,persistence)
-		};
-
 		class missions 
 		{
 			PATHTO_FUNCDIR(AppendPlayerMissionObject,mission\default)
@@ -50,6 +44,12 @@ class CfgFunctions
 			PATHTO_FUNCDIR(SpawnEnemyObject,mission\default)
 			PATHTO_FUNCDIR(SpawnObjectiveArea,mission\default)		
 			PATHTO_FUNCDIR(SpawnAssassinateObjective,mission\default)
+		};
+
+		class persistence
+		{
+			PATHTO_FUNCDIR(SaveLoadOut,persistence)
+			PATHTO_FUNCDIR(LoadLoadOut,persistence)
 		};
 	};
 };

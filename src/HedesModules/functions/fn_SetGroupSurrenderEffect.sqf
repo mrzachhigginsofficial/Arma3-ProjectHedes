@@ -14,6 +14,7 @@ Author: ZanchoElGrande
 */
 
 #include "\x\HEDESServer\macros.h"
+if (!isServer) exitWith {};
 
 {
     (groupFromnetId _x) spawn {

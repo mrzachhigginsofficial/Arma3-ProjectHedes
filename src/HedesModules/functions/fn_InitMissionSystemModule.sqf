@@ -15,11 +15,10 @@ Author: ZanchoElGrande
 
 #include "..\macros.h"
 #include "..\defines.h"
+if (!isServer) exitWith {};
 
 private _logic = param [0, objNull, [objNull]];
-private _missiongivers = synchronizedObjects _logic select {
-    _x isKindOf "Man"
-};
+private _missiongiver = synchronizedObjects _logic select {_x isKindOf "Man"} select 0;
 private _randomize = _logic getVariable "MissionGiverRandomize";
 private _refreshtime = _logic getVariable ["MissionGiverRefresh","360"];
 
@@ -27,15 +26,23 @@ private _refreshtime = _logic getVariable ["MissionGiverRefresh","360"];
 private _drawnameplatercmd = { 
     private _newvarr = missionNamespace getVariable ["HEDESMISSIONGIVERS",[]];
     missionNamespace setVariable ["HEDESMISSIONGIVERS",_newvarr + [_this]];
+    [] spawn {
+        while{true}do
+        {
+            missionNamespace setVariable [
+                "DRAWMISSIONGIVERS",
+                player nearEntities["Man",20] select {_x in (missionNamespace getVariable "HEDESMISSIONGIVERS")}
+            ];
+            sleep 1;
+        };        
+    };
     addMissionEventHandler ["Draw3D", { 
         { 
-            drawIcon3D ["", [0.73,0.24,0.11,1], visiblePosition _x vectorAdd [0,0,4], 0.6, 0.6, 45, format ["%1 (Missions)", name _x], 1, 0.05, "EtelkaMonospacePro"]; 
-        } foreach ((missionNamespace getVariable ["HEDESMISSIONGIVERS",[]]) select {_x distance player < 20})
+            drawIcon3D ["", [1,1,1,1], visiblePosition _x vectorAdd [0,0,4], 0.6, 0.6, 45, format ["%1 (Missions)", name _x], 2, 0.04, "PuristaSemiBold"]; 
+        } foreach (missionNamespace getVariable ["DRAWMISSIONGIVERS",[]])
     }];
 };
-{
-    [_x,_drawnameplatercmd] remoteExec ["BIS_fnc_call", 0, true];
-} foreach _missiongivers;
+[_missiongiver,_drawnameplatercmd] remoteExec ["BIS_fnc_call", 0, true];
 
 // -- Periodically Change 
 while {
@@ -105,32 +112,29 @@ while {
     } forEach _missionmanagers;
 
     // -- Add Mission System dialog to NPC
-    {
+    [
+        _missiongiver,
         [
-            _x,
-            [
-                "Open Mission dialog",
-                {
-                    _logic = _this select 3 select 0;
-                    _missionlist = _this select 3 select 1;
-                    
-                    [_logic, _missionlist] spawn FUNC(ShowAvailableMissions);
-                },
-                [_logic,_missionlist],
-                1.5,
-                true,
-                false,
-                "",
-                "player == leader(group player)", 5
-            ]
-        ] remoteExec ["addAction",0,false];
-    } forEach _missiongivers;
+            "Open Mission dialog",
+            {
+                _logic = _this select 3 select 0;
+                _missionlist = _this select 3 select 1;
+                _missiongiver = _this select 3 select 2;
+                
+                [_logic, _missionlist, _missiongiver] spawn FUNC(ShowAvailableMissions);
+            },
+            [_logic,_missionlist,_missiongiver],
+            1.5,
+            true,
+            false,
+            "",
+            "player == leader(group player)", 5
+        ]
+    ] remoteExec ["addAction",0,false];
 
     // -- Interval Between Refresh
     sleep (call compile _refreshtime);
 
     // -- Remove Action
-    {
-        [_x] remoteExec ["removeAllActions",0,false];
-    } forEach _missiongivers;
+    [_missiongiver] remoteExec ["removeAllActions",0,false];
 };

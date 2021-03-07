@@ -9,4 +9,8 @@ class CfgFactionClasses
 	{
 		displayName = "Project Hedes Ambient Modules";
 	};
+	class HEDES_Persistence: NO_CATEGORY
+	{
+		displayName = "Project Hedes Persistence Modules";
+	};
 };

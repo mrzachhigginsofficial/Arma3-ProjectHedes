@@ -18,6 +18,7 @@ Global and Profile Mission Variables
 */
 #define GLOBALMISSIONTRACKERNAME #HEDESServer_Mission_PlayerMissionTracker
 #define GLOABLMISSIONCLEANUPQUEUE #HEDESServer_Cleanup_UnitQueue
+#define PROFILESAVEDUNITLOADOUTS #HEDESServer_Profile_PlayerLoadoutTracker
 
 /*
 --------------------------------------------------------------------

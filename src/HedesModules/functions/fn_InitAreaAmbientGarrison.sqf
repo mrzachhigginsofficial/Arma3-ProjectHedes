@@ -15,6 +15,7 @@ Author: ZanchoElGrande
 
 #include "..\macros.h"
 #include "..\defines.h"
+if (!isServer) exitWith {};
 
 private _logic = param [0, objNull, [objNull]];
 private _unitpool = _logic getVariable ["UnitPool",[]];

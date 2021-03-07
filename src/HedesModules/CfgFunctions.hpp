@@ -16,6 +16,9 @@ class CfgFunctions
 			PATHTO_FUNC(InitAreaPatrollingVehicles)
 			PATHTO_FUNC(InitAreaAmbientCivs)
 			PATHTO_FUNC(InitAreaAmbientGarrison)
+
+			// -- Persistence 
+			PATHTO_FUNC(InitPersistenceManager)
 		};
 	};
 };

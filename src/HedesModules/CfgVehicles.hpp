@@ -388,4 +388,11 @@ class CfgVehicles
 			};
 		};
 	};
+
+	/* HEDES Persistence Modules */
+	class HEDES_PersistModule_Loadout: HEDES_AmbientModule_BASE
+	{
+		displayName = "Unit Loadout Persistence";
+		function = QUOTE(FUNC(InitPersistenceManager));
+	};
 };

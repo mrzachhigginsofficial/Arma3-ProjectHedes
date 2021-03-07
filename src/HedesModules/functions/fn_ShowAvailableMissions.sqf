@@ -16,9 +16,11 @@ Author: ZanchoElGrande
 
 #include "..\macros.h"
 #include "..\defines.h"
+if (!isServer) exitWith {};
 
 private _logic          = param[0, objNull];
 private _missionlist    = param[1, []];
+private _missiongiver    = param[2, objNull];
 
 createdialog "HEDES_MissionGiverdialog";
 
@@ -34,7 +36,7 @@ private _dialog_missiondesc = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_DESC
 private _dialog_OKbutton = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_OKBTN;
 private _dialog_Cancelbutton = _guiwindow displayCtrl HEDESGUI_MISSIONDIALOG_CANCELBTN;
 
-_dialog_name ctrlsettext (_logic getVariable "MissionGivername");
+_dialog_name ctrlsettext (name _missiongiver);
 _dialog_avatar ctrlsettext (_logic getVariable "MissionGiverAvatar");
 _dialog_missiondesc ctrlSetText "Select a mission";
 
