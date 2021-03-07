@@ -12,8 +12,9 @@ class CfgFunctions
 			PATHTO_FUNC(SetObjectExplosionEffect)
 			PATHTO_FUNC(SetGroupSurrenderEffect)
 
-			//-- Area Patrols (Ambient Units)
+			//-- Ambient Unit Inits
 			PATHTO_FUNC(InitAreaPatrollingVehicles)
+			PATHTO_FUNC(InitAreaAmbientCivs)
 		};
 	};
 };

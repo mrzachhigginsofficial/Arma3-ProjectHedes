@@ -190,7 +190,7 @@ if (_groupstate == 0) then {
     */
 
     private _leftovers = [_groupid] call FUNC(GetplayerMissionObjects);
-    _leftovers call FUNC(SpawnObjectCleanupThread);
+    _leftovers call FUNC(AddUnitToCleanupList);
     
     [_groupid, 0, _missiontype] call FUNC(setplayerMissionState);
     [_endMissionTask] call BIS_fnc_deleteTask;

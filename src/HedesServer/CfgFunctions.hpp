@@ -16,6 +16,12 @@ class CfgFunctions
 			PATHTO_FUNCDIR(alambientbattle_searchlight,ALambientbattle)
 		};
 
+		class maintenance
+		{
+			PATHTO_FUNCDIR(AddUnitToCleanupList,maintenance)
+			PATHTO_FUNCDIR(SpawnUnitCleanupThread,maintenance)
+		};
+
 		class session 
 		{
 			PATHTO_FUNCDIR(MovePlayerInMission,session)
@@ -45,7 +51,6 @@ class CfgFunctions
 			PATHTO_FUNCDIR(SpawnEnemyObject,mission\default)
 			PATHTO_FUNCDIR(SpawnObjectiveArea,mission\default)		
 			PATHTO_FUNCDIR(SpawnAssassinateObjective,mission\default)
-			PATHTO_FUNCDIR(SpawnObjectCleanupThread,mission\default)
 		};
 	};
 };

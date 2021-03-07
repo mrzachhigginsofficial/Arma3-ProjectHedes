@@ -307,4 +307,39 @@ class CfgVehicles
 			};	
 		};
 	};
+
+	class HEDES_AmbientModule_Civilians: HEDES_AmbientModule_BASE
+	{
+		displayName = "Area Ambient Civs";
+		function = QUOTE(FUNC(InitAreaAmbientCivs));
+
+		class Attributes: AttributesBase
+		{
+			class NumbersofCivs : Edit
+			{
+				property = "HEDES_AmbientModule_NumOfCivs";
+				displayName = "Number of Civilians";
+				tooltip = "Number of civilians that can be in the area at one time.";
+				defaultValue = "5";
+			};
+
+			class UnitPool
+			{
+				property = "HEDES_AmbientModule_UnitPool";
+				control = "EditCodeMulti5";
+				displayName = "Array of unit types that will spawn as civilians.";
+				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
+				defaultValue = "['CUP_C_R_Rocker_01','CUP_C_TK_Man_05_Jack','CUP_C_TK_Man_05_Waist','CUP_C_TK_Man_06_Waist']";
+				expression = "_this setVariable ['%s',_value];";
+			};	
+			
+			class SuicideBombers : Checkbox
+			{
+				property = "HEDES_AmbientModule_Suicide";
+				displayName = "Suicide Bombers?";
+				tooltip = "Should the civilians have the change to spawn as suicide bombers?";
+				defaultValue = "true";
+			};
+		};
+	};
 };

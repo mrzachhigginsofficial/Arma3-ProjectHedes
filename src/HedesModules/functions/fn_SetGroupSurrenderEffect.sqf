@@ -31,15 +31,9 @@ Author: ZanchoElGrande
                         
                         _this setCaptive true;
                         _this playMoveNow "ApanPknlMstpSnonWnonDnon_G03";
-                        
-                        waitUntil {
-                            count(_this nearEntities ["Man", 200] select {
-                                _x in allplayers
-                            }) == 0;
-                        };
-                        
-                        deletevehicle _weaponHolder;
-                        deletevehicle _this;
+
+                        _weaponHolder call FUNC(AddUnitToCleanupList);
+                        _this call FUNC(AddUnitToCleanupList);
                     }
                 } forEach (units _this select {
                     alive _x
