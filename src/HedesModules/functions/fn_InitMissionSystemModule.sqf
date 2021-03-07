@@ -23,6 +23,21 @@ private _missiongivers = synchronizedObjects _logic select {
 private _randomize = _logic getVariable "MissionGiverRandomize";
 private _refreshtime = _logic getVariable ["MissionGiverRefresh","360"];
 
+// -- Add Mission Giver Nameplates
+private _drawnameplatercmd = { 
+    private _newvarr = missionNamespace getVariable ["HEDESMISSIONGIVERS",[]];
+    missionNamespace setVariable ["HEDESMISSIONGIVERS",_newvarr + [_this]];
+    addMissionEventHandler ["Draw3D", { 
+        { 
+            drawIcon3D ["", [0.73,0.24,0.11,1], visiblePosition _x vectorAdd [0,0,4], 0.6, 0.6, 45, format ["%1 (Missions)", name _x], 1, 0.05, "TahomaB"]; 
+        } foreach ((missionNamespace getVariable ["HEDESMISSIONGIVERS",[]]) select {_x distance player < 20})
+    }];
+};
+{
+    [_x,_drawnameplatercmd] remoteExec ["BIS_fnc_call", 0, true];
+} foreach _missiongivers;
+
+// -- Periodically Change 
 while {
     true
 } do
@@ -52,7 +67,6 @@ while {
 
     // -- Detect Mission Giver modules
     {
-        private _hqmodule = objNull;
         private _deploymodule = objNull;
         private _ingressmodule = objNull;
         private _missionmodule = _x;    
@@ -63,9 +77,6 @@ while {
         {        
             switch (true) do
             {
-                case (typeOf _x == "HEDES_MissionModule_HQ"): {
-                    _hqmodule = _x;
-                };
                 case (typeOf _x == "HEDES_MissionModule_DEPLOY"): {
                     _deploymodule = _x;
                 };
@@ -89,7 +100,7 @@ while {
             _missiontaskmodules = _newtaskarray;
         };
 
-        _missionlist pushBack [_hqmodule, _deploymodule, _ingressmodule, _missionmodule, _missiontaskmodules];
+        _missionlist pushBack [_deploymodule, _ingressmodule, _missionmodule, _missiontaskmodules];
 
     } forEach _missionmanagers;
 
@@ -112,7 +123,7 @@ while {
                 "",
                 "player == leader(group player)", 5
             ]
-        ] remoteExec ["addAction",0,true];
+        ] remoteExec ["addAction",0,false];
     } forEach _missiongivers;
 
     // -- Interval Between Refresh
@@ -120,6 +131,6 @@ while {
 
     // -- Remove Action
     {
-        [_x] remoteExec ["removeAllActions",0,true];
+        [_x] remoteExec ["removeAllActions",0,false];
     } forEach _missiongivers;
 };

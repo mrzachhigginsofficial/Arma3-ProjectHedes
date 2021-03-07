@@ -71,11 +71,6 @@ class CfgVehicles
 
 	/* HEDES Mission Modules */
 
-	class HEDES_MissionModule_HQ : HEDES_MissionModule_BASE
-	{
-		displayName = "Mission Manager HQ";
-	};
-
 	class HEDES_MissionModule_DEPLOY : HEDES_MissionModule_BASE
 	{
 		displayName = "Mission Deploy Area";

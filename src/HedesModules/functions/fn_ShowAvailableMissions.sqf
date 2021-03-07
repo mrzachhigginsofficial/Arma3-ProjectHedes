@@ -46,8 +46,8 @@ HEDESMissionDialogCode_LBelect = {
     private _varname = format["HEDESMissionData_%1", _index];
     private _mission = missionnamespace getVariable _varname;
     
-    private _missionmodule = _mission select 3;
-    private _missiontaskmodules = _mission select 4;
+    private _missionmodule = _mission select 2;
+    private _missiontaskmodules = _mission select 3;
     
     private _taskDescriptions = [];
     private _taskdesc = "";
@@ -57,15 +57,28 @@ HEDESMissionDialogCode_LBelect = {
         private _tasktype = _x getVariable ["tasktype", ""];
         private _taskname = _x getVariable ["Taskname", ""];
         private _taskdesc = _x getVariable ["taskDescription", ""];
-        _taskDescriptions pushBack format["%1.) [%2] %3:<br/> %4", _index, _tasktype, _taskname, _taskdesc];
+
+        private _icon = "";
+        switch (_tasktype) do
+        {
+            case "destroy" : {_icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\destroy_ca.paa";};
+            case "assassinate" : {_icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\kill_ca.paa";};
+            case "kill" : {_icon = "\A3\ui_f\data\igui\cfg\simpleTasks\types\attack_ca.paa";};
+        };           
+            
+        _taskDescriptions pushBack format["%1.) <img image='%2'/> %3: %4", _index, _icon, _taskname, _taskdesc];
+
     } forEach _missiontaskmodules;
     
     private _missiondescription = format[
-        "%1 <br/><br/><t size='2'>You have %2 tasks. Here's the job:</t>", _missionmodule getVariable "MissionDescription", count(_missiontaskmodules)
+        "%1 <br/><br/><t size='1'>You have %2 tasks. Here's the job:</t>", _missionmodule getVariable "MissionDescription", count(_missiontaskmodules)
         ];
     
     _dialog_missiondesc ctrlsetstructuredtext parsetext 
         ([_missiondescription, _taskDescriptions joinstring "<br/><br/>"] joinstring "<br/><br/>");
+
+    _dialog_missiondesc ctrlSetPositionH ((ctrlTextHeight _dialog_missiondesc) * 1);
+    _dialog_missiondesc ctrlCommit 0;
 };
 
 HEDESMissionDialogEvent_LBselect = _dialog_missions ctrlAddEventHandler ["LBSelChanged", HEDESMissionDialogCode_LBelect];
@@ -100,7 +113,7 @@ HEDESMissionDialogEvent_CANCELBUTTON = _dialog_Cancelbutton ctrlAddEventHandler 
 }];
 
 {
-    private _name = (_x select 3) getVariable "missionname";
+    private _name = (_x select 2) getVariable "missionname";
     private _index = _dialog_missions lbAdd _name;
     private _varname = format["HEDESMissionData_%1", _index];
     _dialog_missions lbsetData [_index, _varname];

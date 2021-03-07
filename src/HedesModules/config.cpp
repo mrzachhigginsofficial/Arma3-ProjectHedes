@@ -12,7 +12,6 @@ class CfgPatches
 		fileName = "HEDESModulesMod.pbo";
         units[] = {
 			"HEDES_MissionModule_BASE",
-			"HEDES_MissionModule_HQ",
 			"HEDES_MissionModule_DEPLOY",
 			"HEDES_MissionModule_INGRESS",
 			"HEDES_MissionModule_SYSTEM",

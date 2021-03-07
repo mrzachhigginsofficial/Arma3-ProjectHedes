@@ -15,8 +15,8 @@ Author: ZanchoElGrande
 
 if (!isServer) exitWith {};
 
-if (isnil GLOABLMISSIONCLEANUPQUEUE) then {
-    missionNamespace setVariable [GLOABLMISSIONCLEANUPQUEUE, []];
+if (isnil GLOABLMISSIONCLEANUPQUEUE ) then {
+    missionNamespace setVariable [ GLOABLMISSIONCLEANUPQUEUE , []];
 };
 
 while {true} do {
@@ -26,10 +26,10 @@ while {true} do {
 			deleteVehicle _x;
 		};
 		sleep 1;
-	} foreach (missionNamespace getVariable GLOABLMISSIONCLEANUPQUEUE);
+	} foreach (missionNamespace getVariable GLOABLMISSIONCLEANUPQUEUE );
 
-	private _updatedvar = missionNamespace getVariable GLOABLMISSIONCLEANUPQUEUE;
-	missionNamespace setVariable [GLOABLMISSIONCLEANUPQUEUE, _updatedvar - [objNull]];
+	private _updatedvar = missionNamespace getVariable GLOABLMISSIONCLEANUPQUEUE ;
+	missionNamespace setVariable [ GLOABLMISSIONCLEANUPQUEUE , _updatedvar - [objNull]];
 
 	sleep 5;
 };

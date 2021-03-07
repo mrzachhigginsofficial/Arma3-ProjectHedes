@@ -8,7 +8,7 @@ class CfgPatches
 		requiredVersion = 0.1;
 		fileName = "HEDESUnitsMod.pbo";
         units[] = {
-			"UnterKomando_1"
+			"HEDESFreedomFighter"
 		};
 		weapons[] = {};
         requiredAddons[] = {

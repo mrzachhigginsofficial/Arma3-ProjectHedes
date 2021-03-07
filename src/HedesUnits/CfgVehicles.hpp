@@ -1,13 +1,13 @@
 class CfgVehicles
 {
-	class CUP_I_GUE_Soldier_GL;
+	class CUP_I_GUE_Soldier_03;
 	
-	class UnterKomando_1 : CUP_I_GUE_Soldier_GL
+	class HEDESFreedomFighter : CUP_I_GUE_Soldier_03
     {
-        _generalMacro = "UnterKomando_1";
+        _generalMacro = "Freedom Fighter";
         side = 1;
         scope = 2;
-        displayName = "UnterKommando";
+        displayName = "Freedom Fighter";
 		faction = "OJSK";
         editorCatergory = "OJSK";
         editorSubCatergory = "Hedes Assets";
@@ -16,7 +16,7 @@ class CfgVehicles
         respawnWeapons[] = {"CUP_arifle_AK47_Early","Throw","Put"};
         magazines[] = {"CUP_30Rnd_762x39_AK47_M","CUP_30Rnd_762x39_AK47_M"};
         respawnMagazines[] = {"CUP_30Rnd_762x39_AK47_M","CUP_30Rnd_762x39_AK47_M"}; 
-        linkedItems[] = {"CUP_U_I_GUE_Flecktarn","ItemMap"};
-        respawnLinkedItems[] = {"CUP_U_I_GUE_Flecktarn","ItemMap"};
+        linkedItems[] = {"CUP_U_I_GUE_Woodland1","ItemMap"};
+        respawnLinkedItems[] = {"CUP_U_I_GUE_Woodland1","ItemMap"};
     };
 };

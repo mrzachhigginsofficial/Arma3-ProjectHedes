@@ -18,18 +18,17 @@ Author: ZanchoElGrande
 if (!isServer) exitWith {};
 
 private _player                 = param[0, player];
-private _missionhqloc           = getPos (param[1, objNull]);
-private _missiondeployloc       = getPos (param[2, objNull]);
-private _missioningressloc      = getPos (param[3, objNull]);
-private _missionegressloc       = getPos (param[3, objNull]);
-private _missionmodule          = param[4, objNull];
-private _missiontaskmodules     = param[5, [objNull]];
+private _missiondeployloc       = getPos (param[1, objNull]);
+private _missioningressloc      = getPos (param[2, objNull]);
+private _missionmodule          = param[3, objNull];
+private _missiontaskmodules     = param[4, [objNull]];
 
 private _missiontype            = _missionmodule getVariable "Missiontype";
 private _missionobject          = _missionmodule getVariable "MissionManagerObjecttype";
 
 private _groupid                = netId (group _player);
 private _groupstate             = [_groupid] call FUNC(GetplayerMissionState);
+private _missionaccomplished    = true;
 
 HEDES_COMPILE_FUNCTION_CMD = {
     private _params = param[0];
@@ -37,6 +36,17 @@ HEDES_COMPILE_FUNCTION_CMD = {
     
     call compile format["%1 call %2", _params, _function];
 };
+
+private _missioncamaccomplished = {
+    playmusic "EventTrack01_F_Curator";
+    cutText ["<t color='#A7FFA4' size='5'>MISSION ACCOMPLISHED</t>", "PLAIN DOWN", 2, true, true]; 
+};
+
+private _missioncamfailed = {
+    playmusic "EventTrack02_F_Curator";
+    cutText ["<t color='#FF0000' size='5'>MISSION FAILED</t>", "PLAIN DOWN", 2, true, true]; 
+};
+
 
 if (_groupstate == 0) then {
 
@@ -49,34 +59,10 @@ if (_groupstate == 0) then {
     */
         
     [group _player, _missiondeployloc] call FUNC(CreateMeetTask);
-    
-    /* 
-    ---------------------------------------------------------------
-    Phase 2. Camera Transition Out (Deploy Start) and Move Players
-    ---------------------------------------------------------------
-    */
-
-    {
-        [_x, "fade", "", "Deploying..."] call FUNC(CompilePlayerTransitionCamera);
-    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
-    sleep 2;
-
-    units(groupFromNetId _groupid) apply {_x setPos _missioningressloc};
-    
-    /* 
-    ---------------------------------------------------------------
-    Phase 3. Move Player And Show Cinematic Zoom Camera
-    ---------------------------------------------------------------
-    */
-
-    {
-        [_x, "zoom", "HQ", "Mission is a go..."] call FUNC(CompilePlayerTransitionCamera);
-    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
-    sleep 2;
 
     /* 
     ---------------------------------------------------------------
-    Phase 4. Mark group As in Active Mission
+    Phase 2. Mark group As in Active Mission
     ---------------------------------------------------------------
     */
 
@@ -86,7 +72,7 @@ if (_groupstate == 0) then {
     
     /* 
     ---------------------------------------------------------------
-    Phase 5. Start executing and Tracking Tasks (Mission Loop)
+    Phase 3. Start executing and Tracking Tasks (Mission Loop)
     ---------------------------------------------------------------
     */
 
@@ -150,38 +136,6 @@ if (_groupstate == 0) then {
 
     } forEach _missiontaskmodules;
     
-    /* 
-    ---------------------------------------------------------------
-    FINAL PHASE 1. Create Meet Mission Task For Exfil
-    ---------------------------------------------------------------
-    */
-
-    private _title = "Move to Extraction";
-    private _desc = "Move all group members to extraction area to end mission.";
-    [group _player, _missionegressloc,_title,_desc] call FUNC(CreateMeetTask);
-
-    /* 
-    ---------------------------------------------------------------
-    FINAL PHASE 2. Camera Transition Out of Mission
-    ---------------------------------------------------------------
-    */
-
-    {
-        [_x, "fade", "", "Returning to base..."] call FUNC(CompilePlayerTransitionCamera);
-    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
-    sleep 2;
-    
-    /* 
-    ---------------------------------------------------------------
-    FINAL PHASE 3. Move Player & Camera Zoom Down
-    ---------------------------------------------------------------
-    */
-
-    units(groupFromNetId _groupid) apply {_x setPos _missionhqloc};
-    {
-        [_x, "zoom", "", ""] call FUNC(CompilePlayerTransitionCamera);
-    } forEach (units(groupFromnetId _groupid) select {_x in allplayers});
-    sleep 2;
     
     /* 
     ---------------------------------------------------------------
@@ -189,6 +143,14 @@ if (_groupstate == 0) then {
     ---------------------------------------------------------------
     */
 
+    // -- Reward Phase
+    if (_missionaccomplished) then {
+        _missioncamaccomplished remoteExec ["BIS_fnc_call",groupFromNetId _groupid];
+    } else {
+        _missionfailed remoteExec ["BIS_fnc_call",groupFromNetId _groupid];
+    };
+
+    // -- Cleanup Phase
     private _leftovers = [_groupid] call FUNC(GetplayerMissionObjects);
     _leftovers call FUNC(AddUnitToCleanupList);
     

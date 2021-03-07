@@ -135,7 +135,7 @@ class HEDES_MissionGiverDialog
 					idc = HEDESGUI_MISSIONDIALOG_DESCRIPTION;
 					x = 0;
 					y = 0;
-					w = 20 * GUI_GRID_W;
+					w = 19 * GUI_GRID_W;
 					h = 24 * GUI_GRID_H;
 					colorBackground[] = {0,0,0,0.5};			
 				};

@@ -84,27 +84,25 @@ while { true } do {
 
     // -- Keep them walking
     {		
-        if (isWalking (leader _x)) then
-        {
-            private _wppos = [getPos _x, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+        private _wppos = [getPos _x, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+        private _moveloc = _wppos;
 
-            switch (selectRandom[1,2]) do {
-                case 1: { 
+        switch (selectRandom[1,2]) do {
+            case 1: { 
+                _moveloc = getPos nearestBuilding _wppos; 
+            };
+            case 2: { 
+                _roads = _wppos nearRoads 50;
+                if (count _roads > 0) then {
+                    _moveloc = getPos (selectRandom _roads); 
+                } else {
                     _moveloc = getPos nearestBuilding _wppos; 
-                };
-                case 2: { 
-                    _roads = _wppos nearRoads 50;
-                    if (count _roads > 0) then {
-                        _moveloc = getPos (selectRandom _roads); 
-                    } else {
-                        _moveloc = getPos nearestBuilding _wppos; 
-                    };						
-                };
-            };		
+                };						
+            };
+        };		
 
-            _x move _moveloc;
-            _x setSpeedMode "LIMITED";
-        };
+        _x doMove _moveloc;
+        _x setSpeedMode "LIMITED";
 
         sleep 1;
 

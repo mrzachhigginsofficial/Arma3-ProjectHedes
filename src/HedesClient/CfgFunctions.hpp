@@ -7,12 +7,6 @@ class CfgFunctions
 			PATHTO_INITFUNC(initmod)
 		};
 
-		class camera
-		{
-			PATHTO_FUNCDIR(cameradeploystart,camera)
-			PATHTO_FUNCDIR(cameramissionstart,camera)
-		};
-
 		class ALambientbattle
 		{
 			PATHTO_FUNCDIR(alambientbattle_tracer_effect,ALambientbattle)
