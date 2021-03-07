@@ -61,7 +61,8 @@ while {_i < _maxvehs} do
 			(_vehgrp select 2) deleteGroupWhenEmpty true;
 
 			// -- Move Vehicle Around While Vehicle and Driver Alive
-			while {alive (_vehgrp select 0) && alive (driver(_vehgrp select 0))} do {
+			private _crewcount = count(_vehgrp select 1);
+			while {(alive (_vehgrp select 0)) && ((count(_vehgrp select 1 select {alive _x})) >= _crewcount)} do {
 				private _newpos = [[_marker], [], {
 					isOnRoad _this
 				}] call BIS_fnc_randomPos;

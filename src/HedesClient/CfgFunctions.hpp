@@ -4,7 +4,7 @@ class CfgFunctions
 	{
 		class init
 		{
-			PATHTO_INITFUNC(initmod)
+			PATHTO_INITFUNC(initclient)
 		};
 
 		class ALambientbattle

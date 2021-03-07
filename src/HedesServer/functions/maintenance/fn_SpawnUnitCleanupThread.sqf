@@ -21,7 +21,7 @@ if (isnil GLOABLMISSIONCLEANUPQUEUE ) then {
 
 while {true} do {
 	{
-		if { count(_x nearEntities ["Man",300] select {_x in allPlayers}) > 0 } then
+		if ( count(_x nearEntities ["Man",300] select {_x in allPlayers}) > 0 ) then
 		{
 			deleteVehicle _x;
 		};

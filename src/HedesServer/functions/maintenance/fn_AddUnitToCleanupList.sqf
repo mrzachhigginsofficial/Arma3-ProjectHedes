@@ -15,7 +15,7 @@ Author: ZanchoElGrande
 
 #include "\x\HEDESServer\macros.h"
 
-private _newarray = missionNameSpace getVariable GLOABLMISSIONCLEANUPQUEUE;
+private _newarray = missionNameSpace getVariable [ GLOABLMISSIONCLEANUPQUEUE ,[]] ;
 
 switch (typeName _this) do
 {
@@ -28,4 +28,4 @@ switch (typeName _this) do
 	};
 };
 
-missionNamespace setVariable [GLOABLMISSIONCLEANUPQUEUE,_newarray];
+missionNamespace setVariable [ GLOABLMISSIONCLEANUPQUEUE ,_newarray];

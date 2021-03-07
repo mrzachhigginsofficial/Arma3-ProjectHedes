@@ -29,7 +29,7 @@ private _drawnameplatercmd = {
     missionNamespace setVariable ["HEDESMISSIONGIVERS",_newvarr + [_this]];
     addMissionEventHandler ["Draw3D", { 
         { 
-            drawIcon3D ["", [0.73,0.24,0.11,1], visiblePosition _x vectorAdd [0,0,4], 0.6, 0.6, 45, format ["%1 (Missions)", name _x], 1, 0.05, "TahomaB"]; 
+            drawIcon3D ["", [0.73,0.24,0.11,1], visiblePosition _x vectorAdd [0,0,4], 0.6, 0.6, 45, format ["%1 (Missions)", name _x], 1, 0.05, "EtelkaMonospacePro"]; 
         } foreach ((missionNamespace getVariable ["HEDESMISSIONGIVERS",[]]) select {_x distance player < 20})
     }];
 };
@@ -50,7 +50,7 @@ while {
     {
         private _rndmax = count(_missionmanagers);
         private _rndmid = _rndmax/2;
-        private _rnd = floor random[0,_rndmid, _rndmax];
+        private _rnd = ceil random[0,_rndmid, _rndmax];
         
         if (count(_missionmanagers) > _rndmax) then {
             echo "Not enough mission managers attached to randomize.";
@@ -91,7 +91,7 @@ while {
         
         if (_randomize) then
         {
-            private _rnd = floor random[0,_maxtasks/2,_maxtasks];
+            private _rnd = ceil random[0,_maxtasks/2,_maxtasks];
             private _newtaskarray = [];
             while {count(_newtaskarray) <= _rnd} do
             {

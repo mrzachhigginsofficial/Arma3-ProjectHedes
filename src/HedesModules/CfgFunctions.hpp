@@ -15,6 +15,7 @@ class CfgFunctions
 			//-- Ambient Unit Inits
 			PATHTO_FUNC(InitAreaPatrollingVehicles)
 			PATHTO_FUNC(InitAreaAmbientCivs)
+			PATHTO_FUNC(InitAreaAmbientGarrison)
 		};
 	};
 };

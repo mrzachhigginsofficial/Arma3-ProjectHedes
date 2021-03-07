@@ -75,7 +75,7 @@ HEDESMissionDialogCode_LBelect = {
         ];
     
     _dialog_missiondesc ctrlsetstructuredtext parsetext 
-        ([_missiondescription, _taskDescriptions joinstring "<br/><br/>"] joinstring "<br/><br/>");
+        ([_missiondescription, _taskDescriptions joinstring "<br/>"] joinstring "<br/><br/>");
 
     _dialog_missiondesc ctrlSetPositionH ((ctrlTextHeight _dialog_missiondesc) * 1);
     _dialog_missiondesc ctrlCommit 0;

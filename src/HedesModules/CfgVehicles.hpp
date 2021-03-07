@@ -337,4 +337,55 @@ class CfgVehicles
 			};
 		};
 	};
+
+	class HEDES_AmbientModule_Garrison: HEDES_AmbientModule_BASE
+	{
+		displayName = "Area Ambient Garrison";
+		function = QUOTE(FUNC(InitAreaAmbientGarrison));
+
+		class Attributes: AttributesBase
+		{
+			class NumbersofUnits : Edit
+			{
+				property = "HEDES_AmbientModule_NumOfUnits";
+				displayName = "Number of Garrisoned Units";
+				tooltip = "Number of units that are garrisoned here.";
+				defaultValue = "5";
+			};
+
+			class UnitPool
+			{
+				property = "HEDES_AmbientModule_UnitPool";
+				control = "EditCodeMulti5";
+				displayName = "Array of unit types that will spawn as garrison.";
+				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
+				defaultValue = "['CUP_O_TK_SpecOps','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_MG']";
+				expression = "_this setVariable ['%s',_value];";
+			};	
+
+			class GarrisonSide : Combo
+			{
+				property = "HEDES_AmbientModule_UnitSide";
+				displayName = "Garrison Side";
+				tooltip = "The type of mission manager used.";
+				defaultValue = "EAST";
+				
+				class Values
+				{
+					class east	{
+						name = "EAST"; 
+						value = "EAST";
+					};
+					class gues	{
+						name = "GUER"; 
+						value = "GUER";
+					};
+					class west	{
+						name = "WEST"; 
+						value = "WEST";
+					};
+				};
+			};
+		};
+	};
 };

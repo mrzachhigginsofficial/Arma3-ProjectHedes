@@ -4,7 +4,7 @@ class CfgFunctions
 	{
 		class init
 		{
-			PATHTO_INITFUNC(initmod)
+			PATHTO_INITFUNC(initserver)
 		};
 
 		class ALambientbattle
@@ -22,11 +22,10 @@ class CfgFunctions
 			PATHTO_FUNCDIR(SpawnUnitCleanupThread,maintenance)
 		};
 
-		class session 
+		class persistence
 		{
-			PATHTO_FUNCDIR(MovePlayerInMission,session)
-			PATHTO_FUNCDIR(RespawnPlayer,session)
-			PATHTO_FUNCDIR(SetupNewPlayer,session)
+			PATHTO_FUNCDIR(SaveLoudOut,persistence)
+			PATHTO_FUNCDIR(LoadLoudout,persistence)
 		};
 
 		class missions 
