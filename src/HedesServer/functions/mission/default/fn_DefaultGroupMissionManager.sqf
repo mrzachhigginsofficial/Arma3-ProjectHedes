@@ -152,8 +152,5 @@ if (_groupstate == 0) then {
 
     // -- Cleanup Phase
     private _leftovers = [_groupid] call FUNC(GetplayerMissionObjects);
-    _leftovers call FUNC(AddUnitToCleanupList);
-    
-    [_groupid, 0, _missiontype] call FUNC(setplayerMissionState);
-    [_endMissionTask] call BIS_fnc_deleteTask;
+    (_leftovers - [objNull]) call FUNC(AddUnitToCleanupList);
 };

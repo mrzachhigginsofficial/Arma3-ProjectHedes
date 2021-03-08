@@ -12,9 +12,13 @@ Author: ZanchoElGrande
 
 #include "\x\HEDESServer\macros.h"
 if (!isServer) exitWith {};
+if (isNil {profilenamespace getVariable PROFILESAVEDUNITLOADOUTS }) exitWith { echo "Nothing has been saved."};
 
 private _player = _this;
+private _data = [(profilenamespace getvariable PROFILESAVEDUNITLOADOUTS ), getplayeruid _this] call CBA_fnc_hashGet;
 
-private _savedloadouts = profileNameSpace getVariable [ PROFILESAVEDUNITLOADOUTS , []];
-private _loudout = _savedloadouts select {_x select 0 == getPlayerUID _player} select 1;
-_player setUnitLoadout _loudout;
+if (!isNil {_data}) then
+{
+	_player setUnitLoadout _data;
+};
+

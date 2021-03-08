@@ -27,7 +27,7 @@ if (!isServer) exitWith {};
 
 private _logic = param [0, objNull, [objNull]];
 
-private _maxvehs = call compile (_logic getVariable ["NumberOfvehicles", 5]);
+private _maxvehs = call compile (_logic getVariable ["NumberOfvehicles", "5"]);
 private _i = 0;
 
 while {_i < _maxvehs} do

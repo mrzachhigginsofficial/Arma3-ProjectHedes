@@ -58,13 +58,38 @@ class CfgVehicles
 		{
 			class Units: Units
 			{
-				property = "HEDES_MissionModule_Units";
+				property = "HEDES_AmbientModule_Units";
 			};
 		};
 
 		class ModuleDescription: ModuleDescription
 		{
-			description = "This is a short description of the mission manager module.";
+			description = "This is a short description of the ambient units module.";
+			sync[] = {"HEDES_MissionModule_BASE","HEDES_AmbientModule_BASE"};
+		};
+	};
+
+	class HEDES_PersistenceModules_BASE : Module_F
+	{
+		category = "HEDES_PersistenceModules";
+		displayName = "Persistence Modules Base (Empty)";
+		functionPriority = 1;
+		is3DEN = 0;
+		isGlobal = 2;
+		isTriggerActivated 	= 0;
+		scope = 2;
+
+		class Attributes: AttributesBase
+		{
+			class Units: Units
+			{
+				property = "HEDES_PersistenceModule_Units";
+			};
+		};
+
+		class ModuleDescription: ModuleDescription
+		{
+			description = "This is a short description of the persistence module.";
 			sync[] = {"HEDES_MissionModule_BASE","HEDES_AmbientModule_BASE"};
 		};
 	};
@@ -253,7 +278,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only use infantry here.";
-				defaultValue = "['CUP_O_TK_INS_Bomber','CUP_O_TK_INS_Mechanic','CUP_O_TK_INS_Commander','CUP_O_TK_INS_Guerilla_Medic','CUP_O_TK_INS_Soldier_MG','CUP_O_TK_INS_Soldier_AR','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier']";
+				defaultValue = """['CUP_O_TK_INS_Bomber','CUP_O_TK_INS_Mechanic','CUP_O_TK_INS_Commander','CUP_O_TK_INS_Guerilla_Medic','CUP_O_TK_INS_Soldier_MG','CUP_O_TK_INS_Soldier_AR','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier']""";
 				expression = "_this setVariable ['%s',_value];";
 			};		
 		};
@@ -272,7 +297,7 @@ class CfgVehicles
 				property = "HEDES_AmbientModule_NumOfVehs";
 				displayName = "Number of vehicles";
 				tooltip = "Number of vehicles that can be in the area at one time.";
-				defaultValue = "5";
+				defaultValue = """5""";
 			};
 
 			class VehicleSpeed : Edit
@@ -280,7 +305,7 @@ class CfgVehicles
 				property = "HEDES_AmbientModule_VehSpeed";
 				displayName = "Vehicle Speed";
 				tooltip = "Speed of Vehicle (50 and below is a nice choice)";
-				defaultValue = "25";
+				defaultValue = """25""";
 			};
 
 			class MarkerName : Edit
@@ -288,7 +313,7 @@ class CfgVehicles
 				property = "HEDES_AmbientModule_MarkerName";
 				displayName = "Marker Name";
 				tooltip = "Name of marker that the units will patrol inside of.";
-				defaultValue = "Marker Name";
+				defaultValue = """Marker Name""";
 			};
 
 			class UnitPool
@@ -297,7 +322,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
-				defaultValue = "['CUP_O_LR_MG_TKM','CUP_O_LR_SPG9_TKM']";
+				defaultValue = """['CUP_O_LR_MG_TKM','CUP_O_LR_SPG9_TKM']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 		};
@@ -315,7 +340,7 @@ class CfgVehicles
 				property = "HEDES_AmbientModule_NumOfCivs";
 				displayName = "Number of Civilians";
 				tooltip = "Number of civilians that can be in the area at one time.";
-				defaultValue = "5";
+				defaultValue = """5""";
 			};
 
 			class UnitPool
@@ -324,7 +349,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types that will spawn as civilians.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
-				defaultValue = "['CUP_C_R_Rocker_01','CUP_C_TK_Man_05_Jack','CUP_C_TK_Man_05_Waist','CUP_C_TK_Man_06_Waist']";
+				defaultValue = """['CUP_C_R_Rocker_01','CUP_C_TK_Man_05_Jack','CUP_C_TK_Man_05_Waist','CUP_C_TK_Man_06_Waist']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 			
@@ -350,7 +375,7 @@ class CfgVehicles
 				property = "HEDES_AmbientModule_NumOfUnits";
 				displayName = "Number of Garrisoned Units";
 				tooltip = "Number of units that are garrisoned here.";
-				defaultValue = "5";
+				defaultValue = """5""";
 			};
 
 			class UnitPool
@@ -359,7 +384,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types that will spawn as garrison.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
-				defaultValue = "['CUP_O_TK_SpecOps','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_MG']";
+				defaultValue = """['CUP_O_TK_SpecOps','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_MG']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 
@@ -368,7 +393,7 @@ class CfgVehicles
 				property = "HEDES_AmbientModule_UnitSide";
 				displayName = "Garrison Side";
 				tooltip = "The type of mission manager used.";
-				defaultValue = "EAST";
+				defaultValue = """EAST""";
 				
 				class Values
 				{
@@ -376,7 +401,7 @@ class CfgVehicles
 						name = "EAST"; 
 						value = "EAST";
 					};
-					class gues	{
+					class guer	{
 						name = "GUER"; 
 						value = "GUER";
 					};
@@ -390,7 +415,7 @@ class CfgVehicles
 	};
 
 	/* HEDES Persistence Modules */
-	class HEDES_PersistModule_Loadout: HEDES_AmbientModule_BASE
+	class HEDES_PersistModule_Loadout: HEDES_PersistenceModules_BASE
 	{
 		displayName = "Unit Loadout Persistence";
 		function = QUOTE(FUNC(InitPersistenceManager));

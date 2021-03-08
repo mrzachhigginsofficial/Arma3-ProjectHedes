@@ -18,8 +18,8 @@ Author: ZanchoElGrande
 if (!isServer) exitWith {};
 
 private _logic = param [0, objNull, [objNull]];
-private _unitpool = _logic getVariable ["UnitPool",[]];
-private _maxcivs = _logic getVariable ["NumbersofCivs",5];
+private _unitpool = call compile (_logic getVariable ["UnitPool","[]"]);
+private _maxcivs = call compile (_logic getVariable ["NumbersofCivs","5"]);
 private _bombers = _logic getVariable ["SuicideBombers",true];
 
 private _civgroup = createGroup [CIVILIAN, false];
@@ -72,11 +72,11 @@ while { true } do {
 
     // -- Refill Unit Pool 
 	if (
-        (count((units _civgroup) select {alive _x})) < (call compile _maxcivs) &&
+        (count((units _civgroup) select {alive _x})) < _maxcivs &&
         count(_logic nearEntities ["Man",150] select {_x in allPlayers}) == 0
     ) then{
 		private _safespawnpos = [getPos _logic, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-		private _civunit = _civgroup createUnit [selectRandom (call compile _unitpool),_safespawnpos,[],0,"FORM"];
+		private _civunit = _civgroup createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
         _civunit enableDynamicSimulation true;
         _civunit setBehaviour "CARELESS";
         _civunit setSpeedMode "LIMITED";

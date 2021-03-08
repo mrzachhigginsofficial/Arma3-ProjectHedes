@@ -13,10 +13,17 @@ Author: ZanchoElGrande
 #include "\x\HEDESServer\macros.h"
 if (!isServer) exitWith {};
 
-private _player = _this;
+private _unit = param[0,player];
+private _uid = param[1,getPlayerUID _unit];
+private _data = getUnitLoadout [_unit, false];
 
-private _savedloadouts = profileNameSpace getVariable [ PROFILESAVEDUNITLOADOUTS , []];
-_savedloadouts pushBack [GetPlayerUID _player, getUnitLoadout [_player, true]];
-profileNamespace setVariable [ PROFILESAVEDUNITLOADOUTS , _savedloadouts ];
+if (isNil {profilenamespace getVariable PROFILESAVEDUNITLOADOUTS }) then 
+{
+	private _default = [] call CBA_fnc_hashCreate; 
+	profileNamespace setVariable [ PROFILESAVEDUNITLOADOUTS , _default ];
+};
+
+private _sethash = profileNameSpace getVariable PROFILESAVEDUNITLOADOUTS ;
+[_sethash, _uid, _data] call CBA_fnc_hashSet;
 
 saveProfileNamespace;
