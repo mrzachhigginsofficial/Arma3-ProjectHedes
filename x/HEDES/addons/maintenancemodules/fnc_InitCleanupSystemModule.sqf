@@ -17,10 +17,10 @@ while {true} do {
 			deleteVehicle _x;
 		};
 		sleep 1;
-	} foreach (missionNamespace getVariable GVAR(GLOBALCLEANUPLIST );
+	} foreach (missionNamespace getVariable GVAR(GLOBALCLEANUPLIST);
 
-	private _updatedvar = missionNamespace getVariable GVAR(GLOBALCLEANUPLIST ;
-	missionNamespace setVariable [ GVAR(GLOBALCLEANUPLIST , _updatedvar - [objNull]];
+	private _updatedvar = missionNamespace getVariable GVAR(GLOBALCLEANUPLIST) ;
+	missionNamespace setVariable [ GVAR(GLOBALCLEANUPLIST) , _updatedvar - [objNull]];
 
 	sleep 5;
 };
