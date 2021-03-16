@@ -63,14 +63,6 @@ class CfgVehicles
 
 		class Attributes: AttributesBase
 		{
-			class MissionGiverName : Edit
-			{
-				property = "HEDES_MissionSystem_GiverName";
-				displayName = "Mission Giver Name";
-				tooltip = "The name of the mission giver.";
-				defaultValue = """Ivan Wojszyk""";
-			};
-
 			class MissionGiverAvatar : Edit
 			{
 				property = "HEDES_MissionSystem_GiverAvatar";
@@ -100,7 +92,7 @@ class CfgVehicles
 				property = "HEDES_MissionModule_TaskType";
 				displayName = "Task Type";
 				tooltip = "The task the mission will spawn.";
-				defaultValue = "'destory'";
+				defaultValue = "'destroy'";
 				
 				class Values
 				{
@@ -119,8 +111,8 @@ class CfgVehicles
 			class TaskName : Edit
 			{
 				property = "HEDES_MissionModule_TaskName";
-				displayName = "Task Name";
-				tooltip = "Task name...";
+				displayName = "Task Name (no caps unless proper noun)";
+				tooltip = "Task name as is would appear in the mission dialog.";
 				defaultValue = """Task Name""";
 			};
 
@@ -129,7 +121,7 @@ class CfgVehicles
 				property = "HEDES_MissionModule_TaskDesc";
 				control = "EditMulti5";
 				displayName = "Task Description";
-				tooltip = "Task description...";
+				tooltip = "Task description as it would appear in the mission dialog. This would come after the task name and describes the task.";
 				defaultValue = """Task Description""";
 				expression 	= "_this setVariable ['%s',_value];";
 			};

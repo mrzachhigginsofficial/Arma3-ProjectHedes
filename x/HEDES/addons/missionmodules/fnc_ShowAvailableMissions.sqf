@@ -111,5 +111,6 @@ HEDESMissionDialogEvent_CANCELBUTTON = _dialog_Cancelbutton ctrlAddEventHandler 
     missionnamespace setVariable [_varname, _x];
 } forEach _missionlist;
 
+
 _dialog_missions lbSetCurSel 0;
 [objNull, 0] call HEDESMissionDialogCode_LBelect;

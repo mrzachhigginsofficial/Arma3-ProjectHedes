@@ -7,11 +7,13 @@
 	"buildPath": "build",
 	"privateKey": "",
 	"serverDirs": [
+		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
 		"x/HEDES/addons/missionmodules"
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
+		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
 		"x/HEDES/addons/missionmodules"
 	],
