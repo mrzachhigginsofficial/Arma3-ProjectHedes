@@ -48,7 +48,7 @@ class CfgVehicles
 
 	class HEDES_MaintenanceModules_Cleanup : HEDES_MaintenanceModule_BASE
 	{
-		displayName = "Mission Deploy Area";
+		displayName = "Cleanup Units Maintenance Module";
 		function = QUOTE(FUNCMAIN(InitCleanupSystemModule));
 	};
 };

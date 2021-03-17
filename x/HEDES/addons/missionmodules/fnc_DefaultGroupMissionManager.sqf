@@ -145,6 +145,5 @@ if (_groupstate == 0) then {
     };
 
     // Cleanup Phase
-    ISNILS(GVAR(GLOBALCLEANUPLIST),[]);
-    GVAR(GLOBALCLEANUPLIST) append (_groupmissionobjects - [objNull]);
+    _groupmissionobjects call FUNCMAIN(AppendCleanupSystemObjects);
 };

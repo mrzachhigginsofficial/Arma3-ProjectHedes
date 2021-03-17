@@ -5,6 +5,7 @@ class CfgFunctions
         class missionmodules
         {
             PATHTO_FNC(InitCleanupSystemModule)
+            PATHTO_FNC(AppendCleanupSystemObjects)
         };
     };
 };

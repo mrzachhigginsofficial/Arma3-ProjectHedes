@@ -8,7 +8,7 @@ Author: ZanchoElGrande
 #include "script_component.hpp"
 if (!isServer) exitWith {};
 
-ISNILS(GVAR(GLOBALCLEANUPLIST),[]);
+ISNILS(GVARMAIN(GLOBALCLEANUPLIST),[]);
 
 while {true} do {
 	{
@@ -17,10 +17,9 @@ while {true} do {
 			deleteVehicle _x;
 		};
 		sleep 1;
-	} foreach (missionNamespace getVariable GVAR(GLOBALCLEANUPLIST);
+	} foreach (missionNamespace getVariable QGVARMAIN(GLOBALCLEANUPLIST));
 
-	private _updatedvar = missionNamespace getVariable GVAR(GLOBALCLEANUPLIST) ;
-	missionNamespace setVariable [ GVAR(GLOBALCLEANUPLIST) , _updatedvar - [objNull]];
+	missionNamespace setVariable [ QGVARMAIN(GLOBALCLEANUPLIST) , GVARMAIN(GLOBALCLEANUPLIST) - [objNull]];
 
 	sleep 5;
 };

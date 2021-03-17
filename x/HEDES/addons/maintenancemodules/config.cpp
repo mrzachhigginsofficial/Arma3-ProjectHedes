@@ -2,7 +2,7 @@
 
 class CfgPatches {
 	class ADDON {
-		name = "Project Hedes Missions";
+		name = "Project Hedes Maintenance";
 		author = "ZanchoElGrande";
 		url = "";
 		requiredAddons[] = { "CBA_main" };
@@ -11,9 +11,6 @@ class CfgPatches {
 	};
 };
 
-#include "CfgEventhandlers.hpp"
 #include "CfgFunctions.hpp"
 #include "CfgVehicles.hpp"
 #include "CfgFactionClasses.hpp"
-#include "GUI_BaseControlClasses.hpp"
-#include "GUI_MissionGiverDialog.hpp"

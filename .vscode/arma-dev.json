@@ -9,13 +9,15 @@
 	"serverDirs": [
 		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
-		"x/HEDES/addons/missionmodules"
+		"x/HEDES/addons/missionmodules",
+		"x/HEDES/addons/maintenancemodules"
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
 		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
-		"x/HEDES/addons/missionmodules"
+		"x/HEDES/addons/missionmodules",
+		"x/HEDES/addons/maintenancemodules"
 	],
 	"clientMods": [
 		"!Workshop\\@Enhanced Debug Console",
