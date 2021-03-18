@@ -10,14 +10,18 @@
 		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
 		"x/HEDES/addons/missionmodules",
-		"x/HEDES/addons/maintenancemodules"
+		"x/HEDES/addons/maintenancemodules",
+		"x/HEDES/addons/ambientmodules",
+		"x/HEDES/addons/persistencemodules"
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
 		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
 		"x/HEDES/addons/missionmodules",
-		"x/HEDES/addons/maintenancemodules"
+		"x/HEDES/addons/maintenancemodules",
+		"x/HEDES/addons/ambientmodules",
+		"x/HEDES/addons/persistencemodules"
 	],
 	"clientMods": [
 		"!Workshop\\@Enhanced Debug Console",
