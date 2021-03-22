@@ -50,7 +50,7 @@ HEDES_3P_CivFlee={
         _civ domove _HP;
         _civ removeAllEventHandlers "firedNear";
 
-        _civ call FUNC(AddUnitToCleanupList);
+        _civ call FUNCMAIN(AddUnitToCleanupList);
     }];
 };
 

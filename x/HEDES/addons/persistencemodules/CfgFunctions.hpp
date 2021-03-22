@@ -2,7 +2,7 @@ class CfgFunctions
 {
     class PREFIX 
     {
-        class missionmodules
+        class persistencemodules
         {
             PATHTO_FNC(InitPersistenceManager)
 			PATHTO_FNC(LoadLoadOut)
