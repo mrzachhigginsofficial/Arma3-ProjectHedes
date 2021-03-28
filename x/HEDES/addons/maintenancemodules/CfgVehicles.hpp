@@ -51,4 +51,10 @@ class CfgVehicles
 		displayName = "Cleanup Units Maintenance Module";
 		function = QUOTE(FUNCMAIN(InitCleanupSystemModule));
 	};
+
+	class HEDES_MaintenanceModules_SafeZone : HEDES_MaintenanceModule_BASE
+	{
+		displayName = "Cleanup Units Outside of Zone Module";
+		function = QUOTE(FUNCMAIN(InitSafeZoneCleanup));
+	};
 };

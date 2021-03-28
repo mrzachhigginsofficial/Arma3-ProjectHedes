@@ -10,6 +10,8 @@ if (!isServer) exitWith {};
 
 params["_side","_veh","_unitpool","_spawnpoint"],;
 
+_spawnpoint = [_spawnpoint, 20, 100,0,1] call BIS_fnc_findSafePos;
+
 private _plane = createVehicle [_veh, _spawnpoint, [], 0, "FLY"]; 
 private _planecrewtemp = createVehicleCrew _plane;    
 private _planecrewgrp = createGroup [_side, true];

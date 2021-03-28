@@ -56,8 +56,8 @@ while {_i < _maxvehs} do
 			};
 
 			// -- Move Unit To Global Cleanup Thread
-			(_vehgrp select 0) call FUNC(AddUnitToCleanupList);
-			(_vehgrp select 1 select {alive _x}) call FUNC(AddUnitToCleanupList);
+			(_vehgrp select 0) call FUNCMAIN(AppendCleanupSystemObjects);
+			(_vehgrp select 1 select {alive _x}) call FUNCMAIN(AppendCleanupSystemObjects);
 
 			sleep 360;
 		};

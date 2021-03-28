@@ -28,6 +28,6 @@ _wp1 setWaypointStatements ["true",	_wp1statement];
 
 while {count(assignedCargo _vehicle) > 0 } do {sleep 5};
 
-private _wp2 = _planecrewgrp addwaypoint [_droppoint,5]; 
+private _wp2 = _planecrewgrp addwaypoint [_spawnpoint,5]; 
 _wp2 setWaypointType "MOVE";    
 _wp2 setWaypointStatements ["true",	"_veh = vehicle this; { _veh deleteVehicleCrew _x } foreach (units this); deleteVehicle _veh;"];

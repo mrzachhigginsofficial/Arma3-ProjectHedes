@@ -13,7 +13,8 @@
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
 		"x/HEDES/addons/persistencemodules",
-		"x/HEDES/addons/combatzonemodules"
+		"x/HEDES/addons/combatzonemodules",
+		"x/HEDES/addons/loadoutmodules"
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
@@ -23,7 +24,8 @@
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
 		"x/HEDES/addons/persistencemodules",
-		"x/HEDES/addons/combatzonemodules"
+		"x/HEDES/addons/combatzonemodules",
+		"x/HEDES/addons/loadoutmodules"
 	],
 	"clientMods": [
 		"!Workshop\\@Enhanced Debug Console",

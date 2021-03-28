@@ -26,8 +26,8 @@ if (!isServer) exitWith {};
                         _this setCaptive true;
                         _this playMoveNow "ApanPknlMstpSnonWnonDnon_G03";
 
-                        _weaponHolder call FUNCMAIN(AddUnitToCleanupList);
-                        _this call FUNCMAIN(AddUnitToCleanupList);
+                        _weaponHolder call FUNCMAIN(AppendCleanupSystemObjects);
+                        _this call FUNCMAIN(AppendCleanupSystemObjects);
                     }
                 } forEach (units _this select {
                     alive _x
