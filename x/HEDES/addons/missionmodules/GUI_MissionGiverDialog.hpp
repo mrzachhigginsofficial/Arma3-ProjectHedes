@@ -39,6 +39,7 @@ class HEDES_MissionGiverDialog
 			h = 1 * GUI_GRID_H;
 			text = "Accept";
 		};
+
 		class MissionCancel: RscButton
 		{
 			idc = HEDESGUI_MISSIONDIALOG_CANCELBTN;
@@ -48,6 +49,7 @@ class HEDES_MissionGiverDialog
 			h = 1 * GUI_GRID_H;
 			text = "Decline";
 		};
+
 		class MissionGiverAvatar: RscPicture
 		{
 			idc = HEDESGUI_MISSIONDIALOG_AVATAR;
@@ -57,6 +59,7 @@ class HEDES_MissionGiverDialog
 			w = 4 * GUI_GRID_W;
 			h = 4 * GUI_GRID_H;
 		};
+
 		class MissionGiverName: RscText
 		{
 			idc = HEDESGUI_MISSIONDIALOG_NAME;
@@ -68,6 +71,7 @@ class HEDES_MissionGiverDialog
 			colorText[] = {1,1,1,1};
 			sizeEx = 2 * GUI_GRID_H;
 		};
+
 		class MissionGiverDialog: RscText
 		{
 			idc = HEDESGUI_MISSIONDIALOG_DIALOG;
@@ -79,6 +83,7 @@ class HEDES_MissionGiverDialog
 			colorText[] = {1,1,1,1};
 			colorBackground[] = {0,0,0,0};
 		};
+
 		class TitleBar: RscText
 		{
 			idc = HEDESGUI_MISSIONDIALOG_TITLEBAR;
@@ -88,6 +93,7 @@ class HEDES_MissionGiverDialog
 			h = 1 * GUI_GRID_H;
 			colorBackground[] = {0,0,0,1};
 		};
+		
 		class SelectMission: RscListbox
 		{
 			idc = HEDESGUI_MISSIONDIALOG_LISTBOX;

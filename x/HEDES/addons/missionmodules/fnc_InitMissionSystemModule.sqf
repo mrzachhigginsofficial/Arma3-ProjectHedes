@@ -72,12 +72,12 @@ _missionGiver call FUNCMAIN(AppendMissionGiverNamePlates);
                 "player == leader(group player)",
                 5
             ]
-        ] remoteExec ["addAction",0,false];
+        ] remoteExec ["addAction",0,true];
 
         // Wait A Bit To Refresh (Paramaterize This)
         sleep _refreshTime;
 
         // Remove All Actions (Refresh Mission List And Combo)
-        [_missiongiver] remoteExec ["removeAllActions",0,false];
+        [_missiongiver] remoteExec ["removeAllActions",0,true];
     };
 };

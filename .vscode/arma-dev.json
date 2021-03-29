@@ -16,6 +16,12 @@
 		"x/HEDES/addons/combatzonemodules",
 		"x/HEDES/addons/loadoutmodules"
 	],
+	"serverMods": [
+		"!Workshop\\@CBA_A3",
+		"!Workshop\\@CUP_Weapons",
+		"!Workshop\\@CUP_Units",
+		"!Workshop\\@CUP_Vehicles"
+	],
 	"serverUse32bit": false,
 	"clientDirs": [
 		"x/HEDES/addons/common",
@@ -31,9 +37,9 @@
 		"!Workshop\\@Enhanced Debug Console",
 		"!Workshop\\@CBA_A3",
 		"!Workshop\\@3den Enhanced",
-		"!Workshop\\@CUP Weapons",
-		"!Workshop\\@CUP Units",
-		"!Workshop\\@CUP Vehicles"
+		"!Workshop\\@CUP_Weapons",
+		"!Workshop\\@CUP_Units",
+		"!Workshop\\@CUP_Vehicles"
 	],
 	"ftpConnection": {}
 }

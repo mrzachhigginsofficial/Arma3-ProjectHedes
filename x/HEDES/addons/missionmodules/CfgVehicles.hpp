@@ -25,9 +25,9 @@ class CfgVehicles
 		displayName = "Mission Manager Base Module (Empty)";
 		functionPriority = 1;
 		is3DEN = 0;
-		isGlobal = 2;
 		isTriggerActivated 	= 0;
-		scope = 2;
+		isGlobal = 1;
+		scope = 1;
 
 		class Attributes: AttributesBase
 		{
@@ -49,17 +49,20 @@ class CfgVehicles
 	class HEDES_MissionModule_DEPLOY : HEDES_MissionModule_BASE
 	{
 		displayName = "Mission Deploy Area";
+		scope = 2;
 	};
 
 	class HEDES_MissionModule_INGRESS : HEDES_MissionModule_BASE
 	{
 		displayName = "Mission Ingress";
+		scope = 2;
 	};
 
 	class HEDES_MissionModule_SYSTEM: HEDES_MissionModule_BASE
 	{
 		displayName = "Mission System Module";
 		function = QUOTE(FUNCMAIN(InitMissionSystemModule));
+		scope = 2;
 
 		class Attributes: AttributesBase
 		{
@@ -84,6 +87,7 @@ class CfgVehicles
 	class HEDES_MissionModule_TASK: HEDES_MissionModule_BASE
 	{
 		displayName = "Mission Task Module";
+		scope = 2;
 
 		class Attributes: AttributesBase
 		{
@@ -131,6 +135,7 @@ class CfgVehicles
 	class HEDES_MissionModule_TASKEFFECT: HEDES_MissionModule_BASE
 	{
 		displayName = "Mission Task Effect Module";
+		scope = 2;
 
 		class Attributes: AttributesBase
 		{
@@ -160,6 +165,7 @@ class CfgVehicles
 	class HEDES_MissionModule_MANAGER: HEDES_MissionModule_BASE
 	{
 		displayName = "Mission Manager Module";
+		scope = 2;
 
 		class Attributes: AttributesBase
 		{
@@ -211,6 +217,7 @@ class CfgVehicles
 	class HEDES_GenericModule_UNITPOOL: HEDES_MissionModule_BASE
 	{
 		displayName	= "Unit Pool Module";
+		scope = 2;
 
 		class Attributes : AttributesBase
 		{

@@ -123,6 +123,41 @@ class CfgVehicles
 		};
 	};
 
+	class HEDES_AmbientModule_EmptyVehicles: HEDES_AmbientModule_BASE
+	{
+		displayName = "Empty Vehicles Module";
+		function = QUOTE(FUNCMAIN(InitEmptyVehicles));
+
+		class Attributes: AttributesBase
+		{
+			class MarkerName : Edit
+			{
+				property = "HEDES_AmbientModule_MarkerName";
+				displayName = "Name of marker vehicles will spawn in.";
+				tooltip = "Name of marker the vehicles will spawn in.";
+				defaultValue = """Marker Name""";
+			};
+
+			class NumOfVehs : Edit
+			{
+				property = "HEDES_AmbientModule_NumOfVehs";
+				displayName = "Number of Vehicles";
+				tooltip = "Number of empty vehicles that can be in the area at one time.";
+				defaultValue = """5""";
+			};
+
+			class UnitPool
+			{
+				property = "HEDES_AmbientModule_VehPool";
+				control = "EditCodeMulti5";
+				displayName = "Array of vehicle types that will spawn empty.";
+				tooltip = "Array of vehicle types. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles allowed.";
+				defaultValue = """['CUP_C_R_Rocker_01','CUP_C_TK_Man_05_Jack','CUP_C_TK_Man_05_Waist','CUP_C_TK_Man_06_Waist']""";
+				expression = "_this setVariable ['%s',_value];";
+			};	
+		};
+	};
+
 	class HEDES_AmbientModule_Garrison: HEDES_AmbientModule_BASE
 	{
 		displayName = "Area Ambient Garrison";

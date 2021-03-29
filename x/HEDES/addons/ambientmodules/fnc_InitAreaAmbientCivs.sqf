@@ -9,11 +9,6 @@ Author: ZanchoElGrande
 if (!isServer) exitWith {};
 
 private _logic = param [0, objNull, [objNull]];
-private _unitpool = call compile (_logic getVariable ["UnitPool","[]"]);
-private _maxcivs = call compile (_logic getVariable ["NumbersofCivs","5"]);
-private _bombers = _logic getVariable ["SuicideBombers",true];
-
-private _civgroup = createGroup [CIVILIAN, false];
 
 /*
 --------------------------------------------------------------------
@@ -59,46 +54,53 @@ HEDES_3P_CivFlee={
 Main Thread
 --------------------------------------------------------------------
 */
-while { true } do {
+_logic spawn {
+    private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
+    private _maxcivs = call compile (_this getVariable ["NumbersofCivs","5"]);
+    private _bombers = _this getVariable ["SuicideBombers",true];
+    private _civgroup = createGroup [CIVILIAN, false];
 
-    // -- Refill Unit Pool 
-	if (
-        (count((units _civgroup) select {alive _x})) < _maxcivs &&
-        count(_logic nearEntities ["Man",150] select {_x in allPlayers}) == 0
-    ) then{
-		private _safespawnpos = [getPos _logic, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-		private _civunit = _civgroup createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
-        _civunit enableDynamicSimulation true;
-        _civunit setBehaviour "CARELESS";
-        _civunit setSpeedMode "LIMITED";
-		[_civunit] call HEDES_3P_CivFlee;
-	};
+    while { true } do {
 
-    // -- Keep them walking
-    {		
-        private _wppos = [getPos _x, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-        private _moveloc = _wppos;
+        // -- Refill Unit Pool 
+        if (
+            (count((units _civgroup) select {alive _x})) < _maxcivs &&
+            count(_this nearEntities ["Man",150] select {_x in allPlayers}) == 0
+        ) then{
+            private _safespawnpos = [getPos _this, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+            private _civunit = _civgroup createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
+            _civunit enableDynamicSimulation true;
+            _civunit setBehaviour "CARELESS";
+            _civunit setSpeedMode "LIMITED";
+            [_civunit] call HEDES_3P_CivFlee;
+        };
 
-        switch (selectRandom[1,2]) do {
-            case 1: { 
-                _moveloc = getPos nearestBuilding _wppos; 
-            };
-            case 2: { 
-                _roads = _wppos nearRoads 50;
-                if (count _roads > 0) then {
-                    _moveloc = getPos (selectRandom _roads); 
-                } else {
+        // -- Keep them walking
+        {		
+            private _wppos = [getPos _x, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+            private _moveloc = _wppos;
+
+            switch (selectRandom[1,2]) do {
+                case 1: { 
                     _moveloc = getPos nearestBuilding _wppos; 
-                };						
-            };
-        };		
+                };
+                case 2: { 
+                    _roads = _wppos nearRoads 50;
+                    if (count _roads > 0) then {
+                        _moveloc = getPos (selectRandom _roads); 
+                    } else {
+                        _moveloc = getPos nearestBuilding _wppos; 
+                    };						
+                };
+            };		
 
-        _x doMove _moveloc;
-        _x setSpeedMode "LIMITED";
+            _x doMove _moveloc;
+            _x setSpeedMode "LIMITED";
 
-        sleep 1;
+            sleep 1;
 
-    } foreach (units _civgroup);
+        } foreach (units _civgroup);
 
-	sleep 15;
+        sleep 15;
+    };
 };

@@ -25,9 +25,9 @@ class CfgVehicles
 		displayName = "Loadout Base Module (Empty)";
 		functionPriority = 1;
 		is3DEN = 0;
-		isGlobal = 2;
 		isTriggerActivated 	= 0;
-		scope = 2;
+		scope = 1;
+		isGlobal = 1;
 
 		class Attributes: AttributesBase
 		{
@@ -47,6 +47,7 @@ class CfgVehicles
 	/* HEDES Loadout Modules */
 	class HEDES_LoadoutModules_StarterKit : HEDES_LoadoutModule_BASE
 	{
+		scope = 2;
 		displayName = "Default Loadout Module";
 		function = QUOTE(FUNCMAIN(InitDefaultLoadoutModule));
 
@@ -61,6 +62,23 @@ class CfgVehicles
 				defaultValue = """[['CUP_arifle_AK74_Early','','','',['CUP_30Rnd_545x39_AK_M',30],[],''],[],[],['CUP_U_O_RUS_M88_MSV_rolled_up',[['FirstAidKit',1],['CUP_30Rnd_545x39_AK_M',1,30]]],[],[],'H_Bandanna_gry','',[],['ItemMap','','','','','']]""";
 				expression = "_this setVariable ['%s',_value];";
 			};		
+		};
+	};
+	class HEDES_LoadoutModules_StarterVeh : HEDES_LoadoutModule_BASE
+	{
+		scope = 2;
+		displayName = "Default Vehicle Module";
+		function = QUOTE(FUNCMAIN(InitDefaultVehicleModule));
+
+		class Attributes : AttributesBase
+		{
+			class DefaultVeh : Edit
+			{
+				property = "HEDES_LoadoutModules_StarterVehType";
+				displayName = "Vehicle Name";
+				tooltip = "The name of the vehicle to spawn.";
+				defaultValue = """CUP_O_TT650_TKA""";
+			};
 		};
 	};
 };

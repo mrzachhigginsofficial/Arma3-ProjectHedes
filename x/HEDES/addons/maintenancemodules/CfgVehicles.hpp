@@ -56,5 +56,16 @@ class CfgVehicles
 	{
 		displayName = "Cleanup Units Outside of Zone Module";
 		function = QUOTE(FUNCMAIN(InitSafeZoneCleanup));
+
+		class Attributes: AttributesBase
+		{
+			class SafeZoneMarkerName : Edit
+			{
+				property = "HEDES_MaintenanceModules_SafeZoneMarkerName";
+				displayName = "Safe Zone Marker Name";
+				tooltip = "The name of the marker before units are deleted.";
+				defaultValue = """Marker Name Here""";
+			};
+		};
 	};
 };
