@@ -35,7 +35,7 @@ _logic spawn {
 
 		switch(ceil random 2) do
 		{
-			case 1: {[_grp, _grp, 50] call CBA_fnc_taskPatrol};
+			case 1: {[_this, _grp, 50] call CBA_fnc_taskPatrol};
 			default {_grp call CBA_fnc_taskDefend};
 		};
 

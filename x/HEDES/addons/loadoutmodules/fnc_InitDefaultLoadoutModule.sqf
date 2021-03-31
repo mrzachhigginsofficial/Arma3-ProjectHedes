@@ -6,7 +6,6 @@ Author: ZanchoElGrande
 */
 
 #include "script_component.hpp"
-if (!isServer) exitWith {};
 
 private _logic = param [0, objNull, [objNull]];
 private _loadout = call compile(_logic getVariable "DefaultLoadout");

@@ -40,6 +40,9 @@ _logic spawn {
 			private _veh = (selectRandom(_unitpool) createVehicle _pos);
 			_veh setDir _direction;
 
+			_vehtracker = _vehtracker select {
+				!(_x select 0) isEqualTo objNull} select {
+					getpos (_x select 0)) distance (_x select 1))) < 300};
 			_vehtracker pushBack [_veh,_pos];
 		};
 
