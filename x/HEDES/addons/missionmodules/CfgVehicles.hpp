@@ -71,7 +71,7 @@ class CfgVehicles
 				property = "HEDES_MissionSystem_GiverAvatar";
 				displayName = "Mission Giver Avatar";
 				tooltip = "The avatar of the mission giver.";
-				defaultValue = """\assets\avatar_missiongiver_generic1.paa""";
+				defaultValue = """x\HEDES\addons\missionmodules\assets\avatar_missiongiver_generic1.paa""";
 			};
 
 			class MissionGiverRandomize : Checkbox
@@ -108,6 +108,11 @@ class CfgVehicles
 					class assassinate	{
 						name = "Kill VIP"; 
 						value = "assassinate";
+					};
+
+					class recon	{
+						name = "Recon VIP"; 
+						value = "recon";
 					};
 				};
 			};

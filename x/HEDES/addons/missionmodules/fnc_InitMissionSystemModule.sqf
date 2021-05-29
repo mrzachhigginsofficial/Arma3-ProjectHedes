@@ -74,7 +74,6 @@ _missionGiver call FUNCMAIN(AppendMissionGiverNamePlates);
             ]
         ] remoteExec ["addAction",0,true];
 
-        // Wait A Bit To Refresh (Paramaterize This)
         sleep _refreshTime;
 
         // Remove All Actions (Refresh Mission List And Combo)

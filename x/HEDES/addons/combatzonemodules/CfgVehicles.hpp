@@ -131,4 +131,19 @@ class CfgVehicles
 	{
 		displayName = "Combat Zone Point Module";
 	};
+
+	class HEDES_CombatZoneModules_WestSpawn : HEDES_CombatZoneModule_BASE
+	{
+		displayName = "West Spawn Point Module";
+	};
+
+	class HEDES_CombatZoneModules_EastSpawn : HEDES_CombatZoneModule_BASE
+	{
+		displayName = "East Spawn Point Module";
+	};
+
+	class HEDES_CombatZoneModules_GuerSpawn : HEDES_CombatZoneModule_BASE
+	{
+		displayName = "Guer Spawn Point Module";
+	};
 };

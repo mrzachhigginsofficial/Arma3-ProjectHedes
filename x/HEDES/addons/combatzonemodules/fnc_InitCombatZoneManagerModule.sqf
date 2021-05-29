@@ -12,9 +12,12 @@ if (!isServer) exitWith {};
 private _logic = param [0, objNull];
 
 _logic spawn {
-	private _eastConfiguration = [east, _this getVariable ["EastVehicle",""], _this getVariable ["EastUnitPool",""],[worldsize,worldsize,0],_this getVariable ["EastIsHeli",true]];
-	private _westConfiguration = [west, _this getVariable ["WestVehicle",""], _this getVariable ["WestUnitPool",""],[worldsize,0,0],_this getVariable ["WestIsHeli",true]];
-	private _guerConfiguration = [independent, _this getVariable ["GUERVehicle",""],  _this getVariable ["GUERUnitPool",[]],[0,0,0],_this getVariable ["GUERIsHeli",true]];
+	private _eastspawn = getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" }));
+	private _westspawn = getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" }));
+	private _guerspawn = getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" }));
+	private _eastConfiguration = [east, _this getVariable ["EastVehicle",""], _this getVariable ["EastUnitPool",""],_eastspawn,_this getVariable ["EastIsHeli",true]];
+	private _westConfiguration = [west, _this getVariable ["WestVehicle",""], _this getVariable ["WestUnitPool",""],_westspawn,_this getVariable ["WestIsHeli",true]];
+	private _guerConfiguration = [independent, _this getVariable ["GUERVehicle",""],  _this getVariable ["GUERUnitPool",[]],_guerspawn,_this getVariable ["GUERIsHeli",true]];
 	private _points = synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_Point" };
 	private _allgrps = [];
 	

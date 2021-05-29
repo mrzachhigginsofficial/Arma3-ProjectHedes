@@ -13,7 +13,7 @@ class HEDES_MissionGiverDialog
 		class LargeBackground: RscPicture
 		{
 			idc = HEDESGUI_MISSIONDIALOG_BACKGROUND2;
-			text = QUOTE(x\COMPONENT\assets\dialog_bg.paa);
+			text = QUOTE(x\HEDES\addons\missionmodules\assets\dialog_bg.paa);
 			x = -4.5 * GUI_GRID_W + GUI_GRID_X;
 			y = -13.5 * GUI_GRID_H + GUI_GRID_Y;
 			w = 50 * GUI_GRID_W;

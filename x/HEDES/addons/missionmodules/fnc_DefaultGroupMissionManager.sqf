@@ -31,6 +31,11 @@ private _compilefnc = {
     call compile format["%1 call %2", _params, _function];
 };
 
+private _missionstarted = {
+    playmusic "LeadTrack01b_F_Bootcamp";
+    cutText ["<t color='#FFFFFF' size='5'>MISSION STARTED</t>", "PLAIN DOWN", 2, true, true]; 
+};
+
 private _missioncamaccomplished = {
     playmusic "EventTrack01_F_Curator";
     cutText ["<t color='#A7FFA4' size='5'>MISSION ACCOMPLISHED</t>", "PLAIN DOWN", 2, true, true]; 
@@ -69,7 +74,12 @@ if (_groupstate == 0) then {
     */
 
     {
+        if(!_missionaccomplished) exitwith{};
+        [str _missionaccomplished] remoteExec ["systemChat", groupFromNetId _groupid];
+
         try{
+
+            _missionstarted remoteExec ["BIS_fnc_call",groupFromNetId _groupid];
 
             // Read Task Module Properties
 
@@ -95,6 +105,11 @@ if (_groupstate == 0) then {
                     _createareafnc  = FUNCMAIN(SpawnAssassinateObjective);
                     _checktaskfnc   = FUNCMAIN(CheckAssassinateTask);                    
                 };
+                case "recon": {
+                    _createTaskfnc  = FUNCMAIN(CreateReconTask);
+                    _createareafnc  = FUNCMAIN(SpawnReconObjective);
+                    _checktaskfnc   = FUNCMAIN(CheckReconTask);                    
+                };
             };
             
             // Run Create Task Function
@@ -116,7 +131,7 @@ if (_groupstate == 0) then {
             _groupmissionobjects append _aoobjs;
             
             // Evaluate Task Status
-            ([_groupid] + _aoobjs) call _checktaskfnc;
+            _missionaccomplished = ([_groupid] + _aoobjs) call _checktaskfnc;
             
             // Delete Task
             [_task select 1] call BIS_fnc_deleteTask;

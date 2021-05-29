@@ -6,19 +6,44 @@ Author: ZanchoElGrande
 */
 
 #include "script_component.hpp"
-if (!isServer) exitWith {};
 
+player addMPEventHandler ["MPRespawn", {
+	params ["_unit", "_corpse"];
 
+	// Cleanup
+	removeAllActions _corpse;
 
-addMissionEventHandler ["HandleDisconnect", {
-	params ["_unit", "_id", "_uid", "_name"];	
-	[_uid, _unit] call FUNCMAIN(SaveLoudOut);
+	// Add Retrieve Inventory From Server
+	[_unit,
+		[
+			"Load Inventory From Server",
+			{
+				private _unit = _this # 3;
+				_unit remoteExec [QUOTE(FUNCMAIN(LoadLoadOut)),2,false];
+			},
+			_unit,
+			1.5,
+			true,
+			true,
+			"",
+			"true"
+		]
+	] remoteExec ["addAction",owner _unit,false];
+
+	// Add Save Inventory To Server
+	[_unit,
+		[
+			"Save Inventory To Server",
+			{
+				private _unit = _this # 3;
+				[_unit] remoteExec [QUOTE(FUNCMAIN(SaveLoadOut)),2,false];
+			},
+			_unit,
+			1.5,
+			true,
+			true,
+			"",
+			"true"
+		]
+	] remoteExec ["addAction",owner _unit,false];
 }];
-
-
-addMissionEventHandler ["playerConnected", {
-	params ["_id", "_uid", "_name", "_jip", "_owner", "_idstr"];
-	waitUntil {alive (_uid call BIS_fnc_getUnitByUid)};
-	(_uid call BIS_fnc_getUnitByUID) call FUNCMAIN(LoadLoadOut);
-}];
-
