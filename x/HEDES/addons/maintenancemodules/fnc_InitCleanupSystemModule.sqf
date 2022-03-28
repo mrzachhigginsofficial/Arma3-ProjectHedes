@@ -28,12 +28,12 @@ ISNILS(GVARMAIN(GLOBALCLEANUPLIST),[]);
 			};
 
 			sleep 1;
-			
+
 		} foreach ( missionNamespace getVariable QGVARMAIN(GLOBALCLEANUPLIST) select {
 			(_x select 1) + _timeout < time
 		} );
 
-		missionNamespace setVariable [ QGVARMAIN(GLOBALCLEANUPLIST), GVARMAIN(GLOBALCLEANUPLIST) select {_x select 0 != objNull} ];
+		missionNamespace setVariable [ QGVARMAIN(GLOBALCLEANUPLIST), GVARMAIN(GLOBALCLEANUPLIST) select {_x select 0 isNotEqualTo objNull} ];
 
 		sleep 5;
 	};

@@ -1,0 +1,27 @@
+AWESOME CAMERA
+
+player spawn {
+
+    _this switchMove "acts_rifle_operations_zeroing"; 
+
+    _relpos =  getPos _this;
+    _relpos set [1,_this getRelPos[-2,45] select 1];
+    _relpos set [2,1.2];
+
+    private _camera = "camera" camCreate [0,0,0]; 
+    _camera camPrepareTarget _this;
+    _camera camCommitPrepared 0;
+
+    _camera camPrepareTarget _relpos;
+    _camera camPrepareRelPos ([1, 1, 1.2] );
+    _camera cameraEffect ["external", "front"];
+
+    _camera camPrepareFov .7;
+    _camera camSetFocus [1.2, 6];
+    _camera camCommitPrepared 0;
+    
+
+    sleep 30; 
+    _camera cameraEffect ["terminate", "back"]; 
+    camDestroy _camera;
+}

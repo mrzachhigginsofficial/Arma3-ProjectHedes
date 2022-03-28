@@ -19,33 +19,22 @@ Author: phronk
 HEDES_3P_CivFlee={
     _this select 0 addEventHandler["firedNear", {
         _civ=_this select 0;
-        switch(round(random 2))do{
-            case 0:{
-                _civ switchMove "ApanPercMstpSnonWnonDnon_G01";
-                _civ setspeedMode "FULL";
-            };
-            case 1:{
-                _civ playMoveNow "ApanPknlMstpSnonWnonDnon_G01";
-                _civ setspeedMode "FULL";
-            };
-            case 2:{
-                _civ playMoveNow "ApanPpneMstpSnonWnonDnon_G01";
-                _civ setspeedMode "FULL";
-            };
-            default{
-                _civ playMoveNow "ApanPknlMstpSnonWnonDnon_G01";
-                _civ setspeedMode "FULL";
-            };
-        };
-        
+        _animation = selectRandom [
+            "ApanPercMstpSnonWnonDnon_G01",
+            "ApanPknlMstpSnonWnonDnon_G01",
+            "ApanPpneMstpSnonWnonDnon_G01",
+            "ApanPknlMstpSnonWnonDnon_G01"
+        ];
+
+        _civ setspeedMode "FULL";
+        [_civ, _animation] remoteExec ["switchMove"];
+
         _nH = nearestobjects[_civ, ["House"], 200];
         _H = selectRandom _nH;
         _HP = _H buildingPos -1;
         _HP = selectRandom _HP;
         _civ domove _HP;
         _civ removeAllEventHandlers "firedNear";
-
-        _civ call FUNCMAIN(AppendCleanupSystemObjects);
     }];
 };
 
@@ -70,9 +59,10 @@ _logic spawn {
             private _safespawnpos = [getPos _this, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
             private _civunit = _civgroup createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
             _civunit enableDynamicSimulation true;
-            _civunit setBehaviour "CARELESS";
+            //_civunit setBehaviour "CARELESS";
             _civunit setSpeedMode "LIMITED";
             [_civunit] call HEDES_3P_CivFlee;
+            [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
         };
 
         // -- Keep them walking
