@@ -31,10 +31,10 @@
 		"x/HEDES/addons/ambientmodules",
 		"x/HEDES/addons/persistencemodules",
 		"x/HEDES/addons/combatzonemodules",
-		"x/HEDES/addons/loadoutmodules"
+		"x/HEDES/addons/loadoutmodules",
+		"x/HEDES/addons/qolmodules"
 	],
 	"clientMods": [
-		"!Workshop\\@Enhanced Debug Console",
 		"!Workshop\\@CBA_A3",
 		"!Workshop\\@3den Enhanced",
 		"!Workshop\\@CUP_Weapons",

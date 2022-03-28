@@ -50,6 +50,17 @@ class CfgVehicles
 	{
 		displayName = "Cleanup Units Maintenance Module";
 		function = QUOTE(FUNCMAIN(InitCleanupSystemModule));
+
+		class Attributes: AttributesBase
+		{
+			class LifeSpanValue : Edit
+			{
+				property = "HEDES_MaintenanceModules_ObjectLifespan";
+				displayName = "Object Lifespawn";
+				tooltip = "Sometimes units get lost. Set their max lifetime in seconds.";
+				defaultValue = """600""";
+			};
+		};
 	};
 
 	class HEDES_MaintenanceModules_SafeZone : HEDES_MaintenanceModule_BASE

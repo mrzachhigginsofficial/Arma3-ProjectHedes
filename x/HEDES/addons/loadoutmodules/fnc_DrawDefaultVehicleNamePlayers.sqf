@@ -10,7 +10,9 @@ Author: ZanchoElGrande
 ISNILS(GVAR(DRAWVEHICLENAMEPLATES),[]);
 ISNILS(GVAR(ALLVEHICLENAMEPLATES),[]);
 
-[] spawn {
+// This was removed. Delete this someday.
+
+/*[] spawn {
 	while {true} do {
 		GVAR(DRAWVEHICLENAMEPLATES) = player nearEntities["Man", 20] select {
 				_x in GVAR(ALLVEHICLENAMEPLATES)
@@ -23,4 +25,4 @@ addMissionEventHandler ["Draw3D", {
     {
         drawIcon3D ["", [1, 1, 1, 1], visiblePosition _x vectorAdd [0, 0, 2], 0.6, 0.6, 45, format ["%1 (Free Vehicle)", name _x], 2, 0.04, "PuristaSemiBold"];
     } forEach GVAR(DRAWVEHICLENAMEPLATES);
-}];
+}];*/

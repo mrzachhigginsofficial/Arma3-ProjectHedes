@@ -2,7 +2,7 @@
 
 class CfgPatches {
 	class ADDON {
-		name = "Project Hedes Transport";
+		name = "Project Hedes Persistence";
 		author = "ZanchoElGrande";
 		url = "";
 		requiredAddons[] = { "CBA_main" };

@@ -8,7 +8,12 @@ Author: ZanchoElGrande
 #include "script_component.hpp"
 if (!isServer) exitWith {};
 
-params["_planecrewgrp","_passengergrp","_droppoint","_spawnpoint","_isheli"];
+params[
+	"_planecrewgrp",
+	"_passengergrp",
+	"_droppoint",
+	"_spawnpoint",
+	"_isheli"];
 
 private _vehicle = vehicle (leader _planecrewgrp);
 

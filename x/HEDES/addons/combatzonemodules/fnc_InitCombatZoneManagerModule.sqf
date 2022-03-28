@@ -38,7 +38,8 @@ _logic spawn {
 			_allgrps append _groups;
 		} foreach [_eastConfiguration, _westConfiguration, _guerConfiguration];
 
-		sleep 360;
 		_allgrps call FUNCMAIN(AppendCleanupSystemObjects);
+		
+		sleep 360;
 	};
 };
