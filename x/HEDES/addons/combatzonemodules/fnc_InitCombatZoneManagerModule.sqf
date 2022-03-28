@@ -35,10 +35,12 @@ _logic spawn {
 			units(_groups # 0) apply {_x disableAI "SUPPRESSION"};
 			[_groups # 1, getPos _combatzone] call BIS_fnc_taskAttack; 
 
-			_allgrps append _groups;
+			(vehicle leader (_groups # 0)) call FUNCMAIN(AppendCleanupSystemObjects);
+			_groups call FUNCMAIN(AppendCleanupSystemObjects);
+			//_allgrps append _groups;
 		} foreach [_eastConfiguration, _westConfiguration, _guerConfiguration];
 
-		_allgrps call FUNCMAIN(AppendCleanupSystemObjects);
+		//_allgrps call FUNCMAIN(AppendCleanupSystemObjects);
 		
 		sleep 360;
 	};
