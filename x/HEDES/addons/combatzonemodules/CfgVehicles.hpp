@@ -67,6 +67,15 @@ class CfgVehicles
 				tooltip = "Is the vehicle type a helicopter?";
 				defaultValue = "true";
 			};
+			class EastMaxUnits : Edit
+			{
+				property = "HEDES_CombatZoneModules_MaxUnitsEast";
+				displayName = "Maximum Units (East)";
+				tooltip = "Maximum number of units for this side.";
+				defaultValue = "80";
+				validate = "number";
+				typeName = "NUMBER";
+			};
 			class EastUnitPool
 			{
 				property = "HEDES_CombatZoneModules_EastUnitPool";
@@ -90,6 +99,15 @@ class CfgVehicles
 				displayName = "Is Vehicle a Heli?";
 				tooltip = "Is the vehicle type a helicopter?";
 				defaultValue = "true";
+			};
+			class WestMaxUnits : Edit
+			{
+				property = "HEDES_CombatZoneModules_MaxUnitsWest";
+				displayName = "Maximum Units (West)";
+				tooltip = "Maximum number of units for this side.";
+				defaultValue = "80";
+				validate = "number";
+				typeName = "NUMBER";
 			};
 			class WestUnitPool
 			{
@@ -115,6 +133,15 @@ class CfgVehicles
 				tooltip = "Is the vehicle type a helicopter?";
 				defaultValue = "true";
 			}
+			class GUERMaxUnits : Edit
+			{
+				property = "HEDES_CombatZoneModules_MaxUnitsGUER";
+				displayName = "Maximum Units (GUER)";
+				tooltip = "Maximum number of units for this side.";
+				defaultValue = "80";
+				validate = "number";
+				typeName = "NUMBER";
+			};
 			class GUERUnitPool
 			{
 				property = "HEDES_CombatZoneModules_GUERUnitPool";
