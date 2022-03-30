@@ -1,8 +1,6 @@
-AWESOME CAMERA
-
 player spawn {
 
-    _this switchMove "acts_rifle_operations_zeroing"; 
+    _this switchMove "AinvPknlMstpSrasWrflDnon_G01"; 
 
     _relpos =  getPos _this;
     _relpos set [1,_this getRelPos[-2,45] select 1];
@@ -21,7 +19,7 @@ player spawn {
     _camera camCommitPrepared 0;
     
 
-    sleep 30; 
+    sleep 10; 
     _camera cameraEffect ["terminate", "back"]; 
     camDestroy _camera;
 }

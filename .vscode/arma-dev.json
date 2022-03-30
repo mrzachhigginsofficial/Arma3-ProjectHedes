@@ -32,7 +32,8 @@
 		"x/HEDES/addons/persistencemodules",
 		"x/HEDES/addons/combatzonemodules",
 		"x/HEDES/addons/loadoutmodules",
-		"x/HEDES/addons/qolmodules"
+		"x/HEDES/addons/qolmodules",
+		"x/HEDES/addons/hphone"
 	],
 	"clientMods": [
 		"!Workshop\\@CBA_A3",

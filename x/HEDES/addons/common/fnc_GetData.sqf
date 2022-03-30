@@ -1,9 +1,14 @@
-params [["_tag", nil],["_namespace", missionNamespace]];
+/*
+---------------------------------------------
+Get Hash Data
+Author: ZanchoElGrande
+---------------------------------------------
+*/
 
-private _data = "";
+#include "script_component.hpp"
 
-if (isNil {_namespace getVariable _tag}) then { 
-	_namespace setVariable [_tag,[] call CBA_fnc_hashCreate];
-};
+params["_namespace", "_hash", "_key"];
 
-_namespace getVariable _tag; 
+if (!isServer) exitWith {};
+
+[(_namespace getvariable _hash), _key] call CBA_fnc_hashGet;
