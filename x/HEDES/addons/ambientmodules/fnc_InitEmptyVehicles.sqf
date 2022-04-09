@@ -39,6 +39,7 @@ _logic spawn {
 			};
 			private _veh = (selectRandom(_unitpool) createVehicle _pos);
 			_veh setDir _direction;
+			_veh enableDynamicSimulation true;
 
 			_vehtracker = _vehtracker select {
 				!((_x select 0) isEqualTo objNull)} select {

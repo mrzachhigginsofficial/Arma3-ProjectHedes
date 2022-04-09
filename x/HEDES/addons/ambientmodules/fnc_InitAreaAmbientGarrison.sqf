@@ -16,30 +16,122 @@ Main Thread
 --------------------------------------------------------------------
 */
 _logic spawn {
-	private _unitpool = call compile (_this getVariable ["UnitPool",[]]);
-	private _maxunits = call compile (_this getVariable ["NumbersofUnits",5]);
-	private _side = call compile (_this getVariable ["GarrisonSide","EAST"]);
-	private _grp = createGroup [_side, false];
+
+	private _unitpool = [];
+	private _maxunits = 0;
+	private _defaultside = sideUnknown;
+	private _sectors = [];
+	private _grp = grpNull;
+	private _i = 5;
+
+	private _IsGroupFull = {
+		params["_pvtgrp", "_pvtmaxunits"];
+		(count((units _pvtgrp) select {alive _x})) >= _pvtmaxunits;
+	};
+
+	private _IsEnemiesNear = {
+		params["_pvtpos", "_pvtlocalside"];
+		count((allPlayers select {!(side _x == _pvtlocalside)}) select {(_x distance _pvtpos) < (dynamicSimulationDistance "Group")}) > 0;
+	};
 
 	while { true } do {
 
-		// -- Refill Unit Pool 
-		if (
-			(count((units _grp) select {alive _x})) < _maxunits &&
-			count(_this nearEntities ["Man",200] select {_x in allPlayers}) == 0
-		) then{
-			private _safespawnpos = [getPos _this, 25, 250, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-			private _unit = _grp createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
-			_unit enableDynamicSimulation true;
-			_unit call FUNCMAIN(AppendCleanupSystemObjects);
-		};
+		// ******************************************************************
+		// Object Initialization Properties 
+		// Notes: These are here incase we change the nature of these modules 
+		// 		mid scenario, we won't have to create new modules.
+		// ******************************************************************
+		// -- Get Object Properties
+		_unitpool = call compile (_this getVariable ["UnitPool",[]]);
+		_maxunits = call compile (_this getVariable ["NumbersofUnits",5]);
+		_defaultside = call compile (_this getVariable ["GarrisonSide",EAST]);
 
-		switch(ceil random 2) do
+		// -- Get Synchronized Modules
+		_sectors = (synchronizedObjects _this select { typeOf _x == "ModuleSector_F" });
+
+		// -- Find Safespawn Every Iteration
+		private _safespawnpos = [getPos _this, 25, 250, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+		// ******************************************************************
+
+
+		// ******************************************************************
+		// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
+		// ******************************************************************
+		if ((count _sectors) > 0) then 
 		{
-			case 1: {[_this, _grp, 50] call CBA_fnc_taskPatrol};
-			default {_grp call CBA_fnc_taskDefend};
-		};
+			private _sector = _sectors # 0;
+			// -- Handle Slow Sector Initialization
+			while {isNil {_sector getVariable "owner"}} do {sleep 2};
+			private _sectorside = _sector getVariable "owner";		
 
+			// -- Check To See If Sector Control Module Side Matches Garrison Group Side
+			// -- If group doesn't exist or side is not the same, create a new group.
+			if ((_sectorside isNotEqualTo (side _grp)) or (_grp isEqualTo grpNull)) then 
+			{
+				if !(_sectorside == sideUnknown) then 
+				{ 
+					_grp = [_safespawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
+					_grp enableDynamicSimulation true;
+					_grp deleteGroupWhenEmpty true;
+					_grp call FUNCMAIN(AppendCleanupSystemObjects);
+				};				
+			};
+
+			// -- Spawn new units if the following conditions are met...
+			// --	1.) Number of units in group is less than max units
+			// -- 	2.) There are no enemy players (players that dont match garison side) in range
+			if (!([_grp,_maxunits] call _isgroupfull) && !([_this, (side _grp)] call _IsEnemiesNear)) then
+			{
+				private _newgroupunitcount = _maxunits - count(units _grp);
+				private _newgrp = [_safespawnpos, (side _grp), _newgroupunitcount] call BIS_fnc_spawnGroup;
+				_newgrp enableDynamicSimulation true;
+				_newgrp deleteGroupWhenEmpty true;
+
+				(units _newgrp) call FUNCMAIN(AppendCleanupSystemObjects);
+				(units _newgrp) joinSilent _grp;
+
+			};
+		// ******************************************************************
+
+
+		// ******************************************************************
+		// -- Do if there are no synchronized sectors and we're doing default behavior.
+		// ******************************************************************
+		} else {
+			// -- Create Group If It's Destroyed Or Doesn't Exist Yet.
+			if (_grp isEqualTo grpNull) then 
+			{
+				_grp = createGroup [_defaultside, true];
+				_grp enableDynamicSimulation true;
+			};
+
+			if (!([_grp,_maxunits] call _isgroupfull) && !([_this, _defaultside] call _IsEnemiesNear)) then
+			{
+				private _unit = _grp createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
+				_unit call FUNCMAIN(AppendCleanupSystemObjects);
+			};
+		};
+		// ******************************************************************
+
+
+		// ******************************************************************
+		// -- Periodically randomly pick if this group is going to patrol or defend area.
+		// -- The thread sleeps for 60 seconds, and every 5th iteration a new random task is select.
+		// ******************************************************************
+		if((_i%5) == 0) then {
+			_i = 0;
+			switch(ceil random 2) do
+			{
+				case 1: {[_this, _grp, 50] call CBA_fnc_taskPatrol};
+				default {_grp call CBA_fnc_taskDefend};
+			};
+		} else {
+			_i = _i + 1;
+		};
+		// ******************************************************************
+		
+
+		// -- Go to sleep for a bit.
 		sleep 60;
 	};
 };
