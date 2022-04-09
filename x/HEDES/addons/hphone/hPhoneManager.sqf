@@ -89,14 +89,20 @@ HEDES_HPHONE_APP_DIAG = {
 	ctrlSetFocus _text;
 
 	_text spawn {
-		private _message = "Diagnostics Information:<br/>- Number of Players: %1<br/>- Active Units %2<br/>- Units To Clean: %3";
+		private _message = "Diagnostics Information:<br/>- Number of Players: %1<br/>- Active Units %2<br/>- 
+Units To Clean: %3<br/><br/>Simulation Stats:<br/>- Units with Simulation Enabled: %4<br/>- Units with 
+Simulation Disabled: %5<br/><br/>Active Units In Cleanup Array: %6<br/>Active Groups In Cleanup Array: %7";
 		while{(ctrlParent _this) isNotEqualTo displayNull} do
 		{
 			_this ctrlSetStructuredText parseText format[
 				_message,
 				count allPlayers, 
 				count (allUnits select {!(_x in allPlayers)}),
-				count (HEDES_GLOBALCLEANUPLIST)];
+				count (HEDES_GLOBALCLEANUPLIST),
+				count (allUnits select {simulationEnabled _x}),
+				count (allUnits select {!(simulationEnabled _x)}),
+				count (allUnits select {_x in (HEDES_GLOBALCLEANUPLIST apply {_x #0})}),
+				count (allgroups select {_x in (HEDES_GLOBALCLEANUPLIST apply {_x #0})})];
 			sleep 5;
 		}
 	};

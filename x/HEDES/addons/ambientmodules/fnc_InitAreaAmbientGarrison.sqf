@@ -73,7 +73,7 @@ _logic spawn {
 					_grp = [_safespawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
 					_grp enableDynamicSimulation true;
 					_grp deleteGroupWhenEmpty true;
-					_grp call FUNCMAIN(AppendCleanupSystemObjects);
+					(units _grp) apply {_x call FUNCMAIN(AppendCleanupSystemObjects)};
 				};				
 			};
 
@@ -87,7 +87,7 @@ _logic spawn {
 				_newgrp enableDynamicSimulation true;
 				_newgrp deleteGroupWhenEmpty true;
 
-				(units _newgrp) call FUNCMAIN(AppendCleanupSystemObjects);
+				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects)};
 				(units _newgrp) joinSilent _grp;
 
 			};
