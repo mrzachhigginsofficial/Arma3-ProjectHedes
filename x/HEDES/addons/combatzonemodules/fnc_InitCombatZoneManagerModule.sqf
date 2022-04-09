@@ -21,7 +21,8 @@ _logic spawn {
 		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" })),
 		_this getVariable ["EastIsHeli",true],
 		_this getVariable ["EastMaxUnits",80],
-		[]];
+		[],
+		0];
 	private _westConfiguration = [
 		west, 
 		_this getVariable ["WestVehicle",""], 
@@ -29,7 +30,8 @@ _logic spawn {
 		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" })),
 		_this getVariable ["WestIsHeli",true],
 		_this getVariable ["WestMaxUnits",80],
-		[]];
+		[],
+		120];
 	private _guerConfiguration = [
 		independent, 
 		_this getVariable ["GUERVehicle",""], 
@@ -37,7 +39,8 @@ _logic spawn {
 		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" })),
 		_this getVariable ["GUERIsHeli",true],
 		_this getVariable ["GUERMaxUnits",80],
-		[]];
+		[],
+		-120];
 
 	private _points = synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_Point" };
 	private _combatzonemarker = createMarker [format["CombatZoneMarker-%1",netId _this], [0,0,0]];
@@ -46,8 +49,10 @@ _logic spawn {
 	while {true} do {
 		private _combatzone = selectRandom _points;
 		_combatzonemarker setMarkerPos (getPos _combatzone);
+
 		{
 			private _config = _x;
+			private _combatlz = _combatzone getRelPos [400, _config # 7]; //attempt to keep enemies from landing on eachother
 
 			// Filter Out Dead/Null
 			_config set [6,((_config # 6) - [objNull]) select {alive _x}];
@@ -60,11 +65,11 @@ _logic spawn {
 				// Set Group Objectives
 				_groups apply {_x allowFleeing 0};
 				units(_groups # 0) apply {_x disableAI "SUPPRESSION"};
-				(_groups + [getPos _combatzone, _x # 3, _x # 4]) spawn FUNCMAIN(FlightPlanner);
+				(_groups + [_combatlz, _x # 3, _x # 4]) spawn FUNCMAIN(FlightPlanner);
 				[_groups # 1, getPos _combatzone] call BIS_fnc_taskAttack; 
 
 				// Add Units To Cleanup
-				(vehicle leader (_groups # 0)) call FUNCMAIN(AppendCleanupSystemObjects);
+				(vehicle (leader (_groups # 0))) call FUNCMAIN(AppendCleanupSystemObjects);
 				_groups call FUNCMAIN(AppendCleanupSystemObjects);
 
 				// Add New Units To Active Unit Array

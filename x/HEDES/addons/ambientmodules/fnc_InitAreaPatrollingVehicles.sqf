@@ -40,6 +40,9 @@ _logic spawn {
 			(_vehgrp select 1) apply { _x enableDynamicSimulation true };
 			(_vehgrp select 2) deleteGroupWhenEmpty true;
 
+			(_vehgrp select 0) call FUNCMAIN(AppendCleanupSystemObjects);
+			(_vehgrp select 1 select {alive _x}) call FUNCMAIN(AppendCleanupSystemObjects);
+
 			_veharr pushback _vehgrp;
 		};
 		
@@ -52,9 +55,6 @@ _logic spawn {
 				}] call BIS_fnc_randomPos;
 				(_x select 2) move _newpos;
 				(_x select 0) setFuel 1;
-			} else {
-				(_x select 0) call FUNCMAIN(AppendCleanupSystemObjects);
-				(_x select 1 select {alive _x}) call FUNCMAIN(AppendCleanupSystemObjects);
 			};		
 		} forEach _veharr;
 

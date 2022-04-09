@@ -12,6 +12,6 @@ private _taskposition       = param[1,[]];
 private _taskspawnargs      = param[2,[]];
 
 private _enemysquad         = (_taskspawnargs + [_taskposition]) call FUNCMAIN(SpawnEnemySquad);
-private _enemyvip           = (["['CUP_o_sla_Officer']",1] + [_taskposition]) call FUNCMAIN(SpawnEnemySquad);
+private _enemyvip           = (["['I_G_officer_F']",1] + [_taskposition]) call FUNCMAIN(SpawnEnemySquad);
 
 [netId _enemysquad, netId _enemyvip]

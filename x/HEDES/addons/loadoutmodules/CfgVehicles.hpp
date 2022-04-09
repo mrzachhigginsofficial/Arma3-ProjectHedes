@@ -59,7 +59,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Default Unit Loadout (Output of getUnitLoadout).";
 				tooltip = "The kit to be applied to the player interaction with this object(s).";
-				defaultValue = """[['CUP_arifle_AK74_Early','','','',['CUP_30Rnd_545x39_AK_M',30],[],''],[],[],['CUP_U_O_RUS_M88_MSV_rolled_up',[['FirstAidKit',1],['CUP_30Rnd_545x39_AK_M',1,30]]],[],[],'H_Bandanna_gry','',[],['ItemMap','','','','','']]""";
+				defaultValue = """[['arifle_Katiba_F','','','',['30Rnd_65x39_caseless_green',30],[],''],[],[],['Item_U_B_CombatUniform_mcam',[['FirstAidKit',1],['30Rnd_65x39_caseless_green',1,30]]],[],[],'H_Bandanna_gry','',[],['ItemMap','','','','','']]""";
 				expression = "_this setVariable ['%s',_value];";
 			};		
 		};
@@ -77,7 +77,7 @@ class CfgVehicles
 				property = "HEDES_LoadoutModules_StarterVehType";
 				displayName = "Vehicle Name";
 				tooltip = "The name of the vehicle to spawn.";
-				defaultValue = """CUP_O_TT650_TKA""";
+				defaultValue = """C_Offroad_01_repair_F""";
 			};
 		};
 	};

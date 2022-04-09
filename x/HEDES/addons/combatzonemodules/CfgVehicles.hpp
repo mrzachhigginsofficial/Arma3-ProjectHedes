@@ -58,7 +58,7 @@ class CfgVehicles
 				property = "HEDES_CombatZoneModules_EastVehicle";
 				displayName = "(East) Vehicle - Heli or Plane";
 				tooltip = "Name of the vehicle that will transport units.";
-				defaultValue = """CUP_O_AN2_TK""";
+				defaultValue = """O_Heli_Light_02_unarmed_F""";
 			};
 			class EastIsHeli : Checkbox
 			{
@@ -82,7 +82,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
-				defaultValue = """['CUP_O_sla_Soldier_MG','CUP_O_sla_Engineer','CUP_O_sla_Soldier_AR','CUP_O_sla_Soldier_LAT','CUP_O_sla_Soldier_AMG','CUP_O_SLA_Soldier_Backpack','CUP_O_sla_Soldier_GL','CUP_O_sla_Soldier','CUP_O_RU_Officer_VDV_M_EMR']""";
+				defaultValue = """['O_soldier_F','O_soldier_PG_F','O_soldier_UAV_F','O_medic_F','O_soldier_SL_F','O_soldier_A_F','O_soldier_LAT_F','O_soldier_AR_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 			// WEST
@@ -91,7 +91,7 @@ class CfgVehicles
 				property = "HEDES_CombatZoneModules_WestVehicle";
 				displayName = "(West) Vehicle - Heli or Plane";
 				tooltip = "Name of the vehicle that will transport units.";
-				defaultValue = """CUP_O_AN2_TK""";
+				defaultValue = """I_Heli_light_03_unarmed_F""";
 			};
 			class WestIsHeli : Checkbox
 			{
@@ -115,7 +115,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
-				defaultValue = """['CUP_B_CDF_Militia_SNW','CUP_B_CDF_Medic_SNW','CUP_B_CDF_Soldier_Marksman_SNW','CUP_B_CDF_Soldier_LAT_SNW','CUP_B_CDF_Soldier_MG_SNW','CUP_B_CDF_Soldier_TL_SNW']""";
+				defaultValue = """['B_medic_F','B_soldier_TL_F','B_soldier_M_F','B_soldier_LAT_F','B_soldier_F','B_soldier_GL_F','B_soldier_A_F','B_soldier_AR_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 			//GUER
@@ -124,7 +124,7 @@ class CfgVehicles
 				property = "HEDES_CombatZoneModules_GUERVehicle";
 				displayName = "(GUER) Vehicle - Heli or Plane";
 				tooltip = "Name of the vehicle that will transport units.";
-				defaultValue = """CUP_O_AN2_TK""";
+				defaultValue = """I_Heli_light_03_F""";
 			};
 			class GUERIsHeli : Checkbox
 			{
@@ -148,7 +148,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
-				defaultValue = """['CUP_I_PMC_Engineer','CUP_I_PMC_Crew','CUP_I_PMC_Medic','CUP_I_PMC_Soldier_TL','CUP_I_PMC_Soldier_MG_PKM','CUP_I_PMC_Soldier_GL','CUP_I_PMC_Bodyguard_M4','CUP_I_PMC_Soldier_AT','CUP_I_PMC_Contractor1']""";
+				defaultValue = """['I_soldier_TL_F','I_medic_F','I_soldier_AT_F','I_soldier_AR_F','I_soldier_TL_F','I_soldier_AA_F','I_soldier_A_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 		};

@@ -82,7 +82,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
-				defaultValue = """['CUP_O_LR_MG_TKM','CUP_O_LR_SPG9_TKM']""";
+				defaultValue = """['O_G_Offroad_01_Armed_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 		};
@@ -109,7 +109,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types that will spawn as civilians.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
-				defaultValue = """['CUP_C_R_Rocker_01','CUP_C_TK_Man_05_Jack','CUP_C_TK_Man_05_Waist','CUP_C_TK_Man_06_Waist']""";
+				defaultValue = """['C_man_polo_1_F_afro','C_man_polo_2_F_afro','C_man_polo_3_F_afro','C_man_polo_4_F_afro','C_man_polo_5_F_afro','C_man_p_beggar_F_afro']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 			
@@ -152,7 +152,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of vehicle types that will spawn empty.";
 				tooltip = "Array of vehicle types. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles allowed.";
-				defaultValue = """['CUP_C_R_Rocker_01','CUP_C_TK_Man_05_Jack','CUP_C_TK_Man_05_Waist','CUP_C_TK_Man_06_Waist']""";
+				defaultValue = """['I_G_Van_01_transport_F','I_G_Offroad_01_Repair_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 		};
@@ -179,7 +179,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types that will spawn as garrison.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
-				defaultValue = """['CUP_O_TK_SpecOps','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_MG']""";
+				defaultValue = """['O_G_soldier_LAT_F','O_G_soldier_M_F','O_G_soldier_GL_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
 

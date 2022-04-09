@@ -232,7 +232,7 @@ class CfgVehicles
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only use infantry here.";
-				defaultValue = """['CUP_O_TK_INS_Bomber','CUP_O_TK_INS_Mechanic','CUP_O_TK_INS_Commander','CUP_O_TK_INS_Guerilla_Medic','CUP_O_TK_INS_Soldier_MG','CUP_O_TK_INS_Soldier_AR','CUP_O_TK_INS_Soldier_Enfield','CUP_O_TK_INS_Soldier_GL','CUP_O_TK_INS_Soldier']""";
+				defaultValue = """['O_soldier_F','O_soldier_PG_F','O_soldier_UAV_F','O_medic_F','O_soldier_SL_F','O_soldier_A_F','O_soldier_LAT_F','O_soldier_AR_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};		
 		};

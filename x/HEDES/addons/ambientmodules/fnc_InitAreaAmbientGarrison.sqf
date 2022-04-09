@@ -31,6 +31,7 @@ _logic spawn {
 			private _safespawnpos = [getPos _this, 25, 250, 3, 0, 20, 0] call BIS_fnc_findSafePos;
 			private _unit = _grp createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
 			_unit enableDynamicSimulation true;
+			_unit call FUNCMAIN(AppendCleanupSystemObjects);
 		};
 
 		switch(ceil random 2) do
@@ -39,6 +40,6 @@ _logic spawn {
 			default {_grp call CBA_fnc_taskDefend};
 		};
 
-		sleep 300;
+		sleep 60;
 	};
 };

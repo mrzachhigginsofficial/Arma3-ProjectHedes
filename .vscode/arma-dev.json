@@ -17,10 +17,7 @@
 		"x/HEDES/addons/loadoutmodules"
 	],
 	"serverMods": [
-		"!Workshop\\@CBA_A3",
-		"!Workshop\\@CUP_Weapons",
-		"!Workshop\\@CUP_Units",
-		"!Workshop\\@CUP_Vehicles"
+		"!Workshop\\@CBA_A3"
 	],
 	"serverUse32bit": false,
 	"clientDirs": [
@@ -37,10 +34,7 @@
 	],
 	"clientMods": [
 		"!Workshop\\@CBA_A3",
-		"!Workshop\\@3den Enhanced",
-		"!Workshop\\@CUP_Weapons",
-		"!Workshop\\@CUP_Units",
-		"!Workshop\\@CUP_Vehicles"
+		"!Workshop\\@3den Enhanced"
 	],
 	"ftpConnection": {}
 }
