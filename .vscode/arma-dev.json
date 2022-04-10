@@ -1,20 +1,17 @@
 {
 	"title": "Project Hedes",
 	"name": "ProjectHedes",
-	"author": "ZanchoElGrande",
-	"website": "http://yourwebsite.tld",
+	"author": "Zacho40",
+	"website": "https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes",
 	"version": "0.0.1",
 	"buildPath": "build",
 	"privateKey": "",
 	"serverDirs": [
 		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
-		"x/HEDES/addons/missionmodules",
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
-		"x/HEDES/addons/persistencemodules",
-		"x/HEDES/addons/combatzonemodules",
-		"x/HEDES/addons/loadoutmodules"
+		"x/HEDES/addons/combatzonemodules"
 	],
 	"serverMods": [
 		"!Workshop\\@CBA_A3"
@@ -23,14 +20,10 @@
 	"clientDirs": [
 		"x/HEDES/addons/common",
 		"x/HEDES/addons/main",
-		"x/HEDES/addons/missionmodules",
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
-		"x/HEDES/addons/persistencemodules",
 		"x/HEDES/addons/combatzonemodules",
-		"x/HEDES/addons/loadoutmodules",
-		"x/HEDES/addons/qolmodules",
-		"x/HEDES/addons/hphone"
+		"x/HEDES/addons/qolmodules"
 	],
 	"clientMods": [
 		"!Workshop\\@CBA_A3",

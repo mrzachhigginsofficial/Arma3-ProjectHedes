@@ -79,6 +79,13 @@ _logic spawn {
             private _civunit = _civgroup createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
             _civunit setSpeedMode "LIMITED";
             _civunit enableDynamicSimulation true;
+            _civunit disableAI "SUPPRESSION";
+            _civunit disableAI "MINEDETECTION";
+            _civunit disableAI "CHECKVISIBLE";
+            _civunit disableAI "AIMINGERROR";
+            _civunit disableAI "WEAPONAIM";
+            _civunit disableAI "TARGET";
+            _civunit disableAI "LIGHTS";
             [_civunit] call HEDES_3P_CivFlee;
             [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
         };

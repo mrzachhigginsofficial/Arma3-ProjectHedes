@@ -22,32 +22,58 @@ _logic spawn {
 
 	// -- Side Configuration Settings
 	private _eastConfiguration = [
-		east, _this getVariable ["EastVehicle",""], _this getVariable ["EastUnitPool",""],
+		east,
+		_this getVariable ["EastVehicle",""], 
+		_this getVariable ["EastUnitPool",""],
 		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" })),
-		_this getVariable ["EastIsHeli",true], _this getVariable ["EastMaxUnits",80], [], 0];
+		_this getVariable ["EastIsHeli",true], 
+		_this getVariable ["EastMaxUnits",80], 
+		[], 
+		0];
 	private _westConfiguration = [
 		west, 
-		_this getVariable ["WestVehicle",""], _this getVariable ["WestUnitPool",""],
+		_this getVariable ["WestVehicle",""],
+		_this getVariable ["WestUnitPool",""],
 		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" })),
-		_this getVariable ["WestIsHeli",true], _this getVariable ["WestMaxUnits",80], [], 120];
+		_this getVariable ["WestIsHeli",true], 
+		_this getVariable ["WestMaxUnits",80], 
+		[], 
+		120];
 	private _guerConfiguration = [
-		independent, _this getVariable ["GUERVehicle",""], _this getVariable ["GUERUnitPool",[]],
+		independent, 
+		_this getVariable ["GUERVehicle",""], 
+		_this getVariable ["GUERUnitPool",[]],
 		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" })),
-		_this getVariable ["GUERIsHeli",true], _this getVariable ["GUERMaxUnits",80], [],	-120];
+		_this getVariable ["GUERIsHeli",true], 
+		_this getVariable ["GUERMaxUnits",80], 
+		[],	
+		-120];
 
 	// -- General Configuration Settings
 	private _points = synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_Point" };
 	private _combatzonemarker = createMarker [format["CombatZoneMarker-%1",netId _this], [0,0,0]];
 	_combatzonemarker setMarkerType "hd_objective";
 
-	// -- Dynamic Function To Stop Simulation Until Needed Based on Map Simulation Distance
-	private _IsPlayersNearSquad = {
-		params["_squad"];
-		(count(allPlayers select {(_x distance (leader _squad)) < (dynamicSimulationDistance "Group")})) > 0;
+	// -- Dynamic Function To Stop Simulation Until Needed Based on Dynamic Simulation Distance
+	private _IsPlayerNearSquad = {
+		params["_pvtgrp"];
+		(count(allPlayers select {
+			private _playereval = _x;
+			count(units _pvtgrp select {(_x distance _playereval) < (dynamicSimulationDistance "Group")}) > 0;
+		})) > 0;
 	};
 
 	private _CustomSquadDynamicSimulator = {
-		params["_evaluator", "_squad"];
+		params["_evaluator", "_squad","_isheli"];
+
+		if !(_isheli) then {
+			while {
+				count((units _squad) select {getPosATL _x select 2 > .5 }) > 0
+			} do { 
+				sleep 1; 
+			};
+		};
+
 		while {_squad != grpNull} do
 		{
 			if ([_squad] call _evaluator) then 
@@ -86,11 +112,13 @@ _logic spawn {
 				// -- Set Group Objectives
 				_groups apply {_x allowFleeing 0};
 				units(_groups # 0) apply {_x disableAI "SUPPRESSION"};
+				units(_groups # 0) apply {_x disableAI "RADIOPROTOCOL"};
+				units(_groups # 0) apply {_x disableAI "MINEDETECTION"};
 				(_groups + [_combatlz, _x # 3, _x # 4]) spawn FUNCMAIN(FlightPlanner);
 				[_groups # 1, getPos _combatzone] call BIS_fnc_taskAttack; 
 
 				// -- Add Units To Cleanup
-				[_IsPlayersNearSquad, _groups # 1] spawn _CustomSquadDynamicSimulator;
+				[_IsPlayerNearSquad, _groups # 1, _x # 4] spawn _CustomSquadDynamicSimulator;
 				(vehicle (leader (_groups # 0))) call FUNCMAIN(AppendCleanupSystemObjects);
 				_groups call FUNCMAIN(AppendCleanupSystemObjects);
 
