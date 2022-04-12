@@ -12,11 +12,11 @@ if (!isServer) exitWith {};
 private _logic = param [0, objNull, [objNull]];
 
 _logic spawn {
-	private _maxvehs = call compile (_this getVariable ["NumberOfvehicles", "5"]);
-	private _marker = _this getVariable ["Markername", ""];
-	private _speed = _this getVariable ["vehiclespeed", 30];
-	private _unitpool = _this getVariable ["UnitPool", []];
-	private _side = EAST;
+	private _maxvehs = 0;
+	private _marker = "";
+	private _speed = 0;
+	private _unitpool = [];
+	private _side = UNKNOWN;
 	private _veharr = [];
 
 	private _rndpos = [];
@@ -33,6 +33,11 @@ _logic spawn {
 	{
 		if(simulationEnabled _this)
 		{
+			_maxvehs = call compile (_this getVariable ["NumberOfvehicles", "5"]);
+			_marker = _this getVariable ["Markername", ""];
+			_speed = _this getVariable ["vehiclespeed", 30];
+			_unitpool = _this getVariable ["UnitPool", []];
+			
 			// -- Clean Up Vehicle Array 
 			_veharr = _veharr - (_veharr select {_x select 0 == objNull}); 		//Remove Missing Vehicles.
 			_veharr = _veharr - (_veharr select {damage (_x select 0) == 1}); 	//Remove Dead Vehicles.
