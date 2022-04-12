@@ -14,11 +14,16 @@ ISNILS(GVARMAIN(GLOBALCLEANUPLIST),[]);
 
 _logic spawn {
 
+	private _timeout = 0;
+	private _candidate = objNull;
+	private _nearplayers = [];
+	private _visibletocount = 0;
+
 	while {_this isNotEqualTo objNull} do 
 	{
 
-		if(simulationEnabled _this)
-		{
+		if(simulationEnabled _this) then
+		{			
 			
 			private _timeout = parseNumber (_this getVariable ["LifeSpanValue",""]);
 			private _candidate = objNull;

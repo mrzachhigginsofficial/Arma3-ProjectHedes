@@ -14,7 +14,7 @@ _logic spawn {
 
 	while {_this isNotEqualTo ObjNull} do {
 
-		if(simulationEnabled _this)
+		if(simulationEnabled _this) then
 		{
 			
 			private _marker = _this getVariable "MarkerName";

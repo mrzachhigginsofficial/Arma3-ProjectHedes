@@ -4,7 +4,10 @@ class CfgVehicles
 
 	class Module_F: Logic
 	{
-		class AttributeValues;
+		class AttributeValues
+		{
+			class size;
+		}
 
 		class AttributesBase
 		{

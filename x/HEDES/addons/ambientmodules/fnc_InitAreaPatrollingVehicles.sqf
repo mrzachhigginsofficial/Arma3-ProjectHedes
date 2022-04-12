@@ -31,7 +31,7 @@ _logic spawn {
 
 	while {_this isNotEqualTo objNull} do 
 	{
-		if(simulationEnabled _this)
+		if(simulationEnabled _this) then
 		{
 			_maxvehs = call compile (_this getVariable ["NumberOfvehicles", "5"]);
 			_marker = _this getVariable ["Markername", ""];

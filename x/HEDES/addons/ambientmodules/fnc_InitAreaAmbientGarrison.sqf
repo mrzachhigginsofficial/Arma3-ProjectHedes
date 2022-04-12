@@ -26,7 +26,7 @@ _logic spawn {
 
 	while { _this isNotEqualTo objNull } do {
 
-		if(simulationEnabled _this)
+		if(simulationEnabled _this) then
 		{
 			// ******************************************************************
 			// Object Initialization Properties 
