@@ -4,6 +4,8 @@ class CfgVehicles
 
 	class Module_F: Logic
 	{
+		class AttributeValues;
+
 		class AttributesBase
 		{
 			class Checkbox;
@@ -17,7 +19,7 @@ class CfgVehicles
 		};
 
 		class ModuleDescription;
-	};
+	};	
 
 	class HEDES_AmbientModule_BASE : Module_F
 	{
@@ -40,7 +42,6 @@ class CfgVehicles
 		class ModuleDescription: ModuleDescription
 		{
 			description = "This is a short description of the ambient units module.";
-			sync[] = {"HEDES_MissionModule_BASE","HEDES_AmbientModule_BASE"};
 		};
 	};
 
@@ -158,10 +159,15 @@ class CfgVehicles
 		};
 	};
 
-	class HEDES_AmbientModule_Garrison: HEDES_AmbientModule_BASE
+	class HEDES_AmbientModule_Garrison : HEDES_AmbientModule_BASE
 	{
 		displayName = "Area Ambient Garrison";
 		function = QUOTE(FUNCMAIN(InitAreaAmbientGarrison));
+
+		class AttributeValues
+		{
+			size2[] = {50,50};
+		};
 
 		class Attributes: AttributesBase
 		{
