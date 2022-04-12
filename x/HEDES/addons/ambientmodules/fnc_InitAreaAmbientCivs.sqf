@@ -44,6 +44,7 @@ Main Thread
 --------------------------------------------------------------------
 */
 _logic spawn {
+    
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
     private _maxcivs = call compile (_this getVariable ["NumbersofCivs","5"]);
     private _bombers = _this getVariable ["SuicideBombers",true];
