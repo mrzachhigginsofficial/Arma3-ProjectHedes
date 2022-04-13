@@ -9,6 +9,7 @@ class CfgFunctions
             PATHTO_FNC(DynamicSimulation)
             PATHTO_FNC(FindHiddenRanPosInMarker)
             PATHTO_FNC(IsEnemyPlayersNear)
+            PATHTO_FNC(IsGroupFull)
             PATHTO_FNC(IsPlayersNearGroup)
             PATHTO_FNC(IsPlayersNearObj)
         };

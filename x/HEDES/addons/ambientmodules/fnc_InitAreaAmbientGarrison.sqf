@@ -23,6 +23,7 @@ _logic spawn {
 	private _sectors = [];
 	private _grp = grpNull;
 	private _i = 5;
+	private _safespawnpos = [0,0];
 
 	while { _this isNotEqualTo objNull } do {
 
@@ -42,7 +43,7 @@ _logic spawn {
 			_sectors = (synchronizedObjects _this select { typeOf _x == "ModuleSector_F" });
 
 			// -- Find Safespawn Every Iteration
-			private _safespawnpos = [getPos _this, 25, 250, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+			_safespawnpos = [getPos _this, 25, 50, 3, 0, 20, 0] call BIS_fnc_findSafePos;
 			// ******************************************************************
 
 
@@ -95,17 +96,25 @@ _logic spawn {
 				{
 					_grp = createGroup [_defaultside, true];
 					_grp enableDynamicSimulation true;
+					_grp setSpeedMode "FULL";
+					//[_grp, getPos _this] call BIS_fnc_taskDefend;
+					//[_grp,_this,50,3,false,true] call CBA_fnc_taskDefend;
+					[_grp, getPos _this] execVM "\x\cba\addons\ai\fnc_waypointGarrison.sqf";
 				};
 
-				if (!([_grp,_maxunits] call FUNCMAIN(IsGroupFull)) && !([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear))) then
+				if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear))) then 
 				{
-					private _unit = _grp createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
-					_unit call FUNCMAIN(AppendCleanupSystemObjects);
+					while {!([_grp,_maxunits] call FUNCMAIN(IsGroupFull))} do
+					{
+						private _unit = _grp createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
+						_unit call FUNCMAIN(AppendCleanupSystemObjects);
+					};
 				};
 			};
 			// ******************************************************************
 
 
+			/*
 			// ******************************************************************
 			// -- Periodically randomly pick if this group is going to patrol or defend area.
 			// -- The thread sleeps for 60 seconds, and every 5th iteration a new random task is select.
@@ -121,6 +130,7 @@ _logic spawn {
 				_i = _i + 1;
 			};
 			// ******************************************************************
+			*/
 			
 
 			// -- Go to sleep for a bit.

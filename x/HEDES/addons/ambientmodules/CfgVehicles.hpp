@@ -4,11 +4,6 @@ class CfgVehicles
 
 	class Module_F: Logic
 	{
-		class AttributeValues
-		{
-			class size;
-		}
-
 		class AttributesBase
 		{
 			class Checkbox;
@@ -21,7 +16,10 @@ class CfgVehicles
 			class Units;
 		};
 
-		class ModuleDescription;
+		class ModuleDescription
+		{
+			class AnyVehicle;
+		};
 	};	
 
 	class HEDES_AmbientModule_BASE : Module_F
@@ -29,9 +27,6 @@ class CfgVehicles
 		category = "HEDES_AmbientModules";
 		displayName = "Ambient Modules Base (Empty)";
 		functionPriority = 1;
-		is3DEN = 0;
-		isGlobal = 2;
-		isTriggerActivated 	= 0;
 		scope = 2;
 
 		class Attributes: AttributesBase
@@ -131,17 +126,38 @@ class CfgVehicles
 	{
 		displayName = "Empty Vehicles Module";
 		function = QUOTE(FUNCMAIN(InitEmptyVehicles));
+		canSetArea=1;
+		isGlobal=0;
+		isTriggerActivated=1;
+
+		class AttributeValues
+		{
+			size3[]={50,50,-1};
+		};
+		
+		class ModuleDescription : ModuleDescription
+		{
+			class LocationArea_F
+			{
+				description="";
+				duplicate=1;
+				sync[]=
+				{
+					"TriggerArea"
+				};
+			};
+			
+			class TriggerArea
+			{
+				position=1;
+				area=1;
+				duplicate=1;
+				vehicle="EmptyDetector";
+			};
+		};
 
 		class Attributes: AttributesBase
 		{
-			class MarkerName : Edit
-			{
-				property = "HEDES_AmbientModule_MarkerName";
-				displayName = "Name of marker vehicles will spawn in.";
-				tooltip = "Name of marker the vehicles will spawn in.";
-				defaultValue = """Marker Name""";
-			};
-
 			class NumOfVehs : Edit
 			{
 				property = "HEDES_AmbientModule_NumOfVehs";
@@ -166,11 +182,6 @@ class CfgVehicles
 	{
 		displayName = "Area Ambient Garrison";
 		function = QUOTE(FUNCMAIN(InitAreaAmbientGarrison));
-
-		class AttributeValues
-		{
-			size2[] = {50,50};
-		};
 
 		class Attributes: AttributesBase
 		{

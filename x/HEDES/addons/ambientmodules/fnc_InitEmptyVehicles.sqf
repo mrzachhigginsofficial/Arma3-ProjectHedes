@@ -12,46 +12,77 @@ private _logic = param [0, objNull, [objNull]];
 
 _logic spawn {
 
-	while {_this isNotEqualTo ObjNull} do {
+	// -- Get Module Properties
+	private _numveh = call compile (_this getVariable "NumOfVehs");
+	private _unitpool = call compile (_this getVariable "UnitPool");
+	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"};
 
-		if(simulationEnabled _this) then
+	// -- Initialize Trigger Area	
+	if (count(_areatriggers) == 0) then 
+	{
+		private _newtrigger = createtrigger ["emptydetector",position _this];
+		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
+		_newtrigger attachto [_this];
+		_areatriggers append [_newtrigger];
+	};
+
+	// -- Initialize Variables
+	private _pos = [0,0];
+	private _posi = 0;
+	private _maxtry = 20;
+	private _maxtrypos = 20;
+	private _trigger = objNull;
+	private _vehtracker = [];
+	private _direction = 0;
+	private _road = objNull;
+	private _roadConnectedTo = objNull;
+	private _connectedRoad = objNull;
+	private _veh = objNull;
+
+	// -- Main Loop
+	while {_this isNotEqualTo ObjNull} do 
+	{
+		// -- Iterate through default or synchronized triggers.
 		{
-			
-			private _marker = _this getVariable "MarkerName";
-			private _numveh = call compile (_this getVariable "NumOfVehs");
-			private _unitpool = call compile (_this getVariable "UnitPool");
-			private _vehtracker = [];
+			_trigger = _x;
 
-			if (
-				_numveh > count(
-					_vehtracker select {
-						alive (_x select 0)} select {
-							(((getpos (_x select 0)) distance (_x select 1))) < 300})
-			) then
+			if (simulationEnabled _trigger) then
 			{
-				private _pos = [0,0];
-				while {_pos isEqualTo [0,0]} do {
-					_pos = [[_marker], [], {isOnRoad _this}] call BIS_fnc_randomPos;
+				while {_numveh > count(_vehtracker select {alive _x} select {[_trigger, _x] call BIS_fnc_inTrigger })} do
+				{
+					_pos = [0,0];
+					_posi = 0;
+					while {_pos isEqualTo [0,0] && _posi < _maxtrypos} do {
+						_pos = [[_trigger], [], {isOnRoad _this}] call BIS_fnc_randomPos;
+						_posi = _posi + 1;
+					};
+
+					if !(_pos isEqualTo [0,0]) then {
+						// -- Spawn New Truck That Looks Believable
+						_direction = random 360;
+						_road = roadAt _pos;
+						_roadConnectedTo = roadsConnectedTo _road;
+						_connectedRoad = _roadConnectedTo select 0;
+						if (!isNil "_connectedRoad") then {
+							_direction = [_road, _connectedRoad] call BIS_fnc_DirTo;
+						};
+						_veh = (selectRandom(_unitpool) createVehicle _pos);
+						_veh setDir _direction;
+						
+						// -- Maintenance Stuff
+						_veh enableDynamicSimulation true;
+						_veh call FUNCMAIN(AppendCleanupSystemObjects);
+						_vehtracker pushBack _veh;
+					};
+
+					sleep 1;
 				};
+			};			
+		} foreach _areatriggers;
 
-				private _direction = random 360;
-				private _road = roadAt _pos;
-				private _roadConnectedTo = roadsConnectedTo _road;
-				private _connectedRoad = _roadConnectedTo select 0;
-				if (!isNil "_connectedRoad") then {
-					_direction = [_road, _connectedRoad] call BIS_fnc_DirTo;
-				};
-				private _veh = (selectRandom(_unitpool) createVehicle _pos);
-				_veh setDir _direction;
-				_veh enableDynamicSimulation true;
+		// -- Remove vehicles that are GC'd or cleaned up.
+		_vehtracker = _vehtracker - [objNull];
 
-				_vehtracker = _vehtracker select {
-					!((_x select 0) isEqualTo objNull)} select {
-						(getpos (_x select 0)) distance (_x select 1) < 300};
-				_vehtracker pushBack [_veh,_pos];
-			};
-
-			sleep 15;
-		};
+		sleep 10;
 	};
 };
