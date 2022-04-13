@@ -29,7 +29,8 @@ _logic spawn {
 	// -- Initialize Variables
 	private _pos = [0,0];
 	private _posi = 0;
-	private _maxtry = 20;
+	private _vehi = 0;
+	private _maxtryveh = 20;
 	private _maxtrypos = 20;
 	private _trigger = objNull;
 	private _vehtracker = [];
@@ -38,6 +39,7 @@ _logic spawn {
 	private _roadConnectedTo = objNull;
 	private _connectedRoad = objNull;
 	private _veh = objNull;
+	private _randomPosEval = {isOnRoad _this && !([_this] call FUNCMAIN(IsPlayersNearObj))};
 
 	// -- Main Loop
 	while {_this isNotEqualTo ObjNull} do 
@@ -48,12 +50,13 @@ _logic spawn {
 
 			if (simulationEnabled _trigger) then
 			{
-				while {_numveh > count(_vehtracker select {alive _x} select {[_trigger, _x] call BIS_fnc_inTrigger })} do
+				_vehi = 0;
+				while {_numveh > count(_vehtracker select {alive _x} select {[_trigger, _x] call BIS_fnc_inTrigger }) && _vehi < _maxtryveh} do
 				{
 					_pos = [0,0];
 					_posi = 0;
 					while {_pos isEqualTo [0,0] && _posi < _maxtrypos} do {
-						_pos = [[_trigger], [], {isOnRoad _this}] call BIS_fnc_randomPos;
+						_pos = [[_trigger], [], _randomPosEval] call BIS_fnc_randomPos;
 						_posi = _posi + 1;
 					};
 
@@ -75,6 +78,7 @@ _logic spawn {
 						_vehtracker pushBack _veh;
 					};
 
+					_vehi = _vehi + 1;
 					sleep 1;
 				};
 			};			
