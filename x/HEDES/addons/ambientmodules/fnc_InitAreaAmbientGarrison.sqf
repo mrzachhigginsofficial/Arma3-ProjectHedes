@@ -32,6 +32,7 @@ _logic spawn {
 	private _maxunits = call compile (_this getVariable ["NumbersofUnits",5]);
 	private _defaultside = call compile (_this getVariable ["GarrisonSide",EAST]);
 	private _behavior = _this getVariable "UnitBehavior";
+	private _speedmode = _this getVariable "SpeedMode";
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
 	private _sectors = synchronizedObjects _this select { typeOf _x == "ModuleSector_F" };
 
@@ -64,6 +65,28 @@ _logic spawn {
 		};
 		default { };
 	};
+
+	// -- Unit Spawning and Side Switching Function 
+	private _spawnnewunits = {
+		params["_pvtgrp","_pvtmaxunits","_pvtspawnpos",["_pvtspawncustom", false],["_pvtunitpool",[]]];
+		private _pvti = 0;
+		private _pvtmaxtry = 5;
+
+		while {!([_pvtgrp,_pvtmaxunits] call FUNCMAIN(IsGroupFull)) && _pvti < _pvtmaxtry} do	
+		{
+			if (_pvtspawncustom) then 
+			{
+				private _unit = _pvtgrp createUnit [selectRandom _pvtunitpool,_pvtspawnpos,[],0,"FORM"];
+				_unit call FUNCMAIN(AppendCleanupSystemObjects);
+			} else {
+				private _unitcount = _pvtmaxunits - count(units _pvtgrp);
+				private _newgrp = [_spawnpos, side _pvtgrp, _unitcount] call BIS_fnc_spawnGroup;
+				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects)};
+				(units _newgrp) joinSilent _pvtgrp;
+			};
+			_pvti = _pvti + 1;
+		};
+	};
 	
 	// -- Main Loop
 	while { _this isNotEqualTo objNull } do 
@@ -90,27 +113,17 @@ _logic spawn {
 						if !(_sectorside == sideUnknown) then 
 						{ 
 							_grpi = [_spawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
+							_grpi setSpeedMode _speedmode;
 							[_grpi] spawn FUNCMAIN(DynamicSimulation);
 							(units _grpi) apply {_x call FUNCMAIN(AppendCleanupSystemObjects)};
 							_x set [1,_grpi];
 						};				
 					};
 
-					// -- Spawn new units if the following conditions are met...
-					if !([_this, (side _grpi)] call FUNCMAIN(IsEnemyPlayersNear)) then
+					// -- Spawn New Units * Reset Group Behavior
+					if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear))) then 
 					{
-						_i = 0;
-						while {!([_grpi,_maxunits] call FUNCMAIN(IsGroupFull)) && _i < _maxtry} do	
-						{
-							private _unitcount = _maxunits - count(units _grpi);
-							private _newgrp = [_spawnpos, (side _grpi), _unitcount] call BIS_fnc_spawnGroup;
-							(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects)};
-							(units _newgrp) joinSilent _grpi;
-
-							_i = _i + 1;
-						};
-
-						// -- Reset Group Behavior
+						[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
 						[_grpi, _triggeri] call _behaviorfnc;
 					};
 				}
@@ -122,24 +135,17 @@ _logic spawn {
 					if (_grpi isEqualTo grpNull) then 
 					{
 						_grpi = createGroup [_defaultside, true];
+						_grpi setSpeedMode _speedmode;
 						[_grpi] spawn FUNCMAIN(DynamicSimulation);
 						_x set [1,_grpi];						
 					};
 
+					// -- Spawn New Units * Reset Group Behavior
 					if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear))) then 
 					{
-						_i = 0;
-						while {!([_grpi,_maxunits] call FUNCMAIN(IsGroupFull)) && _i < _maxtry} do
-						{
-							private _unit = _grpi createUnit [selectRandom _unitpool,_spawnpos,[],0,"FORM"];
-							_unit call FUNCMAIN(AppendCleanupSystemObjects);
-
-							 _i = _i + 1;
-						};
+						[_grpi, _maxunits, _spawnpos, true, _unitpool] call _spawnnewunits;
+						[_grpi, _triggeri] call _behaviorfnc;
 					};
-
-					// -- Reset Group Behavior
-					[_grpi, _triggeri] call _behaviorfnc;
 				};
 
 				// -- Keep Patrols Moving
