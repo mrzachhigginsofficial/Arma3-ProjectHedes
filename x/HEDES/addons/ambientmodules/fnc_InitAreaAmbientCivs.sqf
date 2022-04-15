@@ -47,12 +47,11 @@ _logic spawn {
     _civflee = {
         _this # 0 addEventHandler["firedNear", {
             _animation = selectRandom ["ApanPercMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01","ApanPpneMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01"];
-            [_this, _animation] remoteExec ["switchMove"];
-            sleep 2;
-            _this setspeedMode "FULL";
-            _building = selectRandom (nearestobjects[_this, ["House"], 200]);
-            _this domove (selectRandom (_building buildingPos -1));
-            _this removeAllEventHandlers "firedNear";
+            [_this # 0, _animation] remoteExec ["switchMove"];
+            _this # 0 setspeedMode "FULL";
+            _building = selectRandom (nearestobjects[_this # 0, ["House"], 200]);
+            _this # 0 domove (selectRandom (_building buildingPos -1));
+            _this # 0 removeAllEventHandlers "firedNear";
         }];
     };
 
@@ -79,7 +78,7 @@ _logic spawn {
                     // -- Refill Units
                     _i = 0;
                     while {!([_grpi, _maxcivs] call FUNCMAIN(IsGroupFull)) && _i < _maxtry} do {
-                        _rndpos = [_triggeri, true] call FUNCMAIN(FindHiddenRanPosInMarker);
+                        _rndpos = [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
                         if (_rndpos isNotEqualTo [0,0]) then 
                         {
                             _civunit = _grpi createUnit [selectRandom _unitpool,_rndpos,[],0,"FORM"];

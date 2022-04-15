@@ -68,6 +68,9 @@ private _ObjectSimulationLoop = {
 // ***************************************************
 // -- Spawn Proper Simulation Thread
 // ***************************************************
+
+sleep 10; // -- Give Unit Or Group Chance To Setup
+
 switch (typeName _var) do {
 	case "GROUP" : { 
 			[_var, _evaluator, _isinplane] spawn _GroupSimulationLoop; 

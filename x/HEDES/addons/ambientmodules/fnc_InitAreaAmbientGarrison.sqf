@@ -72,7 +72,6 @@ _logic spawn {
 		params["_pvtgrp","_pvtmaxunits","_pvtspawnpos",["_pvtspawncustom", false],["_pvtunitpool",[]]];
 		private _pvti = 0;
 		private _pvtmaxtry = 5;
-
 		while {!([_pvtgrp,_pvtmaxunits] call FUNCMAIN(IsGroupFull)) && _pvti < _pvtmaxtry} do	
 		{
 			if (_pvtspawncustom) then 
@@ -99,7 +98,7 @@ _logic spawn {
 				_triggeri = _x # 0;
 				_grpi = _x # 1;
 
-				_spawnpos = [_triggeri, true] call FUNCMAIN(FindHiddenRanPosInMarker);
+				_spawnpos = [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
                 if (_spawnpos isNotEqualTo [0,0]) then 
 				{
 					// -- Do if there are Synchronized Sector Control Modules (For Sector Control)

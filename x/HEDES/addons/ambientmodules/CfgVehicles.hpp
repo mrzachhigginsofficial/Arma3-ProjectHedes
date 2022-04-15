@@ -27,6 +27,7 @@ class CfgVehicles
 		canSetArea=1;
 		category = QUOTE(GVAR(AmbientModules));
 		functionPriority = 1;
+		isTriggerActivated = 0;
 		scope = 1;
 
 		class AttributeValues

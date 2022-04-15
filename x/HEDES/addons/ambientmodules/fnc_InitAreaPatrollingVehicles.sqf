@@ -59,12 +59,6 @@ _logic spawn {
 
 				if (simulationEnabled _trigger) then 
 				{
-					// -- Clean Up Vehicle Array 
-					_veharr = _veharr - (_veharr select {_x select 0 == objNull}); 		//Remove Missing Vehicles.
-					_veharr = _veharr - (_veharr select {damage (_x select 0) == 1}); 	//Remove Dead Vehicles.
-					_veharr = _veharr - (_veharr select {count(_x select 1 select {alive _x}) == 0});
-					_veharr = _veharr - (_veharr select {_x select 2 == grpNull});
-
 					// -- Spawn New Vehicles
 					try	{
 						_i = 0;
@@ -135,12 +129,10 @@ _logic spawn {
 
 								_vehicle spawn {
 									private _i = 0;
-									private _s = objNull;
 									while {_i < 20} do 
 									{
-										_s = _this say3D "Beep";
+										_this say3D "Beep";
 										sleep 1;
-										deleteVehicle _s;
 										_i = _i + 1;
 									};
 									_this setDamage 1;
@@ -173,6 +165,10 @@ _logic spawn {
 					} forEach _veharr;
 
 					// -- Update Vehicle Array
+					_veharr = _veharr - (_veharr select {_x select 0 == objNull}); 		//Remove Missing Vehicles.
+					_veharr = _veharr - (_veharr select {damage (_x select 0) == 1}); 	//Remove Dead Vehicles.
+					_veharr = _veharr - (_veharr select {count(_x select 1 select {alive _x}) == 0});
+					_veharr = _veharr - (_veharr select {_x select 2 == grpNull});
 					_x set [1, _veharr];
 				};
 

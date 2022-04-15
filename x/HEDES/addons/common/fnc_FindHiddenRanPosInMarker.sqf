@@ -7,7 +7,7 @@ Author: ZanchoElGrande
 
 #include "script_component.hpp"
 
-params ["_marker",["_isOnRoad", true]];
+params ["_marker",["_isOnRoad", true],["_distance",50]];
 
 private _rndpos = [0,0];
 private _maxi = 30;
@@ -19,12 +19,12 @@ while {_rndpos isEqualTo [0,0] && (_i < _maxi)} do
 		{
 			(isOnRoad _this) && 
 			!([_this] call FUNCMAIN(IsPlayersNearObj)) &&
-			count(_this nearEntities [["Man", "Air", "Car", "Motorcycle", "Tank"],50]) == 0
+			count(_this nearEntities [["Man", "Air", "Car", "Motorcycle", "Tank"],_distance]) == 0
 		}
 	} else {
 		{
 			!([_this] call FUNCMAIN(IsPlayersNearObj)) &&
-			count(_this nearEntities [["Man", "Air", "Car", "Motorcycle", "Tank"],50]) == 0
+			count(_this nearEntities [["Man", "Air", "Car", "Motorcycle", "Tank"],_distance]) == 0
 		}
 	};
 
