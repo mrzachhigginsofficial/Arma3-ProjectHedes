@@ -17,6 +17,7 @@ Main Thread
 */
 
 _logic spawn {	
+
 	// -- Initialize Variables
 	private _spawnpos = [0,0,0];
 	private _triggeri = objNull;
@@ -93,58 +94,61 @@ _logic spawn {
 	{
 		if (simulationEnabled _this) then
 		{
-			// -- Iterate Through Each Trigger Area
+			// -- Iterate Over Each Trigger Area
 			{
 				_triggeri = _x # 0;
 				_grpi = _x # 1;
-				_spawnpos = _triggeri call BIS_fnc_randomPosTrigger;
 
-				// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
-				if ((count _sectors) > 0) then 
+				_spawnpos = [_triggeri, true] call FUNCMAIN(FindHiddenRanPosInMarker);
+                if (_spawnpos isNotEqualTo [0,0]) then 
 				{
-					_sector = _sectors # 0;
-					while {isNil {_sector getVariable "owner"}} do {sleep 2};
-					_sectorside = _sector getVariable "owner";		
-
-					// -- Check To See If Sector Control Module Side Matches Garrison Group Side
-					// -- If group doesn't exist or side is not the same, create a new group.
-					if ((_sectorside isNotEqualTo (side _grpi)) or (_grpi isEqualTo grpNull)) then 
+					// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
+					if ((count _sectors) > 0) then 
 					{
-						if !(_sectorside == sideUnknown) then 
-						{ 
-							_grpi = [_spawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
+						_sector = _sectors # 0;
+						while {isNil {_sector getVariable "owner"}} do {sleep 2};
+						_sectorside = _sector getVariable "owner";		
+
+						// -- Check To See If Sector Control Module Side Matches Garrison Group Side
+						// -- If group doesn't exist or side is not the same, create a new group.
+						if ((_sectorside isNotEqualTo (side _grpi)) or (_grpi isEqualTo grpNull)) then 
+						{
+							if !(_sectorside == sideUnknown) then 
+							{ 
+								_grpi = [_spawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
+								_grpi setSpeedMode _speedmode;
+								[_grpi] spawn FUNCMAIN(DynamicSimulation);
+								(units _grpi) apply {_x call FUNCMAIN(AppendCleanupSystemObjects)};
+								_x set [1,_grpi];
+							};				
+						};
+
+						// -- Spawn New Units & Reset Group Behavior
+						if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear))) then 
+						{
+							[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
+							[_grpi, _triggeri] call _behaviorfnc;
+						};
+					}
+
+					// -- Do if there are NO Synchronized Sector Control Modules
+					else 
+					{
+						// -- Create Group If It's Destroyed Or Doesn't Exist Yet.
+						if (_grpi isEqualTo grpNull) then 
+						{
+							_grpi = createGroup [_defaultside, true];
 							_grpi setSpeedMode _speedmode;
 							[_grpi] spawn FUNCMAIN(DynamicSimulation);
-							(units _grpi) apply {_x call FUNCMAIN(AppendCleanupSystemObjects)};
-							_x set [1,_grpi];
-						};				
-					};
+							_x set [1,_grpi];						
+						};
 
-					// -- Spawn New Units * Reset Group Behavior
-					if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear))) then 
-					{
-						[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
-						[_grpi, _triggeri] call _behaviorfnc;
-					};
-				}
-
-				// -- Do if there are NO Synchronized Sector Control Modules
-				else 
-				{
-					// -- Create Group If It's Destroyed Or Doesn't Exist Yet.
-					if (_grpi isEqualTo grpNull) then 
-					{
-						_grpi = createGroup [_defaultside, true];
-						_grpi setSpeedMode _speedmode;
-						[_grpi] spawn FUNCMAIN(DynamicSimulation);
-						_x set [1,_grpi];						
-					};
-
-					// -- Spawn New Units * Reset Group Behavior
-					if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear))) then 
-					{
-						[_grpi, _maxunits, _spawnpos, true, _unitpool] call _spawnnewunits;
-						[_grpi, _triggeri] call _behaviorfnc;
+						// -- Spawn New Units & Reset Group Behavior
+						if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear))) then 
+						{
+							[_grpi, _maxunits, _spawnpos, true, _unitpool] call _spawnnewunits;
+							[_grpi, _triggeri] call _behaviorfnc;
+						};
 					};
 				};
 

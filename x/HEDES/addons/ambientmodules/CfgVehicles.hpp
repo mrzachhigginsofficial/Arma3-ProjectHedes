@@ -24,9 +24,9 @@ class CfgVehicles
 
 	class GVAR(AmbientModule_BASE) : Module_F
 	{
+		canSetArea=1;
 		category = QUOTE(GVAR(AmbientModules));
 		functionPriority = 1;
-		canSetArea=1;
 		scope = 1;
 
 		class AttributeValues
@@ -38,7 +38,7 @@ class CfgVehicles
 		{
 			class Units: Units
 			{
-				property = "HEDES_AmbientModule_Units";
+				property = QUOTE(GVAR(AmbientModule_Units));
 			};
 
 			class SpeedMode : Combo
@@ -172,8 +172,9 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
-			class GarrisonSide : UnitSide { };
+			class UnitSide : UnitSide { };
 			class NumberOfVehicles : NumberOfUnits { };
+			class Units: Units { } ;
 			class VehicleSpeed : Edit 
 			{
 				property = "HEDES_AmbientModule_VehSpeed";
@@ -202,6 +203,7 @@ class CfgVehicles
 			class NumbersofUnits : NumberOfUnits { };
 			class UnitBehavior : UnitBehavior { };
 			class SpeedMode : SpeedMode { };
+			class Units: Units { } ;
 			class UnitPool : UnitPool
 			{
 				displayName = "Array of unit types that will spawn as garrison.";
@@ -220,6 +222,7 @@ class CfgVehicles
 		class Attributes: Attributes
 		{
 			class NumbersofCivs : NumberOfUnits { };
+			class Units: Units { } ;
 			class UnitPool : UnitPool
 			{
 				displayName = "Array of unit types that will spawn as civilians.";
@@ -238,6 +241,7 @@ class CfgVehicles
 		class Attributes: Attributes
 		{
 			class NumOfVehs : NumberOfUnits { };
+			class Units: Units { } ;
 			class UnitPool : UnitPool
 			{
 				displayName = "Array of vehicle types that will spawn empty.";

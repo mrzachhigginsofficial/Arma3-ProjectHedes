@@ -12,115 +12,112 @@ private _logic = param [0, objNull, [objNull]];
 
 /*
 --------------------------------------------------------------------
-THIRD PARTY FUNCTION - https://www.armaholic.com/page.php?id=32139
-Author: phronk
---------------------------------------------------------------------
-*/
-HEDES_3P_CivFlee={
-    _this select 0 addEventHandler["firedNear", {
-        _civ=_this select 0;
-        _animation = selectRandom [
-            "ApanPercMstpSnonWnonDnon_G01",
-            "ApanPknlMstpSnonWnonDnon_G01",
-            "ApanPpneMstpSnonWnonDnon_G01",
-            "ApanPknlMstpSnonWnonDnon_G01"
-        ];
-
-        _civ setspeedMode "FULL";
-        [_civ, _animation] remoteExec ["switchMove"];
-
-        _nH = nearestobjects[_civ, ["House"], 200];
-        _H = selectRandom _nH;
-        _HP = _H buildingPos -1;
-        _HP = selectRandom _HP;
-        _civ domove _HP;
-        _civ removeAllEventHandlers "firedNear";
-    }];
-};
-
-/*
---------------------------------------------------------------------
 Main Thread
 --------------------------------------------------------------------
 */
+
 _logic spawn {
     
+    // -- Initialize Variables
+    private _i = 0;
+	private _maxtry = 5;
+    private _triggeri = objNull;
+    private _grpi = grpNull;
+    private _safespawnpos = [0,0];
+    private _civunit = objNull;
+    private _wppos = [0,0];
+    private _moveloc = [0,0];
+
+    // -- Get Module Properties
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
     private _maxcivs = call compile (_this getVariable ["NumbersofCivs","5"]);
-    private _bombers = _this getVariable ["SuicideBombers",true];
-    private _civgroup = createGroup [CIVILIAN, false];
+    private _bombers = _this getVariable ["SuicideBombers",true]; // Not Used Yet
+    private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
 
-	private _IsGroupFull = {
-		params["_pvtgrp", "_pvtmaxunits"];
-		(count((units _pvtgrp) select {alive _x})) >= _pvtmaxunits;
+	// -- Initialize Default Trigger Area	
+	if (count(_areatriggers) == 0) then 
+	{
+		private _newtrigger = createtrigger ["emptydetector", position _this];
+		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
+		_newtrigger attachto [_this];
+		_areatriggers pushBack [_newtrigger,grpNull];
 	};
-    
-    // -- All units should be dynamically simulated.
-    // -- This custom simulation is because of how the "flee" script works.
-    _civgroup spawn {
-        while {_this != grpNull} do {
-            private _unit = objNull;
-            {
-                _unit = _x;
-                if (count (allPlayers select {(_unit distance _x) < (dynamicSimulationDistance "Group")}) == 0) then {
-                    _unit enableSimulationGlobal false;
-                } else {
-                    _unit enableSimulationGlobal true;
-                };
-            } foreach (units _this);
-            sleep 5;
-        };
+
+    // -- THIRD PARTY FUNCTION by phronk
+    _civflee = {
+        _this # 0 addEventHandler["firedNear", {
+            _animation = selectRandom ["ApanPercMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01","ApanPpneMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01"];
+            [_this, _animation] remoteExec ["switchMove"];
+            sleep 2;
+            _this setspeedMode "FULL";
+            _building = selectRandom (nearestobjects[_this, ["House"], 200]);
+            _this domove (selectRandom (_building buildingPos -1));
+            _this removeAllEventHandlers "firedNear";
+        }];
     };
 
-    while { true } do {
+    // -- Main Loop
+    while { _this isNotEqualTo objNull } do 
+	{
+        if (simulationEnabled _this) then
+		{
+            // -- Iterate Over Each Trigger Area
+            {
+                _triggeri = _x # 0;
+                _grpi = _x # 1;
 
-        // -- Refill Unit Pool 
-        if !([_civgroup, _maxcivs] call _IsGroupFull) then{
-            private _safespawnpos = [getPos _this, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-            private _civunit = _civgroup createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
-            _civunit setSpeedMode "LIMITED";
-            _civunit enableDynamicSimulation true;
-            _civunit disableAI "SUPPRESSION";
-            _civunit disableAI "MINEDETECTION";
-            _civunit disableAI "CHECKVISIBLE";
-            _civunit disableAI "AIMINGERROR";
-            _civunit disableAI "WEAPONAIM";
-            _civunit disableAI "TARGET";
-            _civunit disableAI "LIGHTS";
-            [_civunit] call HEDES_3P_CivFlee;
-            [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
+                if (simulationEnabled _triggeri) then 
+                {
+                    // -- Create New Group If Needed. And Probably Investigate Players For Warcrimes
+                    if (_grpi isEqualTo grpNull) then 
+                    {
+                        _grpi = createGroup [CIVILIAN, false];
+                        [_grpi, FUNCMAIN(IsPlayersNearGroup)] spawn FUNCMAIN(DynamicSimulation);
+                        _x set [1, _grpi];
+                    };
+
+                    // -- Refill Units
+                    _i = 0;
+                    while {!([_grpi, _maxcivs] call FUNCMAIN(IsGroupFull)) && _i < _maxtry} do {
+                        _rndpos = [_triggeri, true] call FUNCMAIN(FindHiddenRanPosInMarker);
+                        if (_rndpos isNotEqualTo [0,0]) then 
+                        {
+                            _civunit = _grpi createUnit [selectRandom _unitpool,_rndpos,[],0,"FORM"];
+                            _civunit setSpeedMode "LIMITED";
+                            {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS"];
+                            [_civunit] call _civflee;
+                            [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
+                        };
+                        _i = _i + 1;
+                    };
+
+                    // -- Keep them walking
+                    {	
+                        if (simulationEnabled _x) then {
+                            _wppos = [getPos _x, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+                            switch (selectRandom[1,2]) do {
+                                case 1: { 
+                                    _moveloc = getPos nearestBuilding _wppos; 
+                                };
+                                case 2: { 
+                                    _roads = _wppos nearRoads 50;
+                                    if (count _roads > 0) then {
+                                        _moveloc = getPos (selectRandom _roads); 
+                                    } else {
+                                        _moveloc = getPos nearestBuilding _wppos; 
+                                    };						
+                                };
+                            };		
+                            _x doMove _moveloc;
+                            _x setSpeedMode "LIMITED";                            
+                        };   
+                        sleep 1;
+                    } foreach (units _grpi);
+                };
+            } foreach _areatriggers;
+
+            // -- Be Gentle
+            sleep 15;
         };
-
-        // -- Keep them walking
-        {	
-            if (simulationEnabled _x) then {
-
-                private _wppos = [getPos _x, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-                private _moveloc = _wppos;
-
-                switch (selectRandom[1,2]) do {
-                    case 1: { 
-                        _moveloc = getPos nearestBuilding _wppos; 
-                    };
-                    case 2: { 
-                        _roads = _wppos nearRoads 50;
-                        if (count _roads > 0) then {
-                            _moveloc = getPos (selectRandom _roads); 
-                        } else {
-                            _moveloc = getPos nearestBuilding _wppos; 
-                        };						
-                    };
-                };		
-
-                _x doMove _moveloc;
-                _x setSpeedMode "LIMITED";
-                
-            };   
-
-            sleep 1;
-
-        } foreach (units _civgroup);
-
-        sleep 15;
     };
 };

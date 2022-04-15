@@ -49,45 +49,48 @@ _logic spawn {
 	// -- Main Loop
 	while {_this isNotEqualTo ObjNull} do 
 	{
-		// -- Iterate through default or synchronized triggers.
+		if (simulationEnabled _this) then
 		{
-			_trigger = _x;
-
-			if (simulationEnabled _trigger) then
+			// -- Iterate through default or synchronized triggers.
 			{
-				_vehi = 0;
-				while {_numveh > count(_vehtracker select {alive _x} select {[_trigger, _x] call BIS_fnc_inTrigger }) && _vehi < _maxtryveh} do
+				_trigger = _x;
+				
+				if (simulationEnabled _trigger) then
 				{
-					_pos = [0,0];
-					_posi = 0;
-					while {_pos isEqualTo [0,0] && _posi < _maxtrypos} do {
-						_pos = [[_trigger], [], _randomPosEval] call BIS_fnc_randomPos;
-						_posi = _posi + 1;
-					};
-
-					if !(_pos isEqualTo [0,0]) then {
-						// -- Spawn New Truck That Looks Believable
-						_direction = random 360;
-						_road = roadAt _pos;
-						_roadConnectedTo = roadsConnectedTo _road;
-						_connectedRoad = _roadConnectedTo select 0;
-						if (!isNil "_connectedRoad") then {
-							_direction = [_road, _connectedRoad] call BIS_fnc_DirTo;
+					_vehi = 0;
+					while {_numveh > count(_vehtracker select {alive _x} select {[_trigger, _x] call BIS_fnc_inTrigger }) && _vehi < _maxtryveh} do
+					{
+						_pos = [0,0];
+						_posi = 0;
+						while {_pos isEqualTo [0,0] && _posi < _maxtrypos} do {
+							_pos = [[_trigger], [], _randomPosEval] call BIS_fnc_randomPos;
+							_posi = _posi + 1;
 						};
-						_veh = (selectRandom(_unitpool) createVehicle _pos);
-						_veh setDir _direction;
-						
-						// -- Maintenance Stuff
-						_veh enableDynamicSimulation true;
-						_veh call FUNCMAIN(AppendCleanupSystemObjects);
-						_vehtracker pushBack _veh;
-					};
 
-					_vehi = _vehi + 1;
-					sleep 1;
-				};
-			};			
-		} foreach _areatriggers;
+						if !(_pos isEqualTo [0,0]) then {
+							// -- Spawn New Truck That Looks Believable
+							_direction = random 360;
+							_road = roadAt _pos;
+							_roadConnectedTo = roadsConnectedTo _road;
+							_connectedRoad = _roadConnectedTo select 0;
+							if (!isNil "_connectedRoad") then {
+								_direction = [_road, _connectedRoad] call BIS_fnc_DirTo;
+							};
+							_veh = (selectRandom(_unitpool) createVehicle _pos);
+							_veh setDir _direction;
+							
+							// -- Maintenance Stuff
+							_veh enableDynamicSimulation true;
+							_veh call FUNCMAIN(AppendCleanupSystemObjects);
+							_vehtracker pushBack _veh;
+						};
+
+						_vehi = _vehi + 1;
+						sleep 1;
+					};
+				};			
+			} foreach _areatriggers;
+		};
 
 		// -- Remove vehicles that are GC'd or cleaned up.
 		_vehtracker = _vehtracker - [objNull];

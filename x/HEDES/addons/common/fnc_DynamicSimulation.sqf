@@ -36,7 +36,7 @@ private _GroupSimulationLoop = {
 			(units _grp) apply {_x enableSimulationGlobal false};
 		};
 
-		sleep 5;
+		sleep 2;
 	};
 };
 
@@ -61,7 +61,7 @@ private _ObjectSimulationLoop = {
 			_obj enableSimulationGlobal false;
 		};
 
-		sleep 5;
+		sleep 2;
 	};
 };
 
