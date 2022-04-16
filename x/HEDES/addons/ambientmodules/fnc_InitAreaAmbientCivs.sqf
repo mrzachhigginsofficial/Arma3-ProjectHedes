@@ -105,7 +105,7 @@ _logic spawn {
 
                     // -- Keep them walking
                     {	
-                        if (simulationEnabled _x && (speed _x) > .5) then 
+                        if (simulationEnabled _x && (speed _x) < 1) then 
                         {
                             _wppos = [_triggeri, true, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
                             switch (selectRandom[1,2]) do {
