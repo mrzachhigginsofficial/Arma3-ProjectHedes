@@ -36,6 +36,6 @@ while {_rndpos isEqualTo [0,0] && (_i < _maxi)} do
 if (_rndpos isNotEqualTo [0,0]) then 
 {
 	_rndpos = [_rndpos, 1, 25, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-}; 
+};
 
 _rndpos
