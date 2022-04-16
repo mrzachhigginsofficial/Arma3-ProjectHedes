@@ -13,90 +13,61 @@ private _logic = param [0, objNull];
 
 _logic spawn {
 
-	// ******************************************************************
-	// Build Combat Zone Configuration
-	// Notes: Create 3 arrays of combat zone settings from the module.
-	//		This includes unit pool configuration, max units per side,
-	//		and the type of vehicle they should arrive on.
-	// ******************************************************************
+	// -- Build Side Configuration Settings
+	private _sideconfigs = [];
 
-	// -- Side Configuration Settings
-	private _eastConfiguration = [
-		east,
-		_this getVariable ["EastVehicle",""], 
-		_this getVariable ["EastUnitPool",""],
-		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" })),
-		_this getVariable ["EastIsHeli",true], 
-		_this getVariable ["EastMaxUnits",80], 
-		[], 
-		0];
-	private _westConfiguration = [
-		west, 
-		_this getVariable ["WestVehicle",""],
-		_this getVariable ["WestUnitPool",""],
-		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" })),
-		_this getVariable ["WestIsHeli",true], 
-		_this getVariable ["WestMaxUnits",80], 
-		[], 
-		120];
-	private _guerConfiguration = [
-		independent, 
-		_this getVariable ["GUERVehicle",""], 
-		_this getVariable ["GUERUnitPool",[]],
-		getPos (selectRandom (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" })),
-		_this getVariable ["GUERIsHeli",true], 
-		_this getVariable ["GUERMaxUnits",80], 
-		[],	
-		-120];
+	// -- Add East
+	private _eastSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" });
+	if(count(_eastSpawns) > 0) then 
+	{
+		_sideconfigs pushback [
+			east, 									// 0 - Side
+			_this getVariable ["EastVehicle",""], 	// 1 - Delivery Vehicle Type
+			_this getVariable ["EastUnitPool",""], 	// 2 - Pool Unit Types
+			getPos (selectRandom _eastSpawns), 		// 3 - Spawn Point
+			_this getVariable ["EastIsHeli",true], 	// 4 - Is this a heli/plane
+			_this getVariable ["EastMaxUnits",80], 	// 5 - Max number of units
+			[], 									// 6 - Unit Tracker
+			0];										// 7 - Angle
+	};
+
+	// -- Add West
+	private _westSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" });
+	if(count(_westSpawns) > 0) then 
+	{
+		_sideconfigs pushback [
+			west,  									// 0 - Side
+			_this getVariable ["WestVehicle",""],  	// 1 - Delivery Vehicle Type
+			_this getVariable ["WestUnitPool",""],  // 2 - Pool Unit Types
+			getPos (selectRandom _westSpawns),  	// 3 - Spawn Point
+			_this getVariable ["WestIsHeli",true],  // 4 - Is this a heli/plane
+			_this getVariable ["WestMaxUnits",80], 	// 5 - Max number of units
+			[], 									// 6 - Unit Tracker
+			120];									// 7 - Angle
+	};
+
+	// -- Add Independent
+	private _guerSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" });
+	if (count(_guerSpawns) > 0) then 
+	{
+		_sideconfigs pushback [
+			independent,  							// 0 - Side
+			_this getVariable ["GUERVehicle",""],  	// 1 - Delivery Vehicle Type
+			_this getVariable ["GUERUnitPool",[]],  // 2 - Pool Unit Types
+			getPos (selectRandom _guerSpawns),  	// 3 - Spawn Point
+			_this getVariable ["GUERIsHeli",true],  // 4 - Is this a heli/plane
+			_this getVariable ["GUERMaxUnits",80], 	// 5 - Max number of units
+			[], 									// 6 - Unit Tracker
+			-120];									// 7 - Angle
+	};
 
 	// -- General Configuration Settings
 	private _points = synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_Point" };
 	private _combatzonemarker = createMarker [format["CombatZoneMarker-%1",netId _this], [0,0,0]];
-	_combatzonemarker setMarkerType "hd_objective";
 
-	// -- Dynamic Function To Stop Simulation Until Needed Based on Dynamic Simulation Distance
-	private _IsPlayerNearSquad = {
-		params["_pvtgrp"];
-		(count(allPlayers select {
-			private _playereval = _x;
-			count(units _pvtgrp select {(_x distance _playereval) < (dynamicSimulationDistance "Group")}) > 0;
-		})) > 0;
-	};
-
-	private _CustomSquadDynamicSimulator = {
-		params["_evaluator", "_squad","_isheli"];
-
-		if !(_isheli) then {
-			while {
-				count((units _squad) select {getPosATL _x select 2 > .5 }) > 0
-			} do { 
-				sleep 1; 
-			};
-		};
-
-		while {_squad != grpNull} do
-		{
-			if ([_squad] call _evaluator) then 
-			{
-				(units _squad) apply {_x enableSimulationGlobal true};
-			} else {
-				(units _squad) apply {_x enableSimulationGlobal false};
-			};
-
-			sleep 5;
-		};
-	};
-
-	// ******************************************************************
-
-
-	// ******************************************************************
-	// -- Start Main Loop
-	// ******************************************************************
+	// --  Main Loop
 	while {true} do {
 		private _combatzone = selectRandom _points;
-		_combatzonemarker setMarkerPos (getPos _combatzone);
-
 		{
 			private _config = _x;
 			private _combatlz = _combatzone getRelPos [400, _config # 7]; //attempt to keep enemies from landing on eachother
@@ -118,7 +89,7 @@ _logic spawn {
 				[_groups # 1, getPos _combatzone] call BIS_fnc_taskAttack; 
 
 				// -- Add Units To Cleanup
-				[_IsPlayerNearSquad, _groups # 1, _x # 4] spawn _CustomSquadDynamicSimulator;
+				[_groups # 1, FUNCMAIN(IsPlayersNearGroup),_x # 4] spawn FUNCMAIN(DynamicSimulation);
 				(vehicle (leader (_groups # 0))) call FUNCMAIN(AppendCleanupSystemObjects);
 				_groups call FUNCMAIN(AppendCleanupSystemObjects);
 
@@ -129,7 +100,7 @@ _logic spawn {
 			// -- Be nice to the server
 			sleep 1;
 
-		} foreach [_eastConfiguration, _westConfiguration, _guerConfiguration];
+		} foreach _sideconfigs;
 		
 		sleep 30;
 	};
