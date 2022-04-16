@@ -15,123 +15,151 @@ private _logic = param [0, objNull, [objNull]];
 Main Thread
 --------------------------------------------------------------------
 */
-_logic spawn {
 
-	private _unitpool = [];
-	private _maxunits = 0;
-	private _defaultside = sideUnknown;
-	private _sectors = [];
-	private _grp = grpNull;
-	private _i = 5;
+_logic spawn {	
 
-	private _IsGroupFull = {
-		params["_pvtgrp", "_pvtmaxunits"];
-		(count((units _pvtgrp) select {alive _x})) >= _pvtmaxunits;
+	// -- Initialize Variables
+	private _spawnpos = [0,0,0];
+	private _triggeri = objNull;
+	private _grpi = grpNull;
+	private _sector = objNull;
+	private _sectorside = sideUnknown;
+	private _i = 0;
+	private _maxtry = 5;
+	private _wpname = QUOTE(HEDES_GARRISON);
+
+	// -- Get Module Properties
+	private _unitpool = call compile (_this getVariable ["UnitPool",[]]);
+	private _maxunits = call compile (_this getVariable ["NumbersofUnits",5]);
+	private _defaultside = call compile (_this getVariable ["GarrisonSide",EAST]);
+	private _behavior = _this getVariable "UnitBehavior";
+	private _speedmode = _this getVariable "SpeedMode";
+	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
+	private _sectors = synchronizedObjects _this select { typeOf _x == "ModuleSector_F" };
+
+	// -- Initialize Default Trigger Area	
+	if (count(_areatriggers) == 0) then 
+	{
+		private _newtrigger = createtrigger ["emptydetector", position _this];
+		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
+		_newtrigger attachto [_this];
+		_areatriggers pushBack [_newtrigger,grpNull];
 	};
 
-	private _IsEnemiesNear = {
-		params["_pvtpos", "_pvtlocalside"];
-		count((allPlayers select {!(side _x == _pvtlocalside)}) select {(_x distance _pvtpos) < (dynamicSimulationDistance "Group")}) > 0;
+	// -- Configure Unit Behavior 
+	private _behaviorfnc = {};
+	switch (_behavior) do {
+		case QUOTE(CBA - Defend): {
+			_behaviorfnc = {(_this # 0) call CBA_fnc_taskDefend;}
+		};
+		case QUOTE(CBA - Patrol): {
+			_behaviorfnc = {[(_this # 0), getPos (_this # 1)] call CBA_fnc_taskPatrol;}
+		};
+		case QUOTE(CBA - Waypoint Garrison): {
+			_behaviorfnc = {[(_this # 0), getPos (_this # 1)] execVM QUOTE(\x\cba\addons\ai\fnc_waypointGarrison.sqf);}
+		};
+		case QUOTE(BIS - Defend): {
+			_behaviorfnc = {[(_this # 0), getPosATL (_this # 1)] call BIS_fnc_taskDefend;}
+		};
+		case QUOTE(BIS - Patrol): {
+			_behaviorfnc = {[(_this # 0), getPos (_this # 1), 30] call BIS_fnc_taskPatrol;}
+		};
+		default { };
 	};
 
-	while { true } do {
-
-		// ******************************************************************
-		// Object Initialization Properties 
-		// Notes: These are here incase we change the nature of these modules 
-		// 		mid scenario, we won't have to create new modules.
-		// ******************************************************************
-		// -- Get Object Properties
-		_unitpool = call compile (_this getVariable ["UnitPool",[]]);
-		_maxunits = call compile (_this getVariable ["NumbersofUnits",5]);
-		_defaultside = call compile (_this getVariable ["GarrisonSide",EAST]);
-
-		// -- Get Synchronized Modules
-		_sectors = (synchronizedObjects _this select { typeOf _x == "ModuleSector_F" });
-
-		// -- Find Safespawn Every Iteration
-		private _safespawnpos = [getPos _this, 25, 250, 3, 0, 20, 0] call BIS_fnc_findSafePos;
-		// ******************************************************************
-
-
-		// ******************************************************************
-		// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
-		// ******************************************************************
-		if ((count _sectors) > 0) then 
+	// -- Unit Spawning and Side Switching Function 
+	private _spawnnewunits = {
+		params["_pvtgrp","_pvtmaxunits","_pvtspawnpos",["_pvtspawncustom", false],["_pvtunitpool",[]]];
+		private _pvti = 0;
+		private _pvtmaxtry = 5;
+		while {!([_pvtgrp,_pvtmaxunits] call FUNCMAIN(IsGroupFull)) && _pvti < _pvtmaxtry} do	
 		{
-			private _sector = _sectors # 0;
-			// -- Handle Slow Sector Initialization
-			while {isNil {_sector getVariable "owner"}} do {sleep 2};
-			private _sectorside = _sector getVariable "owner";		
-
-			// -- Check To See If Sector Control Module Side Matches Garrison Group Side
-			// -- If group doesn't exist or side is not the same, create a new group.
-			if ((_sectorside isNotEqualTo (side _grp)) or (_grp isEqualTo grpNull)) then 
+			if (_pvtspawncustom) then 
 			{
-				if !(_sectorside == sideUnknown) then 
-				{ 
-					_grp = [_safespawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
-					_grp enableDynamicSimulation true;
-					_grp deleteGroupWhenEmpty true;
-					(units _grp) apply {_x call FUNCMAIN(AppendCleanupSystemObjects)};
-				};				
-			};
-
-			// -- Spawn new units if the following conditions are met...
-			// --	1.) Number of units in group is less than max units
-			// -- 	2.) There are no enemy players (players that dont match garison side) in range
-			if (!([_grp,_maxunits] call _isgroupfull) && !([_this, (side _grp)] call _IsEnemiesNear)) then
-			{
-				private _newgroupunitcount = _maxunits - count(units _grp);
-				private _newgrp = [_safespawnpos, (side _grp), _newgroupunitcount] call BIS_fnc_spawnGroup;
-				_newgrp enableDynamicSimulation true;
-				_newgrp deleteGroupWhenEmpty true;
-
-				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects)};
-				(units _newgrp) joinSilent _grp;
-
-			};
-		// ******************************************************************
-
-
-		// ******************************************************************
-		// -- Do if there are no synchronized sectors and we're doing default behavior.
-		// ******************************************************************
-		} else {
-			// -- Create Group If It's Destroyed Or Doesn't Exist Yet.
-			if (_grp isEqualTo grpNull) then 
-			{
-				_grp = createGroup [_defaultside, true];
-				_grp enableDynamicSimulation true;
-			};
-
-			if (!([_grp,_maxunits] call _isgroupfull) && !([_this, _defaultside] call _IsEnemiesNear)) then
-			{
-				private _unit = _grp createUnit [selectRandom _unitpool,_safespawnpos,[],0,"FORM"];
+				private _unit = _pvtgrp createUnit [selectRandom _pvtunitpool,_pvtspawnpos,[],0,"FORM"];
 				_unit call FUNCMAIN(AppendCleanupSystemObjects);
+			} else {
+				private _unitcount = _pvtmaxunits - count(units _pvtgrp);
+				private _newgrp = [_spawnpos, side _pvtgrp, _unitcount] call BIS_fnc_spawnGroup;
+				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects)};
+				(units _newgrp) joinSilent _pvtgrp;
 			};
+			_pvti = _pvti + 1;
 		};
-		// ******************************************************************
-
-
-		// ******************************************************************
-		// -- Periodically randomly pick if this group is going to patrol or defend area.
-		// -- The thread sleeps for 60 seconds, and every 5th iteration a new random task is select.
-		// ******************************************************************
-		if((_i%5) == 0) then {
-			_i = 0;
-			switch(ceil random 2) do
+	};
+	
+	// -- Main Loop
+	while { _this isNotEqualTo objNull } do 
+	{
+		if (simulationEnabled _this) then
+		{
+			// -- Iterate Over Each Trigger Area
 			{
-				case 1: {[_this, _grp, 50] call CBA_fnc_taskPatrol};
-				default {_grp call CBA_fnc_taskDefend};
-			};
-		} else {
-			_i = _i + 1;
-		};
-		// ******************************************************************
-		
+				_triggeri = _x # 0;
+				_grpi = _x # 1;
 
-		// -- Go to sleep for a bit.
-		sleep 60;
+				_spawnpos = [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
+                if (_spawnpos isNotEqualTo [0,0]) then 
+				{
+					// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
+					if ((count _sectors) > 0) then 
+					{
+						_sector = _sectors # 0;
+						while {isNil {_sector getVariable "owner"}} do {sleep 2};
+						_sectorside = _sector getVariable "owner";		
+
+						// -- Check To See If Sector Control Module Side Matches Garrison Group Side
+						// -- If group doesn't exist or side is not the same, create a new group.
+						if ((_sectorside isNotEqualTo (side _grpi)) or (_grpi isEqualTo grpNull)) then 
+						{
+							if !(_sectorside == sideUnknown) then 
+							{ 
+								_grpi = [_spawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
+								_grpi setSpeedMode _speedmode;
+								[_grpi] spawn FUNCMAIN(DynamicSimulation);
+								(units _grpi) apply {_x call FUNCMAIN(AppendCleanupSystemObjects)};
+								_x set [1,_grpi];
+							};				
+						};
+
+						// -- Spawn New Units & Reset Group Behavior
+						if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear))) then 
+						{
+							[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
+							[_grpi, _triggeri] call _behaviorfnc;
+						};
+					}
+
+					// -- Do if there are NO Synchronized Sector Control Modules
+					else 
+					{
+						// -- Create Group If It's Destroyed Or Doesn't Exist Yet.
+						if (_grpi isEqualTo grpNull) then 
+						{
+							_grpi = createGroup [_defaultside, true];
+							_grpi setSpeedMode _speedmode;
+							[_grpi] spawn FUNCMAIN(DynamicSimulation);
+							_x set [1,_grpi];						
+						};
+
+						// -- Spawn New Units & Reset Group Behavior
+						if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear))) then 
+						{
+							[_grpi, _maxunits, _spawnpos, true, _unitpool] call _spawnnewunits;
+							[_grpi, _triggeri] call _behaviorfnc;
+						};
+					};
+				};
+
+				// -- Keep Patrols Moving
+				if(QUOTE(Patrol) in _behavior && count(waypoints _grpi) < 2) then {
+					[_grpi, _triggeri] call _behaviorfnc;
+				};
+
+			} foreach _areatriggers;
+
+			// -- Go to sleep for a bit.
+			sleep 15;
+		};
 	};
 };
