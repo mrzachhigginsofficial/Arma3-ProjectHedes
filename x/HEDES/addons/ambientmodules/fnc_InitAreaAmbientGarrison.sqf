@@ -77,11 +77,13 @@ _logic spawn {
 			if (_pvtspawncustom) then 
 			{
 				private _unit = _pvtgrp createUnit [selectRandom _pvtunitpool,_pvtspawnpos,[],0,"FORM"];
+				_unit setPosATL [(getPosATL _unit) # 0, (getPosATL _unit) # 1 ,0];
 				_unit call FUNCMAIN(AppendCleanupSystemObjects);
 			} else {
 				private _unitcount = _pvtmaxunits - count(units _pvtgrp);
 				private _newgrp = [_spawnpos, side _pvtgrp, _unitcount] call BIS_fnc_spawnGroup;
-				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects)};
+				(units _newgrp) apply { _x setPosATL [(getPosATL _x) # 0, (getPosATL _x) # 1 ,0] };
+				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects) };
 				(units _newgrp) joinSilent _pvtgrp;
 			};
 			_pvti = _pvti + 1;
@@ -107,19 +109,16 @@ _logic spawn {
 						_sector = _sectors # 0;
 						while {isNil {_sector getVariable "owner"}} do {sleep 2};
 						_sectorside = _sector getVariable "owner";		
+						if (_sectorside == sideUnknown) then {_sectorside = _defaultside};
 
 						// -- Check To See If Sector Control Module Side Matches Garrison Group Side
 						// -- If group doesn't exist or side is not the same, create a new group.
 						if ((_sectorside isNotEqualTo (side _grpi)) or (_grpi isEqualTo grpNull)) then 
 						{
-							if !(_sectorside == sideUnknown) then 
-							{ 
-								_grpi = [_spawnpos, _sectorside, _maxunits] call BIS_fnc_spawnGroup;
-								_grpi setSpeedMode _speedmode;
-								[_grpi] spawn FUNCMAIN(DynamicSimulation);
-								(units _grpi) apply {_x call FUNCMAIN(AppendCleanupSystemObjects)};
-								_x set [1,_grpi];
-							};				
+							_grpi = createGroup [_sectorside, true];
+							_grpi setSpeedMode _speedmode;
+							[_grpi] spawn FUNCMAIN(DynamicSimulation);
+							_x set [1,_grpi];				
 						};
 
 						// -- Spawn New Units & Reset Group Behavior
