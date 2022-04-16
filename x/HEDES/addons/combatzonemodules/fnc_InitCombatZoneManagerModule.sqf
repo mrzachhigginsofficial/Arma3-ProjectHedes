@@ -20,45 +20,21 @@ _logic spawn {
 	private _eastSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" });
 	if(count(_eastSpawns) > 0) then 
 	{
-		_sideconfigs pushback [
-			east, 									// 0 - Side
-			_this getVariable ["EastVehicle",""], 	// 1 - Delivery Vehicle Type
-			_this getVariable ["EastUnitPool",""], 	// 2 - Pool Unit Types
-			getPos (selectRandom _eastSpawns), 		// 3 - Spawn Point
-			_this getVariable ["EastIsHeli",true], 	// 4 - Is this a heli/plane
-			_this getVariable ["EastMaxUnits",80], 	// 5 - Max number of units
-			[], 									// 6 - Unit Tracker
-			0];										// 7 - Angle
+		_sideconfigs pushback [east,_this getVariable ["EastVehicle",""],_this getVariable ["EastUnitPool",""],getPos (selectRandom _eastSpawns),_this getVariable ["EastIsHeli",true],_this getVariable ["EastMaxUnits",80],[],0];
 	};
 
 	// -- Add West
 	private _westSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" });
 	if(count(_westSpawns) > 0) then 
 	{
-		_sideconfigs pushback [
-			west,  									// 0 - Side
-			_this getVariable ["WestVehicle",""],  	// 1 - Delivery Vehicle Type
-			_this getVariable ["WestUnitPool",""],  // 2 - Pool Unit Types
-			getPos (selectRandom _westSpawns),  	// 3 - Spawn Point
-			_this getVariable ["WestIsHeli",true],  // 4 - Is this a heli/plane
-			_this getVariable ["WestMaxUnits",80], 	// 5 - Max number of units
-			[], 									// 6 - Unit Tracker
-			120];									// 7 - Angle
+		_sideconfigs pushback [west,_this getVariable ["WestVehicle",""],_this getVariable ["WestUnitPool",""],getPos (selectRandom _westSpawns),_this getVariable ["WestIsHeli",true],_this getVariable ["WestMaxUnits",80],[],120]
 	};
 
 	// -- Add Independent
 	private _guerSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" });
 	if (count(_guerSpawns) > 0) then 
 	{
-		_sideconfigs pushback [
-			independent,  							// 0 - Side
-			_this getVariable ["GUERVehicle",""],  	// 1 - Delivery Vehicle Type
-			_this getVariable ["GUERUnitPool",[]],  // 2 - Pool Unit Types
-			getPos (selectRandom _guerSpawns),  	// 3 - Spawn Point
-			_this getVariable ["GUERIsHeli",true],  // 4 - Is this a heli/plane
-			_this getVariable ["GUERMaxUnits",80], 	// 5 - Max number of units
-			[], 									// 6 - Unit Tracker
-			-120];									// 7 - Angle
+		_sideconfigs pushback [independent,_this getVariable ["GUERVehicle",""],_this getVariable ["GUERUnitPool",[]],getPos (selectRandom _guerSpawns),_this getVariable ["GUERIsHeli",true],_this getVariable ["GUERMaxUnits",80],[],-120];									// 7 - Angle
 	}; 
 
 	// -- General Configuration Settings
