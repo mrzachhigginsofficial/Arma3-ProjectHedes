@@ -34,7 +34,7 @@ _logic spawn {
 	private _guerSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" });
 	if (count(_guerSpawns) > 0) then 
 	{
-		_sideconfigs pushback [independent,_this getVariable ["GUERVehicle",""],_this getVariable ["GUERUnitPool",[]],getPos (selectRandom _guerSpawns),_this getVariable ["GUERIsHeli",true],_this getVariable ["GUERMaxUnits",80],[],-120];									// 7 - Angle
+		_sideconfigs pushback [independent,_this getVariable ["GUERVehicle",""],_this getVariable ["GUERUnitPool",[]],getPos (selectRandom _guerSpawns),_this getVariable ["GUERIsHeli",true],_this getVariable ["GUERMaxUnits",80],[],-120];
 	}; 
 
 	// -- General Configuration Settings
