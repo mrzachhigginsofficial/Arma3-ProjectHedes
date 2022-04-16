@@ -47,11 +47,22 @@ _logic spawn {
     _civflee = {
         _this # 0 addEventHandler["firedNear", {
             _animation = selectRandom ["ApanPercMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01","ApanPpneMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01"];
-            [_this # 0, _animation] remoteExec ["switchMove"];
+            //[_this # 0, _animation] remoteExec ["playMoveNow"];
+            _this # 0 playMoveNow _animation;
             _this # 0 setspeedMode "FULL";
-            _building = selectRandom (nearestobjects[_this # 0, ["House"], 200]);
-            _this # 0 domove (selectRandom (_building buildingPos -1));
-            _this # 0 removeAllEventHandlers "firedNear";
+            _this # 0 forceWalk false;
+            _buildings = (nearestobjects[_this # 0, ["House"], 200]);
+            if (count(_buildings) > 0) then 
+            {
+                _building = selectRandom (nearestobjects[_this # 0, ["House"], 200]);
+                _this # 0 domove (selectRandom (_building buildingPos -1));
+                _this # 0 removeAllEventHandlers "firedNear";
+            };
+            _this # 0 spawn {
+                private _nearplayers = allPlayers select {(_x distance _this) < dynamicSimulationDistance "GROUP"};
+                while {count(_nearplayers select {[objNull, "VIEW"] checkVisibility [eyePos _x, eyePos _this] > 0}) != 0} do {sleep 5};
+                deleteVehicle _this;
+            };
         }];
     };
 
@@ -82,7 +93,9 @@ _logic spawn {
                         if (_rndpos isNotEqualTo [0,0]) then 
                         {
                             _civunit = _grpi createUnit [selectRandom _unitpool,_rndpos,[],0,"FORM"];
+                            _civunit setPosATL [(getPosATL _civunit) # 0, (getPosATL _civunit) # 1 ,0];
                             _civunit setSpeedMode "LIMITED";
+                            _civunit forceWalk true;
                             {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS"];
                             [_civunit] call _civflee;
                             [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
@@ -92,8 +105,9 @@ _logic spawn {
 
                     // -- Keep them walking
                     {	
-                        if (simulationEnabled _x) then {
-                            _wppos = [getPos _x, 25, 75, 3, 0, 20, 0] call BIS_fnc_findSafePos;
+                        if (simulationEnabled _x && (speed _x) > .5) then 
+                        {
+                            _wppos = [_triggeri, true, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
                             switch (selectRandom[1,2]) do {
                                 case 1: { 
                                     _moveloc = getPos nearestBuilding _wppos; 
@@ -116,7 +130,7 @@ _logic spawn {
             } foreach _areatriggers;
 
             // -- Be Gentle
-            sleep 15;
+            sleep 5;
         };
     };
 };

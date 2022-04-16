@@ -37,7 +37,7 @@ _logic spawn {
 
 				if((count _nearplayers) > 0) then {
 
-					_visibletocount = count(_nearplayers select {[objNull, "VIEW"] checkVisibility [eyePos player, eyePos _x] > .2});
+					_visibletocount = count(_nearplayers select {[objNull, "VIEW"] checkVisibility [eyePos _candidate, eyePos _x] > .2});
 					if (_visibletocount == 0) then
 					{
 						deleteVehicle _candidate;
