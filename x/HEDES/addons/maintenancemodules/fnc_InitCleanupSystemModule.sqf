@@ -35,7 +35,7 @@ _logic spawn {
 				_candidate = _x select 0;
 				_nearplayers = allPlayers select {(_x distance _candidate) < dynamicSimulationDistance "GROUP"};
 
-				if((count _nearplayers) > 0) then {
+				if((count _nearplayers) == 0) then {
 
 					_visibletocount = count(_nearplayers select {[objNull, "VIEW"] checkVisibility [eyePos _candidate, eyePos _x] > .2});
 					if (_visibletocount == 0) then

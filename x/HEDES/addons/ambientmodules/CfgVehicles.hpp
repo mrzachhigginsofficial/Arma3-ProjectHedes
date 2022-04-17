@@ -81,7 +81,7 @@ class CfgVehicles
 					};
 					class guer	{
 						name = "GUER"; 
-						value = "GUER";
+						value = "INDEPENDENT";
 					};
 					class west	{
 						name = "WEST"; 
@@ -90,11 +90,44 @@ class CfgVehicles
 				};
 			};
 
-			class UnitBehavior : Combo
+			class UnitCombatBehaviour : Combo
 			{
-				property = "HEDES_AmbientModule_UnitBehavior";
-				displayName = "AI Behavior";
-				tooltip = "How the AI will behave.";
+				property = "HEDES_AmbientModule_UnitBehaviour";
+				displayName = "Unit AI Behaviour";
+				tooltip = "The Spawned Units Default Behaviour.";
+				defaultValue = """SAFE""";
+				
+				class Values
+				{
+					class careless	{
+						name = "CARELESS (Not Recommended)"; 
+						value = "CARELESS";
+					};
+					class safe	{
+						name = "SAFE"; 
+						value = "SAFE";
+					};
+					class aware	{
+						name = "AWARE"; 
+						value = "AWARE";
+					};
+					class combat	{
+						name = "COMBAT"; 
+						value = "COMBAT";
+					};
+					class stealth	{
+						name = "STEALTH"; 
+						value = "STEALTH";
+					};
+				};
+			};
+
+
+			class UnitCombatTask : Combo
+			{
+				property = "HEDES_AmbientModule_UnitCombatTask";
+				displayName = "AI's Task Type";
+				tooltip = "What will the AI do.";
 				defaultValue = """CBA - Waypoint Garrison""";
 				
 				class Values
@@ -122,12 +155,24 @@ class CfgVehicles
 				};
 			};
 
+			class SimulationDelay : Edit
+			{
+				property = "HEDES_AmbientModule_SimDelay";
+				defaultValue = "15";
+				displayName = "Dynamic Simulation Start Delay";
+				tooltip = "Number of seconds until HEDES dynamic simulation kicks in (recommend higher values for garrisons).";
+				typeName = "NUMBER";
+				validate = "number";
+			};
+
 			class NumberOfUnits : Edit
 			{
 				property = "HEDES_AmbientModule_NumOfUnits";
 				displayName = "Number of units/vehicles.";
 				tooltip = "Number of units/vehicles that can be in the area at one time.";
-				defaultValue = """5""";
+				defaultValue = "5";
+				typeName = "NUMBER";
+				validate = "number";
 			};
 
 			class UnitPool
@@ -202,8 +247,10 @@ class CfgVehicles
 		{
 			class GarrisonSide : UnitSide { };
 			class NumbersofUnits : NumberOfUnits { };
-			class UnitBehavior : UnitBehavior { };
+			class UnitCombatTask : UnitCombatTask { };
+			class UnitCombatBehaviour : UnitCombatBehaviour { };
 			class SpeedMode : SpeedMode { };
+			class SimulationDelay : SimulationDelay { };
 			class Units: Units { } ;
 			class UnitPool : UnitPool
 			{
