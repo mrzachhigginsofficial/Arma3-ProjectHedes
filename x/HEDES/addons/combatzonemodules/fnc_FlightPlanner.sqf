@@ -17,7 +17,7 @@ params[
 
 private _vehicle = vehicle (leader _planecrewgrp);
 
-private _wp1 = _planecrewgrp addwaypoint [_droppoint, 200];
+private _wp1 = _planecrewgrp addwaypoint [_droppoint, 0];
 private _wp1statement = "";
 
 if (_isheli) then 

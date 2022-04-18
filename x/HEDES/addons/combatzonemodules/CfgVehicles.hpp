@@ -16,7 +16,10 @@ class CfgVehicles
 			class Units;
 		};
 
-		class ModuleDescription;
+		class ModuleDescription
+		{
+			class AnyVehicle;
+		};
 	};
 
 	class HEDES_CombatZoneModule_BASE : Module_F
@@ -27,7 +30,7 @@ class CfgVehicles
 		is3DEN = 0;
 		isGlobal = 2;
 		isTriggerActivated 	= 0;
-		scope = 2;
+		scope = 1;
 
 		class Attributes: AttributesBase
 		{
@@ -41,6 +44,24 @@ class CfgVehicles
 		{
 			description = "This is a short description of the ambient units module.";
 			sync[] = {"HEDES_CombatZoneModule_BASE"};
+
+			class LocationArea_F
+			{
+				description="";
+				duplicate=1;
+				sync[]=
+				{
+					"TriggerArea"
+				};
+			};
+			
+			class TriggerArea
+			{
+				position=1;
+				area=1;
+				duplicate=1;
+				vehicle="EmptyDetector";
+			};
 		};
 	};
 
@@ -49,6 +70,7 @@ class CfgVehicles
 	{
 		displayName = "Combat Zone Manager Module";
 		function = QUOTE(FUNCMAIN(InitCombatZoneManagerModule));
+		scope = 2;
 
 		class Attributes: AttributesBase
 		{
@@ -156,21 +178,50 @@ class CfgVehicles
 
 	class HEDES_CombatZoneModules_Point : HEDES_CombatZoneModule_BASE
 	{
+		canSetArea=1;
 		displayName = "Combat Zone Point Module";
+		scope = 2;
+	};
+
+	class HEDES_CombatZoneModules_EastLZ : HEDES_CombatZoneModule_BASE
+	{
+		canSetArea=1;
+		displayName = "East Landing Zone";
+		scope = 2;
+	};
+
+	class HEDES_CombatZoneModules_WestLZ : HEDES_CombatZoneModule_BASE
+	{
+		canSetArea=1;
+		displayName = "West Landing Zone";
+		scope = 2;
+	};
+
+	class HEDES_CombatZoneModules_GuerLZ : HEDES_CombatZoneModule_BASE
+	{
+		canSetArea=1;
+		displayName = "Independent Landing Zone";
+		scope = 2;
 	};
 
 	class HEDES_CombatZoneModules_WestSpawn : HEDES_CombatZoneModule_BASE
 	{
+		canSetArea=1;
 		displayName = "West Spawn Point Module";
+		scope = 2;
 	};
 
 	class HEDES_CombatZoneModules_EastSpawn : HEDES_CombatZoneModule_BASE
 	{
+		canSetArea=1;
 		displayName = "East Spawn Point Module";
+		scope = 2;
 	};
 
 	class HEDES_CombatZoneModules_GuerSpawn : HEDES_CombatZoneModule_BASE
 	{
+		canSetArea=1;
 		displayName = "Guer Spawn Point Module";
+		scope = 2;
 	};
 };

@@ -27,6 +27,7 @@ _logic spawn {
 	private _i = 0;
 	private _maxtry = 5;
 	private _wpname = QUOTE(HEDES_GARRISON);
+	private _isfirstspawn = 1;
 
 	// -- Get Module Properties
 	private _unitpool = call compile (_this getVariable ["UnitPool",[]]);
@@ -77,20 +78,24 @@ _logic spawn {
 		{
 			try
 			{
+				private _newgrp = grpNull;
+				private _unitcount = _pvtmaxunits - count(units _pvtgrp);
 				if (_pvtspawncustom) then 
-				{
-					private _unit = _pvtgrp createUnit [selectRandom _pvtunitpool,_pvtspawnpos,[],0,"FORM"];
-					_unit setPosATL [(getPosATL _unit) # 0, (getPosATL _unit) # 1 ,0];
-					_unit call FUNCMAIN(AppendCleanupSystemObjects);
-					_unit setBehaviour _behaviour;
+				{					
+					private _composition = [];
+					while {count _composition < _unitcount} do 
+					{
+						_composition pushBack (selectRandom _pvtunitpool);
+					};
+					_newgrp = [_spawnpos, side _pvtgrp, _composition] call BIS_fnc_spawnGroup;
 				} else {
-					private _unitcount = _pvtmaxunits - count(units _pvtgrp);
-					private _newgrp = [_spawnpos, side _pvtgrp, _unitcount] call BIS_fnc_spawnGroup;
-					(units _newgrp) apply {_x setBehaviour _behaviour};
-					(units _newgrp) apply { _x setPosATL [(getPosATL _x) # 0, (getPosATL _x) # 1 ,0] };
-					(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects) };
-					(units _newgrp) joinSilent _pvtgrp;
+					_newgrp = [_spawnpos, side _pvtgrp, _unitcount] call BIS_fnc_spawnGroup;
 				};
+
+				(units _newgrp) apply {_x setBehaviour _behaviour};
+				(units _newgrp) apply { _x setPosATL [(getPosATL _x) # 0, (getPosATL _x) # 1 ,0] };
+				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects) };
+				(units _newgrp) joinSilent _pvtgrp;
 			}
 			catch 
 			{
@@ -111,7 +116,12 @@ _logic spawn {
 				_triggeri = _x # 0;
 				_grpi = _x # 1;
 
-				_spawnpos = [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
+				_spawnpos = if(_isfirstspawn == 1) then {
+					[_triggeri call BIS_fnc_randomPosTrigger, 0, 5] call BIS_fnc_findSafePos
+				} else {
+					[_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker)
+				};
+
                 if (_spawnpos isNotEqualTo [0,0]) then 
 				{
 					// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
@@ -133,7 +143,7 @@ _logic spawn {
 						};
 
 						// -- Spawn New Units & Reset Group Behavior
-						if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear))) then 
+						if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear)) or _isfirstspawn == 1) then 
 						{
 							[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
 							[_grpi, _triggeri] call _combattaskfnc;
@@ -153,7 +163,7 @@ _logic spawn {
 						};
 
 						// -- Spawn New Units & Reset Group Behavior
-						if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear))) then 
+						if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear)) or _isfirstspawn == 1) then 
 						{
 							[_grpi, _maxunits, _spawnpos, true, _unitpool] call _spawnnewunits;
 							[_grpi, _triggeri] call _combattaskfnc;
@@ -167,6 +177,8 @@ _logic spawn {
 				};
 
 			} foreach _areatriggers;
+
+			_isfirstspawn = 0;
 
 			// -- Go to sleep for a bit.
 			sleep 15;

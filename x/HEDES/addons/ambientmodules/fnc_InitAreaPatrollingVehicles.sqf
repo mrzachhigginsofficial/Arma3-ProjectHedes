@@ -30,9 +30,10 @@ _logic spawn {
 	private _firstalivecrew = objNull;
 	private _i = 0;
 	private _maxtry = 5;
+	private _isfirstspawn = 1;
 
 	// -- Get Module Properties
-	private _maxvehs = call compile (_this getVariable ["NumberOfvehicles", "5"]);
+	private _maxvehs = _this getVariable ["NumberOfvehicles", 5];
 	private _speed = _this getVariable ["vehiclespeed", 30];
 	private _unitpool = _this getVariable ["UnitPool", []];
 	private _side = call compile (_this getVariable ["UnitSide", "EAST"]);
@@ -64,8 +65,12 @@ _logic spawn {
 						_i = 0;
 						while {count(_veharr) < _maxvehs && _i < _maxtry} do
 						{	
-							// -- Find Random Position
-							_rndpos = [_trigger, true] call FUNCMAIN(FindHiddenRanPosInMarker);
+							// -- Find Random Position					
+							_rndpos = if(_isfirstspawn == 1) then {
+								[_trigger call BIS_fnc_randomPosTrigger, 5, 50, 10] call BIS_fnc_findSafePos
+							} else {
+								[_trigger, true] call FUNCMAIN(FindHiddenRanPosInMarker)
+							};
 
 							// -- Spawn Vehicle and Group
 							if (_rndpos isNotEqualTo [0,0]) then {				
@@ -176,6 +181,8 @@ _logic spawn {
 			
 			// -- Be Gentle
 			sleep 10;
+
+			_isfirstspawn = 0;
 		};		
 	};
 };

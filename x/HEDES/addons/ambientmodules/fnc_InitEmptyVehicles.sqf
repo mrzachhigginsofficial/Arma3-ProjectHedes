@@ -30,10 +30,12 @@ _logic spawn {
 	private _roadConnectedTo = objNull;
 	private _connectedRoad = objNull;
 	private _veh = objNull;
-	private _randomPosEval = {isOnRoad _this && !([_this] call FUNCMAIN(IsPlayersNearObj))};
+	private _randomPosEval = {};
+	private _isfirstspawn = 1;
+	private _debugveh = objNull;
 
 	// -- Get Module Properties
-	private _numveh = call compile (_this getVariable "NumOfVehs");
+	private _numveh = _this getVariable ["NumOfVehs",5];
 	private _unitpool = call compile (_this getVariable "UnitPool");
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"};
 
@@ -54,6 +56,12 @@ _logic spawn {
 			// -- Iterate through default or synchronized triggers.
 			{
 				_trigger = _x;
+
+				_randomPosEval = if (_isfirstspawn == 1) then {
+					{isOnRoad _this}
+				} else {
+					{isOnRoad _this && !([_this] call FUNCMAIN(IsPlayersNearObj))}
+				};
 				
 				if (simulationEnabled _trigger) then
 				{
@@ -62,6 +70,7 @@ _logic spawn {
 					{
 						_pos = [0,0];
 						_posi = 0;
+						
 						while {_pos isEqualTo [0,0] && _posi < _maxtrypos} do {
 							_pos = [[_trigger], [], _randomPosEval] call BIS_fnc_randomPos;
 							_posi = _posi + 1;
@@ -96,5 +105,7 @@ _logic spawn {
 		_vehtracker = _vehtracker - [objNull];
 
 		sleep 10;
+
+		_isfirstspawn = 0;
 	};
 };

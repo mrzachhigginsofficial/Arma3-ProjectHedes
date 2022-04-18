@@ -27,10 +27,11 @@ _logic spawn {
     private _civunit = objNull;
     private _wppos = [0,0];
     private _moveloc = [0,0];
+    private _isfirstspawn = 1;
 
     // -- Get Module Properties
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
-    private _maxcivs = call compile (_this getVariable ["NumbersofCivs","5"]);
+    private _maxcivs = _this getVariable ["NumbersofCivs",5];
     private _bombers = _this getVariable ["SuicideBombers",true]; // Not Used Yet
     private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
 
@@ -45,7 +46,7 @@ _logic spawn {
 
     // -- THIRD PARTY FUNCTION by phronk
     _civflee = {
-        _this # 0 addEventHandler["firedNear", {
+        _this addEventHandler["firedNear", {
             _animation = selectRandom ["ApanPercMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01","ApanPpneMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01"];
             //[_this # 0, _animation] remoteExec ["playMoveNow"];
             _this # 0 playMoveNow _animation;
@@ -89,7 +90,13 @@ _logic spawn {
                     // -- Refill Units
                     _i = 0;
                     while {!([_grpi, _maxcivs] call FUNCMAIN(IsGroupFull)) && _i < _maxtry} do {
-                        _rndpos = [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
+
+                        _rndpos = if (_isfirstspawn == 1) then {
+                            [_triggeri call BIS_fnc_randomPosTrigger, 0, 5] call BIS_fnc_findSafePos
+                        } else {
+                            [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker)
+                        };
+                        
                         if (_rndpos isNotEqualTo [0,0]) then 
                         {
                             _civunit = _grpi createUnit [selectRandom _unitpool,_rndpos,[],0,"FORM"];
@@ -97,7 +104,7 @@ _logic spawn {
                             _civunit setSpeedMode "LIMITED";
                             _civunit forceWalk true;
                             {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS"];
-                            [_civunit] call _civflee;
+                            _civunit call _civflee;
                             [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
                         };
                         _i = _i + 1;
@@ -131,6 +138,8 @@ _logic spawn {
 
             // -- Be Gentle
             sleep 5;
+
+            _isfirstspawn = 0;
         };
     };
 };

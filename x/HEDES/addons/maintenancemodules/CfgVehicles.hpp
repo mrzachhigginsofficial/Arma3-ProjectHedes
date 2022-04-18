@@ -24,10 +24,7 @@ class CfgVehicles
 		category = "HEDES_MaintenanceModules";
 		displayName = "Maintenance Manager Base Module (Empty)";
 		functionPriority = 1;
-		is3DEN = 0;
-		isGlobal = 2;
-		isTriggerActivated 	= 0;
-		scope = 2;
+		scope = 1;
 
 		class Attributes: AttributesBase
 		{
@@ -50,6 +47,7 @@ class CfgVehicles
 	{
 		displayName = "Cleanup Units Maintenance Module";
 		function = QUOTE(FUNCMAIN(InitCleanupSystemModule));
+		scope = 2;
 
 		class Attributes: AttributesBase
 		{
@@ -67,6 +65,7 @@ class CfgVehicles
 	{
 		displayName = "Cleanup Units Outside of Zone Module";
 		function = QUOTE(FUNCMAIN(InitSafeZoneCleanup));
+		scope = 1;
 
 		class Attributes: AttributesBase
 		{
