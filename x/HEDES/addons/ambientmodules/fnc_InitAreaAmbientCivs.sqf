@@ -30,6 +30,7 @@ _logic spawn {
     private _isfirstspawn = 1;
 
     // -- Get Module Properties
+	private _newunitinitfnc = _this getVariable ["UnitInit", ""];
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
     private _maxcivs = _this getVariable ["NumbersofCivs",5];
     private _bombers = _this getVariable ["SuicideBombers",true]; // Not Used Yet
@@ -106,6 +107,7 @@ _logic spawn {
                             {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS"];
                             _civunit call _civflee;
                             [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
+                            _civunit call _newunitinitfnc;
                         };
                         _i = _i + 1;
                     };

@@ -33,8 +33,9 @@ _logic spawn {
 	private _isfirstspawn = 1;
 
 	// -- Get Module Properties
+	private _newunitinitfnc = _this getVariable ["UnitInit", ""];
 	private _maxvehs = _this getVariable ["NumberOfvehicles", 5];
-	private _speed = _this getVariable ["vehiclespeed", 30];
+	private _speed = _this getVariable ["vehiclespeed", "LIMITED"];
 	private _unitpool = _this getVariable ["UnitPool", []];
 	private _side = call compile (_this getVariable ["UnitSide", "EAST"]);
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x, []]};
@@ -82,6 +83,9 @@ _logic spawn {
 								(_newvehgrp select 0) forcespeed (call compile _speed);
 								(_newvehgrp select 0) call FUNCMAIN(AppendCleanupSystemObjects);
 								(_newvehgrp select 1) call FUNCMAIN(AppendCleanupSystemObjects);
+
+								// -- Unit Init
+								(_newvehgrp select 1) apply {_x call compile _newunitinitfnc};
 
 								[_newvehgrp select 2, FUNCMAIN(IsPlayersNearGroup)] spawn FUNCMAIN(DynamicSimulation);
 

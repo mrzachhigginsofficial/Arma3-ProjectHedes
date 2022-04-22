@@ -35,6 +35,7 @@ _logic spawn {
 	private _debugveh = objNull;
 
 	// -- Get Module Properties
+	private _newunitinitfnc = _this getVariable ["UnitInit", ""];
 	private _numveh = _this getVariable ["NumOfVehs",5];
 	private _unitpool = call compile (_this getVariable "UnitPool");
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"};
@@ -92,6 +93,9 @@ _logic spawn {
 							_veh enableDynamicSimulation true;
 							_veh call FUNCMAIN(AppendCleanupSystemObjects);
 							_vehtracker pushBack _veh;
+
+							// -- Run Init Function
+							_veh call compile _newunitinitfnc;
 						};
 
 						_vehi = _vehi + 1;
