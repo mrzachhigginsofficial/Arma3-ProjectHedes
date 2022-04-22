@@ -221,7 +221,7 @@ class CfgVehicles
 	class HEDES_CombatZoneModules_GuerSpawn : HEDES_CombatZoneModule_BASE
 	{
 		canSetArea=1;
-		displayName = "Guer Spawn Point Module";
+		displayName = "Independent Spawn Point Module";
 		scope = 2;
 	};
 };
