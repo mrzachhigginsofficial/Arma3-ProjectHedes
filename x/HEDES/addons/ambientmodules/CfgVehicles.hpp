@@ -184,6 +184,16 @@ class CfgVehicles
 				defaultValue = """['vehicle_1_F','vehicle_2_F','vehicle_3_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};			
+
+			class UnitInit
+			{
+				property = "HEDES_AmbientModule_UnitInit";
+				control = "EditCodeMulti5";
+				displayName = "Unit Init Function.";
+				tooltip = "Spawn unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
+				defaultValue = "_this setdamage 0";
+				expression = "_this setVariable ['%s',_value];";
+			};			
 		};
 
 		class ModuleDescription: ModuleDescription
@@ -220,7 +230,7 @@ class CfgVehicles
 		{
 			class UnitSide : UnitSide { };
 			class NumberOfVehicles : NumberOfUnits { };
-			class Units: Units { } ;
+			class Units : Units { } ;
 			class VehicleSpeed : Edit 
 			{
 				property = "HEDES_AmbientModule_VehSpeed";
@@ -233,7 +243,8 @@ class CfgVehicles
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
 				defaultValue = """['O_G_Offroad_01_Armed_F']""";
-			};				
+			};
+			class UnitInit : UnitInit { };			
 		};
 	};
 
@@ -257,7 +268,8 @@ class CfgVehicles
 				displayName = "Array of unit types that will spawn as garrison.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
 				defaultValue = """['O_G_soldier_LAT_F','O_G_soldier_M_F','O_G_soldier_GL_F']""";
-			};				
+			};
+			class UnitInit : UnitInit { };			
 		};
 	};
 	
@@ -276,7 +288,8 @@ class CfgVehicles
 				displayName = "Array of unit types that will spawn as civilians.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
 				defaultValue = """['C_man_polo_1_F_afro','C_man_polo_2_F_afro','C_man_polo_3_F_afro','C_man_polo_4_F_afro','C_man_polo_5_F_afro','C_man_p_beggar_F_afro']""";
-			};	
+			};
+			class UnitInit : UnitInit { };
 		};
 	};
 
@@ -296,6 +309,7 @@ class CfgVehicles
 				tooltip = "Array of vehicle types. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles allowed.";
 				defaultValue = """['I_G_Van_01_transport_F','I_G_Offroad_01_Repair_F']""";
 			};	
+			class UnitInit : UnitInit { };
 		};
 	};
 };
