@@ -1,18 +1,26 @@
-setacctime 4;
+/*
+---------------------------------------------
+Airport Sim Module
+Author: ZanchoElGrande
+---------------------------------------------
+*/
 
+#include "script_component.hpp"
 if (!isServer) exitWith {};
 
-_this spawn {
-	
+private _logic = param [0, objNull];
+
+_logic spawn {
+
 	jets = [];
 
 	private _home = nearestBuilding _this;
 
-	private _examplearray = ["B_Plane_CAS_01_dynamicLoadout_F","B_Plane_Fighter_01_F"];
-	private _side = WEST;
-	private _maxjets = 3;	
-	private _timeout = 240;
-	private _wpradius = 100;
+	private _units = call compile (_this getVariable ["UnitPool","[]"]);
+	private _side = call compile (_this getVariable ["UnitSide","WEST"]);
+	private _maxjets = _this getVariable ["NumberOfUnits",3];	
+	private _timeout = _this getVariable ["UnitTimeout",240];
+	private _wpradius = _this getVariable ["WPRadius",100];
 
 	// ****************************************************************
 	// Private Functions
@@ -56,7 +64,7 @@ _this spawn {
 
 		_jet setFuel .5;
 		_pilot = _grp createUnit ["B_Pilot_F", getPos _home, [], 0, "FORM"];
-		_pilot setPos ([_home, 1, 10] call BIS_fnc_findSafePos);
+		_pilot setPos (_home buildingExit 0);
 		_pilot assignAsDriver _jet;
 		_pilot forceWalk true;
 		_pilot allowDamage false;
@@ -82,7 +90,7 @@ _this spawn {
 			// -- Spawn New Jets
 			if (count(jets) < _maxjets) then 
 			{
-				jets pushBack (_examplearray call _newvehicle);
+				jets pushBack (_units call _newvehicle);
 			};
 
 			// -- Recall Low Fuel

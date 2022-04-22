@@ -56,12 +56,32 @@ class CfgVehicles
 				expression = "_this setVariable ['%s',_value];";
 			};			
 
+			class WPRadius : Edit
+			{
+				property = "HEDES_AirportModule_RPRadius";
+				displayName = "WP Radius.";
+				tooltip = "Make this bigger if the aircraft doesn't seem to be triggering waypoints.";
+				defaultValue = "100";
+				typeName = "NUMBER";
+				validate = "number";
+			};
+
 			class NumberOfUnits : Edit
 			{
 				property = "HEDES_AirportModule_NumOfUnits";
 				displayName = "Number of units/vehicles.";
 				tooltip = "Number of units/vehicles that can be in the area at one time.";
 				defaultValue = "3";
+				typeName = "NUMBER";
+				validate = "number";
+			};
+
+			class UnitTimeout : Edit
+			{
+				property = "HEDES_AirportModule_Timeout";
+				displayName = "Unit State Timeout.";
+				tooltip = "How long until a unit is considered bugged and deleted.";
+				defaultValue = "240";
 				typeName = "NUMBER";
 				validate = "number";
 			};
@@ -99,20 +119,22 @@ class CfgVehicles
 
 	class GVAR(AirportModule_Aircraft): GVAR(AirportModule_BASE)
 	{
-		displayName = "Ambient Airplane Sim";
+		displayName = "Ambient Airplane Sim (Early Access)";
 		function = QUOTE(FUNCMAIN(InitAirportManager));
 		scope = 2;
 
 		class Attributes: Attributes
 		{
 			class NumberOfUnits : NumberOfUnits { };
-			class UnitPool : UnitPool { };
-			class UnitSide : UnitSide
+			class UnitSide : UnitSide { };
+			class UnitPool : UnitPool
 			{
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
 				defaultValue = """['B_Plane_CAS_01_dynamicLoadout_F','B_Plane_Fighter_01_F']""";
 			};
+			class WPRadius : WPRadius { };
+			class UnitTimeout : UnitTimeout { };
 			class UnitInit : UnitInit { };			
 		};
 	};

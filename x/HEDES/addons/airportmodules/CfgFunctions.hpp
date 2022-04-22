@@ -2,7 +2,7 @@ class CfgFunctions
 {
     class PREFIX 
     {
-        class airports
+        class airportmodules
         {
             PATHTO_FNC(InitAirportManager)
         };
