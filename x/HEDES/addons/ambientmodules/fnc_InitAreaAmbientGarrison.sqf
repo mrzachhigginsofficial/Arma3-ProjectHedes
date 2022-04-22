@@ -30,10 +30,10 @@ _logic spawn {
 	private _isfirstspawn = 1;
 
 	// -- Get Module Properties
-	private _unitpool = call compile (_this getVariable ["UnitPool",[]]);
+	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 	private _maxunits = _this getVariable ["NumbersofUnits",5];
 	private _simdelay = _this getVariable ["SimulationDelay",15];
-	private _defaultside = call compile (_this getVariable ["GarrisonSide",EAST]);
+	private _defaultside = call compile (_this getVariable ["GarrisonSide","EAST"]);
 	private _behaviour = _this getVariable "UnitCombatBehaviour";
 	private _combattask = _this getVariable "UnitCombatTask";
 	private _speedmode = _this getVariable "SpeedMode";
