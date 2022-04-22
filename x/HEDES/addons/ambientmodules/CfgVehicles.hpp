@@ -178,7 +178,7 @@ class CfgVehicles
 			class UnitPool
 			{
 				property = "HEDES_AmbientModule_UnitPool";
-				control = "EditCodeMulti5";
+				control = "EditCodeMulti3";
 				displayName = "Array of unit types that will spawn.";
 				tooltip = "Array of cfgvehicles to spawn. Must be formatted as array: ['var1','var2'].";
 				defaultValue = """['vehicle_1_F','vehicle_2_F','vehicle_3_F']""";
@@ -189,9 +189,8 @@ class CfgVehicles
 			{
 				property = "HEDES_AmbientModule_UnitInit";
 				control = "EditCodeMulti5";
-				displayName = "Unit Init Function.";
-				tooltip = "Spawn unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
-				defaultValue = "_this setdamage 0";
+				displayName = "Unit Init Function (_this refers to the spawned unit).";
+				tooltip = "Spawn unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.). This function is only called on unit spawn.";
 				expression = "_this setVariable ['%s',_value];";
 			};			
 		};
@@ -225,27 +224,6 @@ class CfgVehicles
 		displayName = "Area Vehicle Patrol (Roads)";
 		function = QUOTE(FUNCMAIN(InitAreaPatrollingVehicles));
 		scope = 2;
-
-		class Attributes: Attributes
-		{
-			class UnitSide : UnitSide { };
-			class NumberOfVehicles : NumberOfUnits { };
-			class Units : Units { } ;
-			class VehicleSpeed : Edit 
-			{
-				property = "HEDES_AmbientModule_VehSpeed";
-				displayName = "Vehicle Speed";
-				tooltip = "Speed of Vehicle (50 and below is a nice choice)";
-				defaultValue = """25""";
-			};
-			class UnitPool : UnitPool
-			{
-				displayName = "Array of unit types.";
-				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
-				defaultValue = """['O_G_Offroad_01_Armed_F']""";
-			};
-			class UnitInit : UnitInit { };			
-		};
 	};
 
 	class GVAR(AmbientModule_Garrison) : GVAR(AmbientModule_BASE)

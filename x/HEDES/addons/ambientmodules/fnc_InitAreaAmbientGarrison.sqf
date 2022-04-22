@@ -30,6 +30,8 @@ _logic spawn {
 	private _isfirstspawn = 1;
 
 	// -- Get Module Properties
+	private _newunitsarr = [];
+	private _newunitinitfnc = _this getVariable ["UnitInit", ""];
 	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 	private _maxunits = _this getVariable ["NumbersofUnits",5];
 	private _simdelay = _this getVariable ["SimulationDelay",15];
@@ -91,11 +93,12 @@ _logic spawn {
 				} else {
 					_newgrp = [_spawnpos, side _pvtgrp, _unitcount] call BIS_fnc_spawnGroup;
 				};
-
+				_newunitsarr = (units _newgrp);
 				(units _newgrp) apply {_x setBehaviour _behaviour};
 				(units _newgrp) apply { _x setPosATL [(getPosATL _x) # 0, (getPosATL _x) # 1 ,0] };
 				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects) };
 				(units _newgrp) joinSilent _pvtgrp;
+				_newunitsarr apply {_x call compile _newunitinitfnc};
 			}
 			catch 
 			{
