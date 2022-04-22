@@ -9,4 +9,4 @@ Author: ZanchoElGrande
 
 params["_obj"];
 
-count(allPlayers select {(_x distance _obj) < (dynamicSimulationDistance "Group")}) > 0;
+count(allPlayers select {(_x distance2D _obj) < (dynamicSimulationDistance "Group")}) > 0;
