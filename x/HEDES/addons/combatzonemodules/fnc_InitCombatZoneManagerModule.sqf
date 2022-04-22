@@ -120,6 +120,10 @@ _logic spawn {
 						// -- Spawn Vehicle With Crew and Fireteams
 						_groups = [_config # 0, _config # 1, call compile(_config # 2), _config # 3] call FUNCMAIN(SpawnVehicleAndCrew);
 						_groups apply {_x allowFleeing 0};
+						while {count(units (_groups # 1)) > (_config # 5)} do 
+						{
+							deleteVehicle (selectRandom units (_groups # 1));
+						};
 						units(_groups # 0) apply {_x disableAI "SUPPRESSION"};
 						units(_groups # 0) apply {_x disableAI "RADIOPROTOCOL"};
 						units(_groups # 0) apply {_x disableAI "MINEDETECTION"};
