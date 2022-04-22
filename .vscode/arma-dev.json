@@ -23,7 +23,8 @@
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
 		"x/HEDES/addons/combatzonemodules",
-		"x/HEDES/addons/qolmodules"
+		"x/HEDES/addons/qolmodules",
+		"x/HEDES/addons/airportmodules"
 	],
 	"clientMods": [
 		"!Workshop\\@CBA_A3",
