@@ -9,7 +9,7 @@ Author: ZanchoElGrande
 
 params["_grp"];
 
-(count(allPlayers select {
+allPlayers findIf ({
 	private _playeri = _x;
-	count((units _grp) select {(_x distance2D _playeri) < (dynamicSimulationDistance "Group")}) > 0;
-})) > 0
+	(units _grp) findIf {(_x distance2D _playeri) < (dynamicSimulationDistance "Group")} > -1
+}) > -1
