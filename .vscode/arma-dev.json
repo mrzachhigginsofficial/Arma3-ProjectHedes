@@ -11,7 +11,10 @@
 		"x/HEDES/addons/main",
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
-		"x/HEDES/addons/combatzonemodules"
+		"x/HEDES/addons/combatzonemodules",
+		"x/HEDES/addons/qolmodules",
+		"x/HEDES/addons/airportmodules",
+		"x/HEDES/addons/destructionmodules"
 	],
 	"serverMods": [
 		"!Workshop\\@CBA_A3"
@@ -24,7 +27,8 @@
 		"x/HEDES/addons/ambientmodules",
 		"x/HEDES/addons/combatzonemodules",
 		"x/HEDES/addons/qolmodules",
-		"x/HEDES/addons/airportmodules"
+		"x/HEDES/addons/airportmodules",
+		"x/HEDES/addons/destructionmodules"
 	],
 	"clientMods": [
 		"!Workshop\\@CBA_A3",

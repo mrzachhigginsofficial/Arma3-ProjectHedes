@@ -103,13 +103,14 @@ _logic spawn {
 					};
 				};			
 			} foreach _areatriggers;
+
+			// -- Remove vehicles that are GC'd or cleaned up.
+			_vehtracker = _vehtracker - [objNull];
+
+			_isfirstspawn = 0;
 		};
 
-		// -- Remove vehicles that are GC'd or cleaned up.
-		_vehtracker = _vehtracker - [objNull];
-
-		sleep 10;
-
-		_isfirstspawn = 0;
+		// -- Go to sleep for a bit.
+		sleep 10;		
 	};
 };

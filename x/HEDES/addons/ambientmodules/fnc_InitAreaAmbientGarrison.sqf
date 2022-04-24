@@ -182,9 +182,9 @@ _logic spawn {
 			} foreach _areatriggers;
 
 			_isfirstspawn = 0;
-
-			// -- Go to sleep for a bit.
-			sleep 15;
 		};
+
+		// -- Go to sleep for a bit.
+		sleep 15;
 	};
 };

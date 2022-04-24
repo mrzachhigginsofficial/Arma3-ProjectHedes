@@ -138,10 +138,10 @@ _logic spawn {
                 };
             } foreach _areatriggers;
 
-            // -- Be Gentle
-            sleep 5;
-
             _isfirstspawn = 0;
         };
+
+        // -- Go to sleep for a bit.
+        sleep 5;
     };
 };
