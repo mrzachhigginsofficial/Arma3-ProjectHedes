@@ -8,7 +8,6 @@
 	"privateKey": "",
 	"serverDirs": [
 		"x/HEDES/addons/common",
-		"x/HEDES/addons/main",
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
 		"x/HEDES/addons/combatzonemodules",
@@ -22,7 +21,6 @@
 	"serverUse32bit": false,
 	"clientDirs": [
 		"x/HEDES/addons/common",
-		"x/HEDES/addons/main",
 		"x/HEDES/addons/maintenancemodules",
 		"x/HEDES/addons/ambientmodules",
 		"x/HEDES/addons/combatzonemodules",
