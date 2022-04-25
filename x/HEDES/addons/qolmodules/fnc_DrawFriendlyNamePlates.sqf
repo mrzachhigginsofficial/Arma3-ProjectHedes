@@ -33,10 +33,15 @@ GVAR(DRAWFRIENDLYNAMECOLORS) = [
 	}];
 
 	// Updates Units To ID
-	while {alive player} do { 
-		GVAR(DRAWFRIENDLYNAMEPLAYERS) = player nearEntities["Man", 20] select { 
-			side _x == side player && _x != player
-		}; 
+	while {true} do { 
+		
+		if (player isNotEqualTo objNull) then 
+		{
+			GVAR(DRAWFRIENDLYNAMEPLAYERS) = player nearEntities["Man", 20] select { 
+				side _x == side player && _x != player
+			}; 
+		};
+
 		sleep 1; 
 	}; 
 
