@@ -19,21 +19,17 @@ class CfgVehicles
 		class ModuleDescription;
 	};
 
-	class HEDES_QOLModules_BASE : Module_F
+	class GVAR(BASE) : Module_F
 	{
 		category = "HEDES_QOLModules";
-		displayName = "QOL Modules Base (Empty)";
 		functionPriority = 1;
-		is3DEN = 0;
-		isGlobal = 2;
-		isTriggerActivated 	= 0;
-		scope = 2;
+		scope = 1;
 
 		class Attributes: AttributesBase
 		{
 			class Units: Units
 			{
-				property = "HEDES_QOLModule_Units";
+				property = QUOTE(GVAR(Units));
 			};
 		};
 
@@ -44,9 +40,10 @@ class CfgVehicles
 	};
 
 	/* HEDES Persistence Modules */
-	class HEDES_QOLModule_FriendlyNamePlates: HEDES_QOLModules_BASE
+	class GVAR(FriendlyNamePlates): GVAR(BASE)
 	{
 		displayName = "Friendly Name Plates";
 		function = QUOTE(FUNCMAIN(DrawFriendlyNamePlates));
+		scope = 2;
 	};
 };

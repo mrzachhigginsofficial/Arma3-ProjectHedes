@@ -39,7 +39,7 @@ class CfgVehicles
 		{
 			class Units: Units
 			{
-				property = QUOTE(GVAR(AmbientModule_Units));
+				property = QUOTE(GVAR(Units));
 			};
 			class SpeedMode : Combo
 			{

@@ -36,7 +36,7 @@ class CfgVehicles
 		{
 			class Units: Units
 			{
-				property = "HEDES_CombatZoneModule_Units";
+				property = QUOTE(GVAR(Units));
 			};
 		};
 

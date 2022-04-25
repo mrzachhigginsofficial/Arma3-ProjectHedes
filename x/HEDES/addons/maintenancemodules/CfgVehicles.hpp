@@ -19,7 +19,7 @@ class CfgVehicles
 		class ModuleDescription;
 	};
 
-	class HEDES_MaintenanceModule_BASE : Module_F
+	class GVAR(BASE) : Module_F
 	{
 		category = QUOTE(GVAR(COMPONENT));
 		displayName = "Maintenance Manager Base Module (Empty)";
@@ -30,7 +30,7 @@ class CfgVehicles
 		{
 			class Units: Units
 			{
-				property = "HEDES_MaintenanceModule_Units";
+				property = QUOTE(GVAR(Units));
 			};
 		};
 
@@ -43,7 +43,7 @@ class CfgVehicles
 
 	/* HEDES Maintenance Modules */
 
-	class HEDES_MaintenanceModules_Cleanup : HEDES_MaintenanceModule_BASE
+	class GVAR(Cleanup) : GVAR(BASE)
 	{
 		displayName = "Cleanup Units Maintenance Module";
 		function = QUOTE(FUNCMAIN(InitCleanupSystemModule));
@@ -61,7 +61,7 @@ class CfgVehicles
 		};
 	};
 
-	class HEDES_MaintenanceModules_SafeZone : HEDES_MaintenanceModule_BASE
+	class GVAR(SafeZone) : GVAR(BASE)
 	{
 		displayName = "Cleanup Units Outside of Zone Module";
 		function = QUOTE(FUNCMAIN(InitSafeZoneCleanup));
