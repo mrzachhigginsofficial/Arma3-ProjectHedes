@@ -2,7 +2,7 @@ class CfgFunctions
 {
     class PREFIX 
     {
-        class main 
+        class COMPONENT 
         {
             PATHTO_FNC(MontanaRandomizer);     
         };

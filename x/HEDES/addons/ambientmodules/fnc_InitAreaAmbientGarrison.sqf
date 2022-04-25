@@ -31,7 +31,7 @@ _logic spawn {
 
 	// -- Get Module Properties
 	private _newunitsarr = [];
-	private _newunitinitfnc = _this getVariable ["UnitInit", ""];
+	private _newunitinitfnc = _this getVariable ["UnitInit", {}];
 	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 	private _maxunits = _this getVariable ["NumbersofUnits",5];
 	private _simdelay = _this getVariable ["SimulationDelay",15];
@@ -41,6 +41,7 @@ _logic spawn {
 	private _speedmode = _this getVariable "SpeedMode";
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
 	private _sectors = synchronizedObjects _this select { typeOf _x == "ModuleSector_F" };
+	private _interval = _this getVariable ["SimulationInterval",15];
 
 	// -- Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
@@ -185,6 +186,6 @@ _logic spawn {
 		};
 
 		// -- Go to sleep for a bit.
-		sleep 15;
+		sleep _interval;
 	};
 };

@@ -41,7 +41,6 @@ class CfgVehicles
 			{
 				property = QUOTE(GVAR(AmbientModule_Units));
 			};
-
 			class SpeedMode : Combo
 			{
 				property = "HEDES_AmbientModule_SpeedMode";
@@ -65,7 +64,6 @@ class CfgVehicles
 					};
 				};
 			};
-
 			class UnitSide : Combo
 			{
 				property = "HEDES_AmbientModule_UnitSide";
@@ -89,7 +87,6 @@ class CfgVehicles
 					};
 				};
 			};
-
 			class UnitCombatBehaviour : Combo
 			{
 				property = "HEDES_AmbientModule_UnitBehaviour";
@@ -121,8 +118,6 @@ class CfgVehicles
 					};
 				};
 			};
-
-
 			class UnitCombatTask : Combo
 			{
 				property = "HEDES_AmbientModule_UnitCombatTask";
@@ -154,43 +149,29 @@ class CfgVehicles
 					};
 				};
 			};
-
-			class SimulationDelay : Edit
+			class SliderTimerRespawnBase
 			{
-				property = "HEDES_AmbientModule_SimDelay";
-				defaultValue = "15";
-				displayName = "Dynamic Simulation Start Delay";
-				tooltip = "Number of seconds until HEDES dynamic simulation kicks in (recommend higher values for garrisons).";
+				control = "SliderTimeRespawn";
+				property = "HEDES_AmbientModule_SliderTimerRespawnBase";
 				typeName = "NUMBER";
 				validate = "number";
 			};
-
-			class NumberOfUnits : Edit
+			class EditNumBase : Edit
 			{
-				property = "HEDES_AmbientModule_NumOfUnits";
-				displayName = "Number of units/vehicles.";
-				tooltip = "Number of units/vehicles that can be in the area at one time.";
-				defaultValue = "5";
+				property = "HEDES_AmbientModule_EditNumBase";
 				typeName = "NUMBER";
 				validate = "number";
 			};
-
-			class UnitPool
+			class EditCodeMulti3Base
 			{
-				property = "HEDES_AmbientModule_UnitPool";
-				control = "EditCodeMulti5";
-				displayName = "Array of unit types that will spawn.";
-				tooltip = "Array of cfgvehicles to spawn. Must be formatted as array: ['var1','var2'].";
-				defaultValue = """['vehicle_1_F','vehicle_2_F','vehicle_3_F']""";
+				property = "HEDES_AmbientModule_EditCodeMulti3Base";
+				control = "EditCodeMulti3";
 				expression = "_this setVariable ['%s',_value];";
 			};			
-
-			class UnitInit
+			class EditCodeMulti5Base
 			{
-				property = "HEDES_AmbientModule_UnitInit";
+				property = "HEDES_AmbientModule_EditCodeMulti5Base";
 				control = "EditCodeMulti5";
-				displayName = "Unit Init Function.";
-				tooltip = "Spawn unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
 				expression = "_this setVariable ['%s',_value];";
 			};			
 		};
@@ -219,7 +200,7 @@ class CfgVehicles
 		};
 	};
 
-	class GVAR(AmbientModule_AreaVehPatrol): GVAR(AmbientModule_BASE)
+	class GVAR(AreaVehPatrol): GVAR(AmbientModule_BASE)
 	{
 		displayName = "Area Vehicle Patrol (Roads)";
 		function = QUOTE(FUNCMAIN(InitAreaPatrollingVehicles));
@@ -228,7 +209,11 @@ class CfgVehicles
 		class Attributes: Attributes
 		{
 			class UnitSide : UnitSide { };
-			class NumberOfVehicles : NumberOfUnits { };
+			class NumberOfVehicles : EditNumBase {
+				displayName = "Number of units/vehicles.";
+				tooltip = "Number of units/vehicles that can be in the area at one time.";
+				defaultValue = "5";
+			};
 			class Units : Units { } ;
 			class VehicleSpeed : Edit 
 			{
@@ -237,17 +222,32 @@ class CfgVehicles
 				tooltip = "Speed of Vehicle (50 and below is a nice choice)";
 				defaultValue = """25""";
 			};
-			class UnitPool : UnitPool
+			class UnitPool : EditCodeMulti3Base
 			{
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
 				defaultValue = """['O_G_Offroad_01_Armed_F']""";
 			};
-			class UnitInit : UnitInit { };			
+			class SimulationDelay : SliderTimerRespawnBase
+			{
+				defaultValue = "15";
+				displayName = "Dynamic Simulation Start Delay";
+				tooltip = "Number of seconds until HEDES dynamic simulation kicks in (recommend higher values for garrisons).";
+			};
+			class SimulationInterval : SliderTimerRespawnBase
+			{
+				defaultValue = "30";
+				displayName = "Simulation Interval";
+				tooltip = "Number of seconds between each iteration of simulation loop.";
+			};
+			class UnitInit : EditCodeMulti5Base {
+				displayName = "Unit Init Function.";
+				tooltip = "Expression executed with spawned unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
+			};			
 		};
 	};
 
-	class GVAR(AmbientModule_Garrison) : GVAR(AmbientModule_BASE)
+	class GVAR(Garrison) : GVAR(AmbientModule_BASE)
 	{
 		displayName = "Area Ambient Garrison";
 		function = QUOTE(FUNCMAIN(InitAreaAmbientGarrison));
@@ -256,23 +256,46 @@ class CfgVehicles
 		class Attributes: Attributes
 		{
 			class GarrisonSide : UnitSide { };
-			class NumbersofUnits : NumberOfUnits { };
+			class NumbersofUnits : EditNumBase {
+				displayName = "Number of units/vehicles.";
+				tooltip = "Number of units/vehicles that can be in the area at one time.";
+				defaultValue = "5";
+			};
 			class UnitCombatTask : UnitCombatTask { };
 			class UnitCombatBehaviour : UnitCombatBehaviour { };
 			class SpeedMode : SpeedMode { };
-			class SimulationDelay : SimulationDelay { };
+			class SimulationDelay : SliderTimerRespawnBase {
+				defaultValue = "15";
+				displayName = "Dynamic Simulation Start Delay";
+				tooltip = "Number of seconds until HEDES dynamic simulation kicks in (recommend higher values for garrisons).";
+			};
+			class SimulationInterval : SliderTimerRespawnBase
+			{
+				defaultValue = "30";
+				displayName = "Simulation Interval";
+				tooltip = "Number of seconds between each iteration of simulation loop.";
+			};
 			class Units: Units { } ;
-			class UnitPool : UnitPool
+			class UnitPool : EditCodeMulti3Base
 			{
 				displayName = "Array of unit types that will spawn as garrison.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
 				defaultValue = """['O_G_soldier_LAT_F','O_G_soldier_M_F','O_G_soldier_GL_F']""";
 			};		
-			class UnitInit : UnitInit { };				
+			class UnitInit : EditCodeMulti5Base {
+				property = "HEDES_AmbientModule_UnitInit";
+				displayName = "Unit Init Function.";
+				tooltip = "Expression executed with spawned unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
+			};			
+			class CBAUnitFnc : EditCodeMulti5Base {
+				property = "HEDES_AmbientModule_CBAUnitFnc";
+				displayName = "CBA Patrol Expression.";
+				tooltip = "Expression executed at each CBA Patrol waypoint.";
+			};			
 		};
 	};
 	
-	class GVAR(AmbientModule_Civilians) : GVAR(AmbientModule_BASE)
+	class GVAR(Civilians) : GVAR(AmbientModule_BASE)
 	{
 		displayName = "Area Ambient Civs";
 		function = QUOTE(FUNCMAIN(InitAreaAmbientCivs));
@@ -280,19 +303,33 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
-			class NumbersofCivs : NumberOfUnits { };
+			class NumbersofCivs : EditNumBase {
+				displayName = "Number of units/vehicles.";
+				tooltip = "Number of units/vehicles that can be in the area at one time.";
+				defaultValue = "5";
+			};
+			class SimulationInterval : SliderTimerRespawnBase
+			{
+				defaultValue = "30";
+				displayName = "Simulation Interval";
+				tooltip = "Number of seconds between each iteration of simulation loop.";
+			};
 			class Units: Units { } ;
-			class UnitPool : UnitPool
+			class UnitPool : EditCodeMulti3Base
 			{
 				displayName = "Array of unit types that will spawn as civilians.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only infantry allowed.";
 				defaultValue = """['C_man_polo_1_F_afro','C_man_polo_2_F_afro','C_man_polo_3_F_afro','C_man_polo_4_F_afro','C_man_polo_5_F_afro','C_man_p_beggar_F_afro']""";
 			};	
-			class UnitInit : UnitInit { };		
+			class UnitInit : EditCodeMulti5Base {
+				property = "HEDES_AmbientModule_UnitInit";
+				displayName = "Unit Init Function.";
+				tooltip = "Expression executed with spawned unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
+			};		
 		};
 	};
 
-	class GVAR(AmbientModule_EmptyVehicles) : GVAR(AmbientModule_BASE)
+	class GVAR(EmptyVehicles) : GVAR(AmbientModule_BASE)
 	{
 		displayName = "Empty Vehicles Module";
 		function = QUOTE(FUNCMAIN(InitEmptyVehicles));
@@ -300,15 +337,35 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
-			class NumOfVehs : NumberOfUnits { };
+			class NumOfVehs : EditNumBase {
+				displayName = "Number of units/vehicles.";
+				tooltip = "Number of units/vehicles that can be in the area at one time.";
+				defaultValue = "5";
+			};
+			class SimulationInterval : SliderTimerRespawnBase
+			{
+				defaultValue = "30";
+				displayName = "Simulation Interval";
+				tooltip = "Number of seconds between each iteration of simulation loop.";
+			};
 			class Units: Units { } ;
-			class UnitPool : UnitPool
+			class UnitPool : EditCodeMulti3Base
 			{
 				displayName = "Array of vehicle types that will spawn empty.";
 				tooltip = "Array of vehicle types. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles allowed.";
 				defaultValue = """['I_G_Van_01_transport_F','I_G_Offroad_01_Repair_F']""";
 			};	
-			class UnitInit : UnitInit { };		
+			class UnitInit : EditCodeMulti5Base {
+				property = "HEDES_AmbientModule_UnitInit";
+				displayName = "Unit Init Function.";
+				tooltip = "Expression executed with spawned unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
+			};		
 		};
 	};
+
+	// -- Duplicate Modules That Are Hidden Because I Used A CBA Pre-Processor Wrong
+	class GVAR(AmbientModule_EmptyVehicles) : GVAR(EmptyVehicles) { scope = 1; };
+	class GVAR(AmbientModule_Civilians) : GVAR(Civilians) { scope = 1; };
+	class GVAR(AmbientModule_Garrison) : GVAR(Garrison) { scope = 1; };
+	class GVAR(AmbientModule_AreaVehPatrol) : GVAR(AreaVehPatrol) { scope = 1; };
 };

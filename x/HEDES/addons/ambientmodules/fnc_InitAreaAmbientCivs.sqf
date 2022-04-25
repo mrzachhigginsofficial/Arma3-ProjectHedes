@@ -30,11 +30,12 @@ _logic spawn {
     private _isfirstspawn = 1;
 
     // -- Get Module Properties
-	private _newunitinitfnc = _this getVariable ["UnitInit", ""];
+	private _newunitinitfnc = compile (_this getVariable ["UnitInit", {}]);
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
     private _maxcivs = _this getVariable ["NumbersofCivs",5];
     private _bombers = _this getVariable ["SuicideBombers",true]; // Not Used Yet
     private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
+    private _interval = _this getVariable ["SimulationInterval",15];
 
 	// -- Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
@@ -61,18 +62,20 @@ _logic spawn {
                 _this # 0 removeAllEventHandlers "firedNear";
             };
             _this # 0 spawn {
-                private _nearplayers = allPlayers select {(_x distance _this) < dynamicSimulationDistance "GROUP"};
-                while {count(_nearplayers select {[objNull, "VIEW"] checkVisibility [eyePos _x, eyePos _this] > 0}) != 0} do {sleep 5};
+                while {allPlayers findIf {(_x distance _this) < dynamicSimulationDistance "GROUP"} > -1} do {sleep 5};
                 deleteVehicle _this;
             };
         }];
     };
 
     // -- Main Loop
+    _some = 1;
     while { _this isNotEqualTo objNull } do 
 	{
         if (simulationEnabled _this) then
 		{
+            _some = _some + 1;
+            hint format["this is working %1",_some];
             // -- Iterate Over Each Trigger Area
             {
                 _triggeri = _x # 0;
@@ -133,7 +136,6 @@ _logic spawn {
                             _x doMove _moveloc;
                             _x setSpeedMode "LIMITED";                            
                         };   
-                        sleep 1;
                     } foreach (units _grpi);
                 };
             } foreach _areatriggers;
@@ -142,6 +144,6 @@ _logic spawn {
         };
 
         // -- Go to sleep for a bit.
-        sleep 5;
+        sleep _interval;
     };
 };

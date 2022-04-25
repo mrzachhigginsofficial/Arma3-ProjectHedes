@@ -2,7 +2,7 @@ class CfgFunctions
 {
     class PREFIX 
     {
-        class qolmodules
+        class COMPONENT
         {
             PATHTO_FNC(DrawFriendlyNamePlates)
         };

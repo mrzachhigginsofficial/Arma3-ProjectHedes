@@ -39,6 +39,7 @@ _logic spawn {
 	private _numveh = _this getVariable ["NumOfVehs",5];
 	private _unitpool = call compile (_this getVariable "UnitPool");
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"};
+	private _interval = _this getVariable ["SimulationInterval",15];
 
 	// -- Initialize Trigger Area	
 	if (count(_areatriggers) == 0) then 
@@ -111,6 +112,6 @@ _logic spawn {
 		};
 
 		// -- Go to sleep for a bit.
-		sleep 10;		
+		sleep _interval;		
 	};
 };

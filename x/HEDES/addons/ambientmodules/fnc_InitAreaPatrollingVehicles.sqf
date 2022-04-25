@@ -39,6 +39,7 @@ _logic spawn {
 	private _unitpool = _this getVariable ["UnitPool", []];
 	private _side = call compile (_this getVariable ["UnitSide", "EAST"]);
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x, []]};
+	private _interval = _this getVariable ["SimulationInterval",15];
 
 	// -- Initialize Trigger Area	
 	if (count(_areatriggers) == 0) then 
@@ -187,6 +188,6 @@ _logic spawn {
 		};		
 
 		// -- Go to sleep for a bit.
-		sleep 10;
+		sleep _interval;
 	};
 };

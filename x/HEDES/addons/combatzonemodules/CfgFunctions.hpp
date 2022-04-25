@@ -2,7 +2,7 @@ class CfgFunctions
 {
     class PREFIX 
     {
-        class combatzonemodules
+        class COMPONENT
         {
             PATHTO_FNC(DismountUnits)
             PATHTO_FNC(FlightPlanner)

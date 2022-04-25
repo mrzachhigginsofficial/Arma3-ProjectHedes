@@ -2,7 +2,7 @@ class CfgFunctions
 {
     class PREFIX 
     {
-        class missionmodules
+        class COMPONENT
         {
             PATHTO_FNC(AppendMissionGiverNamePlates)
             PATHTO_FNC(CheckAssassinateTask)

@@ -22,7 +22,7 @@ _logic spawn {
 	private _area = [50,50,1,false];
 	private _jetunits = [];
 
-	private _units = call compile (_this getVariable ["UnitPool","[]"]);
+	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 	private _side = call compile (_this getVariable ["UnitSide","WEST"]);
 	private _init = compile (_this getVariable ["UnitInit",""]);
 	private _mission = _this getVariable ["MissionType",3];	
@@ -150,7 +150,7 @@ _logic spawn {
 			// -- Spawn New Jets
 			if (count(jets) < _maxjets) then 
 			{
-				jets pushBack (_units call _newvehicle);
+				jets pushBack (_unitpool call _newvehicle);
 			};
 
 			// -- Recall Low Fuel
