@@ -20,7 +20,6 @@ _logic spawn {
     
     // -- Initialize Variables
     private _i = 0;
-	private _maxtry = 5;
     private _triggeri = objNull;
     private _grpi = grpNull;
     private _safespawnpos = [0,0];
@@ -30,27 +29,30 @@ _logic spawn {
     private _isfirstspawn = 1;
 
     // -- Get Module Properties
+    private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
+    private _interval = _this getVariable ["SimulationInterval",30];
+    private _maxcivs = _this getVariable ["NumbersofCivs",5];
 	private _newunitinitfnc = compile (_this getVariable ["UnitInit", {}]);
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
-    private _maxcivs = _this getVariable ["NumbersofCivs",5];
-    private _bombers = _this getVariable ["SuicideBombers",true]; // Not Used Yet
-    private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
-    private _interval = _this getVariable ["SimulationInterval",15];
 
 	// -- Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
 		private _newtrigger = createtrigger ["emptydetector", position _this];
 		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
-		_newtrigger attachto [_this];
-		_areatriggers pushBack [_newtrigger,grpNull];
+		_newtrigger setPos (getPos _this);
+		_areatriggers pushBack [_newtrigger, grpNull];
 	};
+
+    // -- Disable Simulation on Triggers
+    {
+        (_x # 0) enableSimulationGlobal false;
+    } foreach _areatriggers;
 
     // -- THIRD PARTY FUNCTION by phronk
     _civflee = {
         _this addEventHandler["firedNear", {
-            _animation = selectRandom ["ApanPercMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01","ApanPpneMstpSnonWnonDnon_G01","ApanPknlMstpSnonWnonDnon_G01"];
-            //[_this # 0, _animation] remoteExec ["playMoveNow"];
+            _animation = selectRandom ["ApanPknlMstpSnonWnonDnon_G01"];
             _this # 0 playMoveNow _animation;
             _this # 0 setspeedMode "FULL";
             _this # 0 forceWalk false;
@@ -59,74 +61,79 @@ _logic spawn {
             {
                 _building = selectRandom (nearestobjects[_this # 0, ["House"], 200]);
                 _this # 0 domove (selectRandom (_building buildingPos -1));
-                _this # 0 removeAllEventHandlers "firedNear";
             };
             _this # 0 spawn {
-                while {allPlayers findIf {(_x distance _this) < dynamicSimulationDistance "GROUP"} > -1} do {sleep 5};
+                while {
+                    (allPlayers findIf {[objNull, "VIEW"] checkVisibility [eyePos _x, eyePos _this] > .2}) > -1
+                    } do {sleep 5};
                 deleteVehicle _this;
             };
+            (_this # 0) removeAllEventHandlers "firedNear";
         }];
     };
 
     // -- Main Loop
-    _some = 1;
     while { _this isNotEqualTo objNull } do 
 	{
         if (simulationEnabled _this) then
 		{
-            _some = _some + 1;
-            hint format["this is working %1",_some];
+            if !(isNil "HEDES_DEBUG") then {systemchat format["%1 fired with interval of %2.",_this, _interval]};
+
             // -- Iterate Over Each Trigger Area
             {
                 _triggeri = _x # 0;
                 _grpi = _x # 1;
 
-                if (simulationEnabled _triggeri) then 
+                // -- Create New Group If Needed. And Probably Investigate Players For Warcrimes
+                if (_grpi isEqualTo grpNull) then 
                 {
-                    // -- Create New Group If Needed. And Probably Investigate Players For Warcrimes
-                    if (_grpi isEqualTo grpNull) then 
+                    _grpi = createGroup [CIVILIAN, false];
+                    [_grpi, FUNCMAIN(IsPlayersNearGroup)] spawn FUNCMAIN(DynamicSimulation);
+                    _x set [1, _grpi];
+                };
+
+                // -- Refill Units
+                _i = 0;
+                while {!([_grpi, _maxcivs] call FUNCMAIN(IsGroupFull)) && _i < _maxcivs} do {
+
+                    _rndpos = if (_isfirstspawn == 1) then {
+                        [_triggeri call BIS_fnc_randomPosTrigger, 0, 5] call BIS_fnc_findSafePos
+                    } else {
+                        [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker)
+                    };
+                    
+                    if (_rndpos isNotEqualTo [0,0]) then 
                     {
-                        _grpi = createGroup [CIVILIAN, false];
-                        [_grpi, FUNCMAIN(IsPlayersNearGroup)] spawn FUNCMAIN(DynamicSimulation);
-                        _x set [1, _grpi];
+                        _civunit = _grpi createUnit [selectRandom _unitpool,_rndpos,[],0,"FORM"];
+                        _civunit setPosATL [(getPosATL _civunit) # 0, (getPosATL _civunit) # 1 ,0];
+                        _civunit setSpeedMode "LIMITED";
+                        _civunit forceWalk true;
+                        {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS"];
+                        _civunit call _civflee;
+                        [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
+                        _civunit call _newunitinitfnc;
                     };
+                    _i = _i + 1;
+                };
 
-                    // -- Refill Units
-                    _i = 0;
-                    while {!([_grpi, _maxcivs] call FUNCMAIN(IsGroupFull)) && _i < _maxtry} do {
-
-                        _rndpos = if (_isfirstspawn == 1) then {
-                            [_triggeri call BIS_fnc_randomPosTrigger, 0, 5] call BIS_fnc_findSafePos
-                        } else {
-                            [_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker)
-                        };
-                        
-                        if (_rndpos isNotEqualTo [0,0]) then 
+                // -- Keep them walking
+                {	
+                    if (simulationEnabled _x && (speed _x) < 1) then 
+                    {
+                        _wppos = [_triggeri, true, 5] call FUNCMAIN(FindRanPosInMarker);
+                        if (_wppos isNotEqualTo [0,0]) then 
                         {
-                            _civunit = _grpi createUnit [selectRandom _unitpool,_rndpos,[],0,"FORM"];
-                            _civunit setPosATL [(getPosATL _civunit) # 0, (getPosATL _civunit) # 1 ,0];
-                            _civunit setSpeedMode "LIMITED";
-                            _civunit forceWalk true;
-                            {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS"];
-                            _civunit call _civflee;
-                            [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
-                            _civunit call _newunitinitfnc;
-                        };
-                        _i = _i + 1;
-                    };
-
-                    // -- Keep them walking
-                    {	
-                        if (simulationEnabled _x && (speed _x) < 1) then 
-                        {
-                            _wppos = [_triggeri, true, 5] call FUNCMAIN(FindHiddenRanPosInMarker);
-                            switch (selectRandom[1,2]) do {
-                                case 1: { 
+                            switch (selectRandom[1,2]) do 
+                            {
+                                case 1: 
+                                { 
                                     _moveloc = getPos nearestBuilding _wppos; 
                                 };
-                                case 2: { 
+                                case 2: 
+                                { 
                                     _roads = _wppos nearRoads 50;
-                                    if (count _roads > 0) then {
+                                    if (count _roads > 0) then
+                                    {
                                         _moveloc = getPos (selectRandom _roads); 
                                     } else {
                                         _moveloc = getPos nearestBuilding _wppos; 
@@ -134,10 +141,17 @@ _logic spawn {
                                 };
                             };		
                             _x doMove _moveloc;
-                            _x setSpeedMode "LIMITED";                            
-                        };   
-                    } foreach (units _grpi);
-                };
+                            _x setSpeedMode "LIMITED";
+
+                            if !(isNil "HEDES_DEBUG") then {
+                                ("VR_3DSelector_01_default_F" createVehicle _moveloc) spawn {
+                                    sleep 5;
+                                    deleteVehicle _this;
+                                };
+                            };
+                        }
+                    };   
+                } foreach (units _grpi);
             } foreach _areatriggers;
 
             _isfirstspawn = 0;

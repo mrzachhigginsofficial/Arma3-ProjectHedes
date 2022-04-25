@@ -37,42 +37,36 @@ class CfgVehicles
 
 			class EditMulti3 
 			{
-				property = "HEDES_AirportModule_EditMulti3";
 				control = "EditCodeMulti3";				
 				expression = "_this setVariable ['%s',_value];";
 			}
 
 			class EditMulti5
 			{
-				property = "HEDES_AirportModule_EditMulti5";
 				control = "EditCodeMulti5";				
 				expression = "_this setVariable ['%s',_value];";
 			};			
 
 			class Slider
 			{
-				property = "HEDES_AirportModule_Slider";
 				control = "Slider";
 				expression = "_this setVariable ['%s',_value];";
 			};			
 
 			class UnitInit
 			{
-				property = "HEDES_AirportModule_UnitInit";
 				control = "EditCodeMulti3";
 				expression = "_this setVariable ['%s',_value];";
 			};			
 
 			class EditNumber : Edit
 			{
-				property = "HEDES_AirportModule_EditNumber";
 				typeName = "NUMBER";
 				validate = "number";
 			};
 
 			class UnitSide : Combo
 			{
-				property = "HEDES_AirportModule_UnitSide";
 				displayName = "Units Side";
 				tooltip = "The Spawned Unit Side.";
 				defaultValue = """WEST""";
@@ -96,7 +90,6 @@ class CfgVehicles
 
 			class MissionType : Combo
 			{
-				property = "HEDES_AirportModule_Mission";
 				displayName = "Units Mission";
 				tooltip = "The Spawned Units Mission.";
 				defaultValue = """Ambient""";
@@ -131,45 +124,49 @@ class CfgVehicles
 		class Attributes: Attributes
 		{
 			class NumberOfUnits : EditNumber {
-				property = "HEDES_AirportModule_NumOfUnits";
+				property = "NumberOfUnits";
 				displayName = "Number of units/vehicles";
 				tooltip = "Number of units/vehicles that can be in the area at one time.";
 				defaultValue = "3";
 			};
-			class UnitSide : UnitSide { };
-			class MissionType : MissionType { };
+			class UnitSide : UnitSide { 
+				property = "UnitSide";
+			};
+			class MissionType : MissionType {
+				property = "MissionType";
+			};
 			class MaxFuel : Slider { 
-				property = "HEDES_AirportModule_MaxFuel";
+				property = "MaxFuel";
 				displayName = "Max Fuel (when spawned/reset)";
 				tooltip = "How much fuel will be added to the plae (controls flight time).";
 				defaultValue = ".5";
 			};
 			class MinFuel : Slider {
-				property = "HEDES_AirportModule_MinFuel";
+				property = "MinFuel";
 				displayName = "Min Fuel (when recalled)";
 				tooltip = "How much fuel when plane is recalled to airport.";
 				defaultValue = ".25";
 			}
 			class UnitPool : EditMulti3 {
-				displayName = "Array of unit types";
+				displayName = "UnitPool";
 				defaultValue = """['B_Plane_CAS_01_dynamicLoadout_F','B_Plane_Fighter_01_F']""";
 				property = "HEDES_AirportModule_UnitPool";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";				
 			};
 			class WPRadius : EditNumber {
-				property = "HEDES_AirportModule_RPRadius";
+				property = "WPRadius";
 				displayName = "WP Radius";
 				tooltip = "Make this bigger if the aircraft doesn't seem to be triggering waypoints.";
 				defaultValue = "100";
 			};
 			class UnitTimeout : EditNumber {
-				property = "HEDES_AirportModule_Timeout";
+				property = "UnitTimeout";
 				displayName = "Unit State Timeout";
 				tooltip = "How long until a unit is considered bugged and deleted.";
 				defaultValue = "240";
 			};
 			class UnitInit : EditMulti5 {
-				property = "HEDES_AirportModule_UnitInit";
+				property = "UnitInit";
 				displayName = "Unit Init Function";
 				tooltip = "Expression called after new jet/group spawned. Script parameters, [_jet, _grp]: _jet = _this # 0; _grp = _this # 1;... or include params['_jet','_grp'].";
 			};			

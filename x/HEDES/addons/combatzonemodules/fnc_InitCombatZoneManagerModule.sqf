@@ -53,7 +53,9 @@ _logic spawn {
 	private _createtriggerfnc = {
 		_newtrigger = createtrigger ["emptydetector", position _this];
 		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
-		_newtrigger attachto [_this];
+		_newtrigger setPos (getPos _this);
+		_newtrigger enableSimulationGlobal false;
+		_this setVariable ["trigger",_newtrigger];
 		_newtrigger
 	};
 	private _points = synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_Point" } apply {[_x, objNull]};
@@ -99,15 +101,9 @@ _logic spawn {
 					};
 									
 					// -- Get Combat Zone Landing Area Triggers
-					_combatlztrgs = (attachedObjects _combatlz) select {typeOf _x == "emptydetector"};
-					_combatlzpos = [0,0];
-					if (count(_combatlztrgs) > 0) then 
-					{
-						_combatlzpos = _combatlztrgs call BIS_fnc_randomPosTrigger;
-						_combatlzpos = [_combatlzpos, 0, 10] call BIS_fnc_findSafePos;
-					} else {
-						_combatlzpos = _pointmodule getRelPos [250, random 360];
-					};					
+					_combatlztrg = _combatlz getVariable "trigger";
+					_combatlzpos = _combatlztrg call BIS_fnc_randomPosTrigger;
+					_combatlzpos = [_combatlzpos, 0, 10] call BIS_fnc_findSafePos;	
 
 					if !(isNil "HEDES_DEBUG") then 
 					{

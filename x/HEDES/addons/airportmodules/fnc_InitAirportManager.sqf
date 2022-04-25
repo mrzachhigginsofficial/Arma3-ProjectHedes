@@ -123,9 +123,7 @@ _logic spawn {
 			{
 				_area = [getPos _x]; 
 				_area append (_x getvariable ["objectArea",[50,50,1,false]]);
-				_sidea = (_area # 1);
-				_sideb = (_area # 2);
-				_radius = (sqrt((_sidea^2)*(_sideb^2)))/2;
+				_radius = [_x] call FUNCMAIN(FindHypotenuse);
 
 				_tocleanup = (_this nearObjects _radius) inAreaArray _area 
 					select {gettext (configFile >> "CfgVehicles" >> (typeof _x) >> "vehicleClass") isEqualTo "Objects"};

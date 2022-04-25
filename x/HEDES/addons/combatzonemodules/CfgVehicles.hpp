@@ -22,9 +22,9 @@ class CfgVehicles
 		};
 	};
 
-	class HEDES_CombatZoneModule_BASE : Module_F
+	class GVAR(BASE) : Module_F
 	{
-		category = "HEDES_CombatZoneModules";
+		category = QUOTE(GVAR(COMPONENT));
 		displayName = "Combat Zone Modules Base (Empty)";
 		functionPriority = 1;
 		is3DEN = 0;
@@ -43,7 +43,7 @@ class CfgVehicles
 		class ModuleDescription: ModuleDescription
 		{
 			description = "This is a short description of the ambient units module.";
-			sync[] = {"HEDES_CombatZoneModule_BASE"};
+			sync[] = {"GVAR(BASE)"};
 
 			class LocationArea_F
 			{
@@ -66,7 +66,7 @@ class CfgVehicles
 	};
 
 	/* HEDES CombatZone Modules */
-	class HEDES_CombatZoneModules_Manager : HEDES_CombatZoneModule_BASE
+	class GVAR(Manager) : GVAR(BASE)
 	{
 		displayName = "Combat Zone Manager Module";
 		function = QUOTE(FUNCMAIN(InitCombatZoneManagerModule));
@@ -77,21 +77,21 @@ class CfgVehicles
 			// EAST
 			class EastVehicle : Edit
 			{
-				property = "HEDES_CombatZoneModules_EastVehicle";
+				property = "EastVehicle";
 				displayName = "(East) Vehicle - Heli or Plane";
 				tooltip = "Name of the vehicle that will transport units.";
 				defaultValue = """O_Heli_Light_02_unarmed_F""";
 			};
 			class EastIsHeli : Checkbox
 			{
-				property = "HEDES_MissionSystem_EastIsHeli";
+				property = "EastIsHeli";
 				displayName = "Is Vehicle a Heli?";
 				tooltip = "Is the vehicle type a helicopter?";
 				defaultValue = "true";
 			};
 			class EastMaxUnits : Edit
 			{
-				property = "HEDES_CombatZoneModules_MaxUnitsEast";
+				property = "EastMaxUnits";
 				displayName = "Maximum Units (East)";
 				tooltip = "Maximum number of units for this side.";
 				defaultValue = "80";
@@ -100,7 +100,7 @@ class CfgVehicles
 			};
 			class EastUnitPool
 			{
-				property = "HEDES_CombatZoneModules_EastUnitPool";
+				property = "EastUnitPool";
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
@@ -110,21 +110,21 @@ class CfgVehicles
 			// WEST
 			class WestVehicle : Edit
 			{
-				property = "HEDES_CombatZoneModules_WestVehicle";
+				property = "WestVehicle";
 				displayName = "(West) Vehicle - Heli or Plane";
 				tooltip = "Name of the vehicle that will transport units.";
 				defaultValue = """I_Heli_light_03_unarmed_F""";
 			};
 			class WestIsHeli : Checkbox
 			{
-				property = "HEDES_MissionSystem_WestIsHeli";
+				property = "WestIsHeli";
 				displayName = "Is Vehicle a Heli?";
 				tooltip = "Is the vehicle type a helicopter?";
 				defaultValue = "true";
 			};
 			class WestMaxUnits : Edit
 			{
-				property = "HEDES_CombatZoneModules_MaxUnitsWest";
+				property = "WestMaxUnits";
 				displayName = "Maximum Units (West)";
 				tooltip = "Maximum number of units for this side.";
 				defaultValue = "80";
@@ -133,7 +133,7 @@ class CfgVehicles
 			};
 			class WestUnitPool
 			{
-				property = "HEDES_CombatZoneModules_WestUnitPool";
+				property = "WestUnitPool";
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
@@ -143,21 +143,21 @@ class CfgVehicles
 			//GUER
 			class GUERVehicle : Edit
 			{
-				property = "HEDES_CombatZoneModules_GUERVehicle";
+				property = "GUERVehicle";
 				displayName = "(GUER) Vehicle - Heli or Plane";
 				tooltip = "Name of the vehicle that will transport units.";
 				defaultValue = """I_Heli_light_03_F""";
 			};
 			class GUERIsHeli : Checkbox
 			{
-				property = "HEDES_MissionSystem_GUERIsHeli";
+				property = "GUERIsHeli";
 				displayName = "Is Vehicle a Heli?";
 				tooltip = "Is the vehicle type a helicopter?";
 				defaultValue = "true";
 			}
 			class GUERMaxUnits : Edit
 			{
-				property = "HEDES_CombatZoneModules_MaxUnitsGUER";
+				property = "GUERMaxUnits";
 				displayName = "Maximum Units (GUER)";
 				tooltip = "Maximum number of units for this side.";
 				defaultValue = "80";
@@ -166,7 +166,7 @@ class CfgVehicles
 			};
 			class GUERUnitPool
 			{
-				property = "HEDES_CombatZoneModules_GUERUnitPool";
+				property = "GUERUnitPool";
 				control = "EditCodeMulti5";
 				displayName = "Array of unit types.";
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
@@ -176,49 +176,49 @@ class CfgVehicles
 		};
 	};
 
-	class HEDES_CombatZoneModules_Point : HEDES_CombatZoneModule_BASE
+	class GVAR(Point) : GVAR(BASE)
 	{
 		canSetArea=1;
 		displayName = "Combat Zone Point Module";
 		scope = 2;
 	};
 
-	class HEDES_CombatZoneModules_EastLZ : HEDES_CombatZoneModule_BASE
+	class GVAR(EastLZ) : GVAR(BASE)
 	{
 		canSetArea=1;
 		displayName = "East Landing Zone";
 		scope = 2;
 	};
 
-	class HEDES_CombatZoneModules_WestLZ : HEDES_CombatZoneModule_BASE
+	class GVAR(WestLZ) : GVAR(BASE)
 	{
 		canSetArea=1;
 		displayName = "West Landing Zone";
 		scope = 2;
 	};
 
-	class HEDES_CombatZoneModules_GuerLZ : HEDES_CombatZoneModule_BASE
+	class GVAR(GuerLZ) : GVAR(BASE)
 	{
 		canSetArea=1;
 		displayName = "Independent Landing Zone";
 		scope = 2;
 	};
 
-	class HEDES_CombatZoneModules_WestSpawn : HEDES_CombatZoneModule_BASE
+	class GVAR(WestSpawn) : GVAR(BASE)
 	{
 		canSetArea=1;
 		displayName = "West Spawn Point Module";
 		scope = 2;
 	};
 
-	class HEDES_CombatZoneModules_EastSpawn : HEDES_CombatZoneModule_BASE
+	class GVAR(EastSpawn) : GVAR(BASE)
 	{
 		canSetArea=1;
 		displayName = "East Spawn Point Module";
 		scope = 2;
 	};
 
-	class HEDES_CombatZoneModules_GuerSpawn : HEDES_CombatZoneModule_BASE
+	class GVAR(GuerSpawn) : GVAR(BASE)
 	{
 		canSetArea=1;
 		displayName = "Independent Spawn Point Module";

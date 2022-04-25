@@ -21,7 +21,7 @@ class CfgVehicles
 
 	class HEDES_MaintenanceModule_BASE : Module_F
 	{
-		category = "HEDES_MaintenanceModules";
+		category = QUOTE(GVAR(COMPONENT));
 		displayName = "Maintenance Manager Base Module (Empty)";
 		functionPriority = 1;
 		scope = 1;

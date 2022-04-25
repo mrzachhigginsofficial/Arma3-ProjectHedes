@@ -31,7 +31,7 @@ _logic spawn {
 
 	// -- Get Module Properties
 	private _newunitsarr = [];
-	private _newunitinitfnc = _this getVariable ["UnitInit", {}];
+	private _newunitinitfnc = compile (_this getVariable ["UnitInit", ""]);
 	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 	private _maxunits = _this getVariable ["NumbersofUnits",5];
 	private _simdelay = _this getVariable ["SimulationDelay",15];
@@ -48,9 +48,15 @@ _logic spawn {
 	{
 		private _newtrigger = createtrigger ["emptydetector", position _this];
 		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
-		_newtrigger attachto [_this];
+		_newtrigger setPos (getPos _this);
+		_newtrigger enableSimulationGlobal false;
 		_areatriggers pushBack [_newtrigger,grpNull];
 	};
+
+	// -- Disable Simulation on Triggers
+   {
+      (_x # 0) enableSimulationGlobal false;
+   } foreach _areatriggers;
 
 	// -- Configure Unit Behavior 
 	private _combattaskfnc = {};
@@ -99,7 +105,7 @@ _logic spawn {
 				(units _newgrp) apply { _x setPosATL [(getPosATL _x) # 0, (getPosATL _x) # 1 ,0] };
 				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects) };
 				(units _newgrp) joinSilent _pvtgrp;
-				_newunitsarr apply {_x call compile _newunitinitfnc};
+				_newunitsarr apply {_x call _newunitinitfnc};
 			}
 			catch 
 			{
