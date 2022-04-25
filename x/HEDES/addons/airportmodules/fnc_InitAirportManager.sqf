@@ -12,7 +12,7 @@ private _logic = param [0, objNull];
 
 _logic spawn {
 
-	jets = [];
+	_jets = [];
 
 	private _home = nearestBuilding _this;
 
@@ -31,6 +31,7 @@ _logic spawn {
 	private _wpradius = _this getVariable ["WPRadius",100];
 	private _maxfuel = _this getVariable ["MaxFuel",.25];
 	private _minfuel = _this getVariable ["MinFuel",.15];
+	private _interval = _this getVariable ["SimulationInterval",15];
 
 	// ****************************************************************
 	// Private Functions
@@ -119,7 +120,7 @@ _logic spawn {
 		{
 			// -- Cleanup Runways 
 			_jetunits = [];
-			jets apply {_x # 1} apply {units _x apply {_jetunits pushback _x}} ;
+			_jets apply {_x # 1} apply {units _x apply {_jetunits pushback _x}} ;
 			{
 				_area = [getPos _x]; 
 				_area append (_x getvariable ["objectArea",[50,50,1,false]]);
@@ -132,7 +133,7 @@ _logic spawn {
 					select {
 						_veh = _x;
 						!(_veh in allPlayers) and 						// Is not a player
-						!(_veh in (jets apply {_x # 0})) and 			// Is not a jet part of sim
+						!(_veh in (_jets apply {_x # 0})) and 			// Is not a jet part of sim
 						!(_veh in _jetunits) and						// Is not a pilot/crew
 						(count(allPlayers select {_x in _veh}) isEqualTo 0)	// Is not a vehicle driven by player
 			 		});
@@ -141,25 +142,25 @@ _logic spawn {
 			} foreach _cleaners;
 
 			// -- Create New Groups If Cleaned 
-			jets apply {
+			_jets apply {
 				if ((_x # 1) isEqualTo grpNull) then { _x set [1, createGroup [_side, true]] };
 			};
 
 			// -- Spawn New Jets
-			if (count(jets) < _maxjets) then 
+			if (count(_jets) < _maxjets) then 
 			{
-				jets pushBack (_unitpool call _newvehicle);
+				_jets pushBack (_unitpool call _newvehicle);
 			};
 
 			// -- Recall Low Fuel
-			jets select { fuel (_x # 0) < _minfuel && !((_x # 0) getVariable "landing")} apply 
+			_jets select { fuel (_x # 0) < _minfuel && !((_x # 0) getVariable "landing")} apply 
 			{ 
 				[(_x # 1), _home] call _assignland;
 				_x set [2, time];
 			};
 
 			// -- Assign New Crew
-			jets select {((assignedDriver (_x # 0)) isEqualTo objNull or count(units(_x # 1)) isEqualTo 0) && (_x # 0) getVariable "landing"} apply
+			_jets select {((assignedDriver (_x # 0)) isEqualTo objNull or count(units(_x # 1)) isEqualTo 0) && (_x # 0) getVariable "landing"} apply
 			{
 				if(damage (_x # 0) isEqualTo 0 and (_x # 0) isNotEqualTo objNull) then {
 					(_x + [_home]) call _resetjet;
@@ -171,11 +172,11 @@ _logic spawn {
 			};
 
 			// -- Tracking Array Cleanup 
-			jets = jets - (jets select {(_x # 0) isEqualTo objNull});
-			jets = jets - (jets select {(_x # 1) isEqualTo grpNull});
+			_jets = _jets - (_jets select {(_x # 0) isEqualTo objNull});
+			_jets = _jets - (_jets select {(_x # 1) isEqualTo grpNull});
 
 			// -- Something Wrong Conditions 
-			jets select {
+			_jets select {
 				_x params ["_jet","_grp","_time"];	
 				(							
 					(damage _jet) > .05 or 										// Jet Destroyed 
@@ -193,10 +194,10 @@ _logic spawn {
 				deleteVehicle _jet;
 				units _grp apply {deleteVehicle _x};
 				
-				jets = jets - [_x];
+				_jets = _jets - [_x];
 			};
 
-			sleep 30;
+			sleep _interval;
 		};
 	};
 };

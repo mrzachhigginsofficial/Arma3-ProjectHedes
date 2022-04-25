@@ -65,6 +65,14 @@ class CfgVehicles
 				validate = "number";
 			};
 
+			class SliderTimerRespawnBase
+			{
+				control = "SliderTimeRespawn";
+				expression = "_this setVariable ['%s',_value];";
+				typeName = "NUMBER";
+				validate = "number";
+			};
+
 			class UnitSide : Combo
 			{
 				displayName = "Units Side";
@@ -164,6 +172,13 @@ class CfgVehicles
 				displayName = "Unit State Timeout";
 				tooltip = "How long until a unit is considered bugged and deleted.";
 				defaultValue = "240";
+			};
+			class SimulationInterval : SliderTimerRespawnBase
+			{
+				property = "SimulationInterval";
+				defaultValue = "30";
+				displayName = "Simulation Interval";
+				tooltip = "Number of seconds between each iteration of simulation loop.";
 			};
 			class UnitInit : EditMulti5 {
 				property = "UnitInit";
