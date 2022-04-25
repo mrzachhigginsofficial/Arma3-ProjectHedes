@@ -21,7 +21,7 @@ class CfgVehicles
 
 	class GVAR(BASE) : Module_F
 	{
-		category = "HEDES_QOLModules";
+		category = QUOTE(GVAR(COMPONENT));
 		functionPriority = 1;
 		scope = 1;
 
@@ -39,7 +39,6 @@ class CfgVehicles
 		};
 	};
 
-	/* HEDES Persistence Modules */
 	class GVAR(FriendlyNamePlates): GVAR(BASE)
 	{
 		displayName = "Friendly Name Plates";
