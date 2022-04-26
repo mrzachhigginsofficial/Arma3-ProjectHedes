@@ -179,10 +179,10 @@ _logic spawn {
 			_jets select {
 				_x params ["_jet","_grp","_time"];	
 				(							
-					(damage _jet) > .05 or 										// Jet Destroyed 
-					_jet isEqualTo objNull or									// Jet Is Gone
+					(damage _jet) > .05 or 													// Jet Destroyed 
+					_jet isEqualTo objNull or												// Jet Is Gone
 					(count(units _grp select {damage _x isEqualTo 1}) > 0) or	// Crew Died 
-					count(units _grp) isEqualTo 0								// Crew Never Showed Up					
+					count(units _grp) isEqualTo 0											// Crew Never Showed Up					
 				) or (
 					(
 						(!((assignedDriver _jet) in _jet) && !(_jet getVariable "Landing"))	// Crew Not In Jet & Is Not Landing Routine
