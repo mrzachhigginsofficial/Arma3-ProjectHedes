@@ -132,12 +132,12 @@ _logic spawn {
 				_grpi = _x # 1;
 
 				_spawnpos = if(_isfirstspawn == 1) then {
-					[_triggeri call BIS_fnc_randomPosTrigger, 0, 5] call BIS_fnc_findSafePos
+					[_triggeri call BIS_fnc_randomPosTrigger, 5, 10] call BIS_fnc_findSafePos
 				} else {
 					[_triggeri, false, 5] call FUNCMAIN(FindHiddenRanPosInMarker)
 				};
 
-                if (_spawnpos isNotEqualTo [0,0]) then 
+            if (_spawnpos isNotEqualTo [0,0]) then 
 				{
 					// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
 					if ((count _sectors) > 0) then 
@@ -195,11 +195,14 @@ _logic spawn {
 
 				// -- Keep Patrols Moving
 				if(
-					(QUOTE(Patrol) in _combattask or QUOTE(Search) in _combattask) && 
-					(count(waypoints _grpi) < (currentWaypoint _grpi) or (currentWaypoint _grpi) == 0)) then 
+					(QUOTE(Patrol) in _combattask) && 
+					(
+						count(waypoints _grpi) < currentWaypoint _grpi or 
+						currentWaypoint _grpi == 0 && count(waypoints _grpi) == 0
+					)
+				) then 
 				{
-					for "_i" from count waypoints _grpi - 1 to 0 step -1 do
-						{deleteWaypoint [_grpi, _i]};
+					[_grpi] call CBA_fnc_clearWaypoints;
 					[_grpi, _triggeri] call _combattaskfnc;
 				};
 

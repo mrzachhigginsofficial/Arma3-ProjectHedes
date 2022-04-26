@@ -56,8 +56,7 @@ _logic spawn {
 	private _assignland = {
 		params["_grp","_obj",["_wpradius",20]];
 		
-		for "_i" from count waypoints _grp - 1 to 0 step -1 do
-			{deleteWaypoint [_grp, _i]};
+		[_grp] call CBA_fnc_clearWaypoints;
 
 		units _grp apply {(assignedVehicle _x) setVariable ["landing", true]};
 
