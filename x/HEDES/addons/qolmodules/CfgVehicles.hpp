@@ -43,6 +43,17 @@ class CfgVehicles
 	{
 		displayName = "Friendly Name Plates";
 		function = QUOTE(FUNCMAIN(DrawFriendlyNamePlates));
+		isTriggerActivated = 0;
 		scope = 2;
+
+		class Attributes : Attributes 
+		{
+			class StructuredTextDescription
+			{
+				property = "StructuredTextDescription";
+				control = "StructuredText6";
+				description = "<t size='1.5'>Name Plate Module</t><br/><br/>This module adds name plates above friendly units. If you like this module, please let me know in Discord. Otherwise, there are no planned changes.";
+			};
+		};
 	};
 };
