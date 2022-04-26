@@ -30,6 +30,13 @@ class CfgVehicles
 
 		class Attributes: AttributesBase
 		{
+			class StructuredTextChildObj
+			{
+				property = "StructuredTextChildObj";
+				control = "StructuredText6";
+				description = "<t size='1.5'>Project Hedes Airport Sim Child Object</t><br/><br/>This is a child object of the Airport Sim Module. Please refer to the documentation link in the modules attribute window for more information.";
+			};
+
 			class Units: Units
 			{
 				property = QUOTE(GVAR(AirportModules_Units));
@@ -131,6 +138,18 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
+			class StructuredTextGlobalDocLink
+			{
+				property = "StructuredTextGlobalDocLink";
+				control = "StructuredText2";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module-Airport-Simulation'>Link: Airport Sim Documentation</a></t>";
+			};
+			class StructuredTextGlobalDescriptions
+			{
+				property = "StructuredTextGlobalDescriptions";
+				control = "StructuredText6";
+				description = "<t size='1.5'>Airport Simulation Settings</t><br/>This module is intended to provide ambient functionality to airports. It works best when units are operating in the vicinity of the airport and are able to see the planes land/take off. This is very much a work in progress. Please report all bugs on discord/github. This is not a CAS module.";
+			};
 			class NumberOfUnits : EditNumber {
 				property = "NumberOfUnits";
 				displayName = "Number of units/vehicles";
@@ -200,7 +219,9 @@ class CfgVehicles
 			isRectangle=1;
 		};
 
-		class Attributes: Attributes { };
+		class Attributes: Attributes {
+			class StructuredTextChildObj : StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(SpawnPoint): GVAR(BASE)
@@ -209,7 +230,9 @@ class CfgVehicles
 		displayName = "Ambient Airport Spawn Point (WIP)";
 		scope = 2;
 
-		class Attributes: Attributes { };
+		class Attributes: Attributes {
+			class StructuredTextChildObj : StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(DespawnPoint): GVAR(BASE)
@@ -218,6 +241,8 @@ class CfgVehicles
 		displayName = "Ambient Airport Despawn Point (WIP)";
 		scope = 2;
 
-		class Attributes: Attributes { };
+		class Attributes: Attributes {
+			class StructuredTextChildObj : StructuredTextChildObj { };
+		};
 	};
 };
