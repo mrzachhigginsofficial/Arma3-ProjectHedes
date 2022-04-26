@@ -22,6 +22,8 @@ _logic spawn {
 	private _combatlztrgs = [];
 	private _combatlzpos = [0,0];
 	private _debug_objs = [];
+	private _interval = _this getVariable ["SimulationInterval",120];
+	private _disabledmg = _this getVariable ["DisableDamage",true];
 
 
 	// -- Build Side Configuration Settings
@@ -124,6 +126,13 @@ _logic spawn {
 						units(_groups # 0) apply {_x disableAI "RADIOPROTOCOL"};
 						units(_groups # 0) apply {_x disableAI "MINEDETECTION"};
 
+						// -- Disable Damage On Heli & Crew If Configured 
+						if _disabledmg then 
+						{
+							units(_groups # 0) apply {_x allowDamage false};
+							vehicle (leader (_groups # 0)) allowDamage false;
+						};
+
 						// -- Setup Unit and Vehicle Orders						
 						(_groups + [_combatlzpos, _x # 3, _x # 4]) spawn FUNCMAIN(FlightPlanner);
 						[_groups # 1, _pointranpos] call BIS_fnc_taskAttack; 
@@ -136,16 +145,12 @@ _logic spawn {
 						// -- Add New Units To Active Unit Array
 						_groups apply {(_config # 6) append (units _x)};				
 					};
-
-					// -- Be nice to the server
-					sleep 1;
-
 				} foreach _sideconfigs;
 			};			
 			
-			sleep 30;
-			
 			_debug_objs apply {deleteVehicle _x};
 		};
+
+		sleep _interval;
 	};
 };

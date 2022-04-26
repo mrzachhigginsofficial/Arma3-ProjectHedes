@@ -29,7 +29,7 @@ class CfgVehicles
 		functionPriority = 1;
 		is3DEN = 0;
 		isGlobal = 2;
-		isTriggerActivated 	= 0;
+		isTriggerActivated = 0;
 		scope = 1;
 
 		class Attributes: AttributesBase
@@ -37,6 +37,21 @@ class CfgVehicles
 			class Units: Units
 			{
 				property = QUOTE(GVAR(Units));
+			};
+
+			class SliderTimerRespawnBase
+			{
+				control = "SliderTimeRespawn";
+				expression = "_this setVariable ['%s',_value];";
+				typeName = "NUMBER";
+				validate = "number";
+			};
+
+			class StructuredTextChildObj
+			{
+				property = "StructuredTextChildObj";
+				control = "StructuredText6";
+				description = "<t size='1.5'>Project Hedes Combat Zone Child Object</t><br/><br/>This is a child object of the Project Hedes Combat Zone Manager Module. Please refer to the documentation link in the modules attribute window for more information.";
 			};
 		};
 
@@ -72,8 +87,41 @@ class CfgVehicles
 		function = QUOTE(FUNCMAIN(InitCombatZoneManagerModule));
 		scope = 2;
 
-		class Attributes: AttributesBase
+		class Attributes: Attributes
 		{
+			class StructuredTextGlobalDocLink
+			{
+				property = "StructuredTextGlobalDocLink";
+				control = "StructuredText2";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Combat-Zone-Modules'>Link: Combat Zone Documentation</a></t>";
+			};
+			class StructuredTextGlobalDescriptions
+			{
+				property = "StructuredTextGlobalDescriptions";
+				control = "StructuredText6";
+				description = "<t size='1.5'>Simulation Settings</t><br/>Changing the simulation interval will also affect the rate at which new units are spawned and how frequently sides change their target combat point (if multiple combat point modules are synchronized). Remember, this module is intended to create some interesting events in your scenario and is not intended to be a scenario builder!";
+			};
+			class DisableDamage : Checkbox
+			{
+				property = "DisableDamage";
+				displayName = "Disable Damage On Heli & Crew";
+				tooltip = "Disabling damage helps with eliminating clutter by allowing them to always be forced off field and cleaned up. The down side is, you don't get to shoot them down anymore.";
+				defaultValue = "true";
+			};
+			class SimulationInterval : SliderTimerRespawnBase
+			{
+				property = "SimulationInterval";
+				displayName = "Simulation Interval";
+				tooltip = "Number of seconds between each iteration of simulation loop.";
+				defaultValue = "30";
+			};
+			class StructuredTextSideDescriptions
+			{
+				property = "StructuredTextSideDescriptions";
+				control = "StructuredText5";
+				description = "<t size='1.5'>Combat Zone Side Configurations</t><br/>Each side can also support paradrops from a plane (set 'Is Vehicle Heli?' to false). Beware, paradrops require a very large simulation distance.  Squads are filled with random unit types from the 'Array of Unit Types' array in their respective side. To increase the chance of a specific unit type being spawned, add their config type more than once.";
+			};
+
 			// EAST
 			class EastVehicle : Edit
 			{
@@ -94,7 +142,7 @@ class CfgVehicles
 				property = "EastMaxUnits";
 				displayName = "Maximum Units (East)";
 				tooltip = "Maximum number of units for this side.";
-				defaultValue = "80";
+				defaultValue = "20";
 				validate = "number";
 				typeName = "NUMBER";
 			};
@@ -127,7 +175,7 @@ class CfgVehicles
 				property = "WestMaxUnits";
 				displayName = "Maximum Units (West)";
 				tooltip = "Maximum number of units for this side.";
-				defaultValue = "80";
+				defaultValue = "20";
 				validate = "number";
 				typeName = "NUMBER";
 			};
@@ -160,7 +208,7 @@ class CfgVehicles
 				property = "GUERMaxUnits";
 				displayName = "Maximum Units (GUER)";
 				tooltip = "Maximum number of units for this side.";
-				defaultValue = "80";
+				defaultValue = "20";
 				validate = "number";
 				typeName = "NUMBER";
 			};
@@ -181,6 +229,11 @@ class CfgVehicles
 		canSetArea=1;
 		displayName = "Combat Zone Point Module";
 		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextChildObj: StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(EastLZ) : GVAR(BASE)
@@ -188,6 +241,11 @@ class CfgVehicles
 		canSetArea=1;
 		displayName = "East Landing Zone";
 		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextChildObj: StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(WestLZ) : GVAR(BASE)
@@ -195,6 +253,11 @@ class CfgVehicles
 		canSetArea=1;
 		displayName = "West Landing Zone";
 		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextChildObj: StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(GuerLZ) : GVAR(BASE)
@@ -202,6 +265,11 @@ class CfgVehicles
 		canSetArea=1;
 		displayName = "Independent Landing Zone";
 		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextChildObj: StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(WestSpawn) : GVAR(BASE)
@@ -209,6 +277,11 @@ class CfgVehicles
 		canSetArea=1;
 		displayName = "West Spawn Point Module";
 		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextChildObj: StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(EastSpawn) : GVAR(BASE)
@@ -216,6 +289,11 @@ class CfgVehicles
 		canSetArea=1;
 		displayName = "East Spawn Point Module";
 		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextChildObj: StructuredTextChildObj { };
+		};
 	};
 
 	class GVAR(GuerSpawn) : GVAR(BASE)
@@ -223,5 +301,10 @@ class CfgVehicles
 		canSetArea=1;
 		displayName = "Independent Spawn Point Module";
 		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextChildObj: StructuredTextChildObj { };
+		};
 	};
 };

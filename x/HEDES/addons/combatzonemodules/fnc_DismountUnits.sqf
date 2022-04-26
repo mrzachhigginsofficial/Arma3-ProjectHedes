@@ -16,6 +16,7 @@ while { getPosATL _vehicle select 2 > .5  } do { sleep 5 };
 
 units _grp apply {
 	_x disableCollisionWith _vehicle;
-	unassignVehicle _x;	moveOut _x;
+	unassignVehicle _x;	
+	moveOut _x;
 	sleep .75;
 };
