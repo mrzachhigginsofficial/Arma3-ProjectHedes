@@ -32,6 +32,7 @@ _logic spawn {
 	// -- Get Module Properties
 	private _newunitsarr = [];
 	private _newunitinitfnc = compile (_this getVariable ["UnitInit", ""]);
+	private _cbaunitinitfnc = compile (_this getVariable ["CBAUnitFnc", ""]);
 	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 	private _maxunits = _this getVariable ["NumbersofUnits",5];
 	private _simdelay = _this getVariable ["SimulationDelay",15];
@@ -65,10 +66,13 @@ _logic spawn {
 			_combattaskfnc = {(_this # 0) call CBA_fnc_taskDefend;}
 		};
 		case QUOTE(CBA - Patrol): {
-			_combattaskfnc = {[(_this # 0), getPos (_this # 1)] call CBA_fnc_taskPatrol;}
+			_combattaskfnc = {[(_this # 0), getPos (_this # 1), (_this # 2)] call CBA_fnc_taskPatrol;}
 		};
 		case QUOTE(CBA - Waypoint Garrison): {
 			_combattaskfnc = {[(_this # 0), getPos (_this # 1)] execVM QUOTE(\x\cba\addons\ai\fnc_waypointGarrison.sqf);}
+		};
+		case QUOTE(CBA - Search Nearby): {
+			_combattaskfnc = {[(_this # 0), (_this # 1)] call CBA_fnc_taskSearchArea;}
 		};
 		case QUOTE(BIS - Defend): {
 			_combattaskfnc = {[(_this # 0), getPosATL (_this # 1)] call BIS_fnc_taskDefend;}
@@ -101,9 +105,10 @@ _logic spawn {
 					_newgrp = [_spawnpos, side _pvtgrp, _unitcount] call BIS_fnc_spawnGroup;
 				};
 				_newunitsarr = (units _newgrp);
-				(units _newgrp) apply {_x setBehaviour _behaviour};
+				(units _newgrp) apply { _x setBehaviour _behaviour };
 				(units _newgrp) apply { _x setPosATL [(getPosATL _x) # 0, (getPosATL _x) # 1 ,0] };
 				(units _newgrp) apply { _x call FUNCMAIN(AppendCleanupSystemObjects) };
+				(units _newgrp) apply { _x disableAI "RADIOPROTOCOL" };
 				(units _newgrp) joinSilent _pvtgrp;
 				_newunitsarr apply {_x call _newunitinitfnc};
 			}
@@ -156,7 +161,14 @@ _logic spawn {
 						if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear)) or _isfirstspawn == 1) then 
 						{
 							[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
-							[_grpi, _triggeri] call _combattaskfnc;
+							_radius = if ((triggerArea _triggeri) # 3) then 
+							{
+								[_triggeri] call FUNCMAIN(FindHypotenuse)
+							} else 
+							{
+								(triggerArea _triggeri) # 0
+							};
+							[_grpi, _triggeri, _radius] call _combattaskfnc;
 						};
 					}
 
@@ -182,7 +194,12 @@ _logic spawn {
 				};
 
 				// -- Keep Patrols Moving
-				if(QUOTE(Patrol) in _combattask && count(waypoints _grpi) < 2) then {
+				if(
+					(QUOTE(Patrol) in _combattask or QUOTE(Search) in _combattask) && 
+					(count(waypoints _grpi) < (currentWaypoint _grpi) or (currentWaypoint _grpi) == 0)) then 
+				{
+					for "_i" from count waypoints _grpi - 1 to 0 step -1 do
+						{deleteWaypoint [_grpi, _i]};
 					[_grpi, _triggeri] call _combattaskfnc;
 				};
 

@@ -131,6 +131,10 @@ class CfgVehicles
 						name = "CBA - Patrol"; 
 						value = "CBA - Patrol";
 					};
+					class cba_searchnearby {
+						name = "CBA - Search Nearby"; 
+						value = "CBA - Search Nearby";
+					};
 					class cba_wpgarrison {
 						name = "CBA - Waypoint Garrison"; 
 						value = "CBA - Waypoint Garrison";
