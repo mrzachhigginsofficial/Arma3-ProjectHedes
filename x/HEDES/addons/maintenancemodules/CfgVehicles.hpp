@@ -32,6 +32,14 @@ class CfgVehicles
 			{
 				property = QUOTE(GVAR(Units));
 			};
+
+			class SliderTimerRespawnBase
+			{
+				control = "SliderTimeRespawn";
+				expression = "_this setVariable ['%s',_value];";
+				typeName = "NUMBER";
+				validate = "number";
+			};
 		};
 
 		class ModuleDescription: ModuleDescription
@@ -49,14 +57,27 @@ class CfgVehicles
 		function = QUOTE(FUNCMAIN(InitCleanupSystemModule));
 		scope = 2;
 
-		class Attributes: AttributesBase
+		class Attributes: Attributes
 		{
-			class LifeSpanValue : Edit
+			class StructuredTextGlobalDocLink
 			{
-				property = "HEDES_MaintenanceModules_ObjectLifespan";
+				property = "StructuredTextGlobalDocLink";
+				control = "StructuredText2";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module-Unit-Maintenance'>Link: Maintenance Module Documentation</a></t>";
+			};
+			class LifeSpanValue : SliderTimerRespawnBase
+			{
+				property = "LifeSpanValue";
 				displayName = "Object Lifespawn";
 				tooltip = "Sometimes units get lost. Set their max lifetime in seconds.";
-				defaultValue = """600""";
+				defaultValue = "240";
+			};
+			class SimulationInterval : SliderTimerRespawnBase
+			{
+				property = "SimulationInterval";
+				displayName = "Simulation Interval";
+				tooltip = "Number of seconds between each iteration of simulation loop.";
+				defaultValue = "30";
 			};
 		};
 	};
@@ -67,7 +88,7 @@ class CfgVehicles
 		function = QUOTE(FUNCMAIN(InitSafeZoneCleanup));
 		scope = 1;
 
-		class Attributes: AttributesBase
+		class Attributes: Attributes
 		{
 			class SafeZoneMarkerName : Edit
 			{
