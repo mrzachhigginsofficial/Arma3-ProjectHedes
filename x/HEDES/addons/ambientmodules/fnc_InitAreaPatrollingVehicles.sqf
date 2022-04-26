@@ -168,7 +168,6 @@ _logic spawn {
 								if (count(_roads) > 0) then 
 								{
 									_newpos = getPos(selectRandom _roads);
-									systemchat format["%1",_newpos];
 									(_x select 2) move _newpos;
 									(_x select 0) setFuel 1;
 								};

@@ -203,6 +203,12 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
+			class StructuredTextGlobalDocLink
+			{
+				property = "StructuredTextGlobalDocLink";
+				control = "StructuredText2";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module-Ambient-Vehicle-Patrols'>Link: Ambient Vehicle Patrols Documentation</a></t>";
+			};
 			class UnitSide : UnitSide {
 				property = "UnitSide";
 			};
@@ -257,6 +263,12 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
+			class StructuredTextGlobalDocLink
+			{
+				property = "StructuredTextGlobalDocLink";
+				control = "StructuredText2";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module---Ambient-Garrison'>Link: Ambient Garrison Documentation</a></t>";
+			};
 			class GarrisonSide : UnitSide {
 				property = "UnitSide";
 			};
@@ -317,6 +329,12 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
+			class StructuredTextGlobalDocLink
+			{
+				property = "StructuredTextGlobalDocLink";
+				control = "StructuredText2";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module-Ambient-Civilians'>Link: Ambient Civilians Documentation</a></t>";
+			};
 			class NumbersofCivs : EditNumBase {
 				property = "NumbersofCivs";
 				displayName = "Number of units/vehicles.";
@@ -354,6 +372,12 @@ class CfgVehicles
 
 		class Attributes: Attributes
 		{
+			class StructuredTextGlobalDocLink
+			{
+				property = "StructuredTextGlobalDocLink";
+				control = "StructuredText2";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module-Ambient-Empty-Vehicles'>Link: Ambient Empty Vehicles Documentation</a></t>";
+			};
 			class NumOfVehs : EditNumBase {
 				property = "NumberOfVehicles";
 				displayName = "Number of units/vehicles.";
