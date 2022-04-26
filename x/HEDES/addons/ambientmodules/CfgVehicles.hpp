@@ -304,6 +304,13 @@ class CfgVehicles
 				displayName = "Simulation Interval";
 				tooltip = "Number of seconds between each iteration of simulation loop.";
 			};
+			class OrderRefreshInterval : SliderTimerRespawnBase
+			{
+				property = "OrderRefreshInterval";
+				defaultValue = "300";
+				displayName = "Patrol/Search Refresh Interval";
+				tooltip = "Sometimes units get stuck. Define the interval in which orders are refreshed for these units. Particularly useful with Search Area task.";
+			};
 			class Units: Units { } ;
 			class UnitPool : EditCodeMulti3Base
 			{
@@ -316,12 +323,7 @@ class CfgVehicles
 				property = "UnitInit";
 				displayName = "Unit Init Function.";
 				tooltip = "Expression executed with spawned unit passed as _this (group _this, vehicle _this, removebackpack _this, etc.).";
-			};			
-			class CBAUnitFnc : EditCodeMulti5Base {
-				property = "CBAUnitFnc";
-				displayName = "CBA Patrol Expression.";
-				tooltip = "Expression executed at each CBA Patrol waypoint.";
-			};			
+			};				
 		};
 	};
 	

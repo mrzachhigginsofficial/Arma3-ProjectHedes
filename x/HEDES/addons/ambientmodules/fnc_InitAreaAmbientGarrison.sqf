@@ -32,7 +32,6 @@ _logic spawn {
 	// -- Get Module Properties
 	private _newunitsarr = [];
 	private _newunitinitfnc = compile (_this getVariable ["UnitInit", ""]);
-	private _cbaunitinitfnc = compile (_this getVariable ["CBAUnitFnc", ""]);
 	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 	private _maxunits = _this getVariable ["NumbersofUnits",5];
 	private _simdelay = _this getVariable ["SimulationDelay",15];
@@ -40,9 +39,11 @@ _logic spawn {
 	private _behaviour = _this getVariable "UnitCombatBehaviour";
 	private _combattask = _this getVariable "UnitCombatTask";
 	private _speedmode = _this getVariable "SpeedMode";
-	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
+	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull,0]};
 	private _sectors = synchronizedObjects _this select { typeOf _x == "ModuleSector_F" };
 	private _interval = _this getVariable ["SimulationInterval",15];
+	private _orderrefresh = _this getVariable ["OrderRefreshInterval",300];
+	private _orderi = 0;
 
 	// -- Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
@@ -51,7 +52,7 @@ _logic spawn {
 		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
 		_newtrigger setPos (getPos _this);
 		_newtrigger enableSimulationGlobal false;
-		_areatriggers pushBack [_newtrigger,grpNull];
+		_areatriggers pushBack [_newtrigger,grpNull,0];
 	};
 
 	// -- Disable Simulation on Triggers
@@ -130,6 +131,7 @@ _logic spawn {
 			{
 				_triggeri = _x # 0;
 				_grpi = _x # 1;
+				_orderi = _x # 2;
 
 				_spawnpos = if(_isfirstspawn == 1) then {
 					[_triggeri call BIS_fnc_randomPosTrigger, 5, 10] call BIS_fnc_findSafePos
@@ -191,19 +193,20 @@ _logic spawn {
 							[_grpi, _triggeri] call _combattaskfnc;
 						};
 					};
-				};
+				};		 
 
 				// -- Keep Patrols Moving
 				if(
-					(QUOTE(Patrol) in _combattask) && 
-					(
-						count(waypoints _grpi) < currentWaypoint _grpi or 
-						currentWaypoint _grpi == 0 && count(waypoints _grpi) == 0
-					)
+					((QUOTE(Patrol) in _combattask) or (QUOTE(Search) in _combattask)) && 
+					(_orderrefresh/_interval isEqualTo _orderi)
 				) then 
 				{
 					[_grpi] call CBA_fnc_clearWaypoints;
 					[_grpi, _triggeri] call _combattaskfnc;
+					_x set [2, 0];
+				} else 
+				{
+					_x set [2, _orderi + 1];
 				};
 
 			} foreach _areatriggers;
