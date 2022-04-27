@@ -1,9 +1,9 @@
 {
 	"title": "Project Hedes",
 	"name": "ProjectHedes",
-	"author": "Zacho40",
+	"author": "mrzachhigginsofficial",
 	"website": "https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes",
-	"version": "0.0.1",
+	"version": "1",
 	"buildPath": "build",
 	"privateKey": "",
 	"serverDirs": [
@@ -29,8 +29,7 @@
 		"x/HEDES/addons/destructionmodules"
 	],
 	"clientMods": [
-		"!Workshop\\@CBA_A3",
-		"!Workshop\\@3den Enhanced"
+		"!Workshop\\@CBA_A3"
 	],
 	"ftpConnection": {}
 }

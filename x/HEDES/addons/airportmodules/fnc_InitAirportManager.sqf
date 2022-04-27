@@ -48,7 +48,7 @@ _logic spawn {
 		_grp deleteGroupWhenEmpty true;
 		units _grp apply {_x forceWalk true; _x allowDamage false; removeAllWeapons _x};
 
-		_jet,_grp call _init;
+		[_jet,_grp] call _init;
 
 		[_jet,_grp, time]
 	};
