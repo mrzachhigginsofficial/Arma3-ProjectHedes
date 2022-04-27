@@ -198,7 +198,7 @@ _logic spawn {
 				// -- Keep Patrols Moving
 				if(
 					((QUOTE(Patrol) in _combattask) or (QUOTE(Search) in _combattask)) && 
-					(_orderrefresh/_interval isEqualTo _orderi)
+					(_orderrefresh/_interval >= _orderi)
 				) then 
 				{
 					[_grpi] call CBA_fnc_clearWaypoints;
