@@ -1,0 +1,47 @@
+
+[_largesmokelist,_smallfireposlist, _smokeupdate] spawn {
+	while {true} do 
+	{
+		{
+			_x setPos (selectRandom (_this # 1));
+		} forEach (_this # 0);
+
+		sleep (_this # 2);
+	};
+};
+
+// Create Positions For Smoke List
+	if (random 1 < _weightlargesmoke) then 
+	{
+		_ps4 = "#particlesource" createVehicle _x;
+		_ps4 setParticleClass "HouseDestrSmokeLong";
+		_largesmokelist pushBack _ps4;
+
+		if _cansmokedamage then 
+		{
+			_ps4 setParticleFire [_smokedamage,30,5];
+		};			
+	};
+		if _canfiredamage then {_ps2 setParticleFire [_firedamage,5.0,2];};
+
+// Randomly Flicker Lights For Units In Range
+	_this spawn {
+		while {_this isNotEqualTo objNull} do 
+		{
+			private _lampsIn200m = nearestObjects [_this, ["Lamps_base_F", "PowerLines_base_F", "PowerLines_Small_base_F"], 200]; 
+
+			if(allplayers findIf {_x distance2D _this < dynamicSimulationDistance "GROUP"} > -1) then 
+			{
+				private _code = {
+					
+					{ [_x, true] call BIS_fnc_switchLamp; } forEach _this select {random 1 < .25};
+					sleep .15;
+					{ [_x, false] call BIS_fnc_switchLamp; } forEach _this;
+				};
+				private _inrange = allplayers select {_x distance2D _this < dynamicSimulationDistance "GROUP"};
+				[_lampsIn200m, _code] remoteExec ["spawn", _inrange];
+			};
+
+			sleep random 5;
+		};
+	};

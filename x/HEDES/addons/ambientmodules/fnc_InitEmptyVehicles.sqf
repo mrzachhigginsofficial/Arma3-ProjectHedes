@@ -17,7 +17,7 @@ Main Thread
 */
 
 _logic spawn {
-	// -- Initialize Variables
+	// Initialize Variables
 	private _pos = [0,0];
 	private _posi = 0;
 	private _vehi = 0;
@@ -34,14 +34,14 @@ _logic spawn {
 	private _isfirstspawn = 1;
 	private _debugveh = objNull;
 
-	// -- Get Module Properties
+	// Get Module Properties
 	private _newunitinitfnc = compile(_this getVariable ["UnitInit", ""]);
 	private _numveh = _this getVariable ["NumOfVehs",5];
 	private _unitpool = call compile (_this getVariable "UnitPool");
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"};
 	private _interval = _this getVariable ["SimulationInterval",15];
 
-	// -- Initialize Trigger Area	
+	// Initialize Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
 		private _newtrigger = createtrigger ["emptydetector",position _this];
@@ -50,17 +50,17 @@ _logic spawn {
 		_areatriggers append [_newtrigger];
 	};
 
-	// -- Disable Simulation on Triggers
+	// Disable Simulation on Triggers
    {
       (_x # 0) enableSimulationGlobal false;
    } foreach _areatriggers;
 
-	// -- Main Loop
+	// Main Loop
 	while {_this isNotEqualTo ObjNull} do 
 	{
 		if (simulationEnabled _this) then
 		{
-			// -- Iterate through default or synchronized triggers.
+			// Iterate through default or synchronized triggers.
 			{
 				_trigger = _x;
 
@@ -84,7 +84,7 @@ _logic spawn {
 						};
 
 						if !(_pos isEqualTo [0,0]) then {
-							// -- Spawn New Truck That Looks Believable
+							// Spawn New Truck That Looks Believable
 							_direction = random 360;
 							_road = roadAt _pos;
 							_roadConnectedTo = roadsConnectedTo _road;
@@ -95,12 +95,12 @@ _logic spawn {
 							_veh = (selectRandom(_unitpool) createVehicle _pos);
 							_veh setDir _direction;
 							
-							// -- Maintenance Stuff
+							// Maintenance Stuff
 							_veh enableDynamicSimulation true;
 							_veh call FUNCMAIN(AppendCleanupSystemObjects);
 							_vehtracker pushBack _veh;
 
-							// -- Run Init Function
+							// Run Init Function
 							_veh call _newunitinitfnc;
 						};
 
@@ -109,13 +109,13 @@ _logic spawn {
 				};			
 			} foreach _areatriggers;
 
-			// -- Remove vehicles that are GC'd or cleaned up.
+			// Remove vehicles that are GC'd or cleaned up.
 			_vehtracker = _vehtracker - [objNull];
 
 			_isfirstspawn = 0;
 		};
 
-		// -- Go to sleep for a bit.
+		// Go to sleep for a bit.
 		sleep _interval;		
 	};
 };

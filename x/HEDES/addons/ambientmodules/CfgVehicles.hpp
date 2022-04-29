@@ -413,7 +413,7 @@ class CfgVehicles
 		};
 	};
 
-	// -- Duplicate Modules That Are Hidden Because I Used A CBA Pre-Processor Wrong
+	// Duplicate Modules That Are Hidden Because I Used A CBA Pre-Processor Wrong
 	class GVAR(AmbientModule_EmptyVehicles) : GVAR(EmptyVehicles) { scope = 1; };
 	class GVAR(AmbientModule_Civilians) : GVAR(Civilians) { scope = 1; };
 	class GVAR(AmbientModule_Garrison) : GVAR(Garrison) { scope = 1; };

@@ -18,7 +18,7 @@ Main Thread
 
 _logic spawn {
 
-	// -- Initialize Variables
+	// Initialize Variables
 	private _spawnpos = [0,0,0];
 	private _triggeri = objNull;
 	private _grpi = grpNull;
@@ -29,7 +29,7 @@ _logic spawn {
 	private _wpname = QUOTE(HEDES_GARRISON);
 	private _isfirstspawn = 1;
 
-	// -- Get Module Properties
+	// Get Module Properties
 	private _newunitsarr = [];
 	private _newunitinitfnc = compile (_this getVariable ["UnitInit", ""]);
 	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
@@ -45,7 +45,7 @@ _logic spawn {
 	private _orderrefresh = _this getVariable ["OrderRefreshInterval",300];
 	private _orderi = 0;
 
-	// -- Initialize Default Trigger Area	
+	// Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
 		private _newtrigger = createtrigger ["emptydetector", position _this];
@@ -55,12 +55,12 @@ _logic spawn {
 		_areatriggers pushBack [_newtrigger,grpNull,0];
 	};
 
-	// -- Disable Simulation on Triggers
+	// Disable Simulation on Triggers
    {
       (_x # 0) enableSimulationGlobal false;
    } foreach _areatriggers;
 
-	// -- Configure Unit Behavior 
+	// Configure Unit Behavior 
 	private _combattaskfnc = {};
 	switch (_combattask) do {
 		case QUOTE(CBA - Defend): {
@@ -84,7 +84,7 @@ _logic spawn {
 		default { };
 	};
 
-	// -- Unit Spawning and Side Switching Function 
+	// Unit Spawning and Side Switching Function 
 	private _spawnnewunits = {
 		params["_pvtgrp","_pvtmaxunits","_pvtspawnpos",["_pvtspawncustom", false],["_pvtunitpool",[]]];
 		private _pvti = 0;
@@ -122,12 +122,12 @@ _logic spawn {
 		};
 	};
 	
-	// -- Main Loop
+	// Main Loop
 	while { _this isNotEqualTo objNull } do 
 	{
 		if (simulationEnabled _this) then
 		{
-			// -- Iterate Over Each Trigger Area
+			// Iterate Over Each Trigger Area
 			{
 				_triggeri = _x # 0;
 				_grpi = _x # 1;
@@ -141,7 +141,7 @@ _logic spawn {
 
             if (_spawnpos isNotEqualTo [0,0]) then 
 				{
-					// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
+					// Do if there are Synchronized Sector Control Modules (For Sector Control)
 					if ((count _sectors) > 0) then 
 					{
 						_sector = _sectors # 0;
@@ -149,8 +149,8 @@ _logic spawn {
 						_sectorside = _sector getVariable "owner";		
 						if (_sectorside == sideUnknown) then {_sectorside = _defaultside};
 
-						// -- Check To See If Sector Control Module Side Matches Garrison Group Side
-						// -- If group doesn't exist or side is not the same, create a new group.
+						// Check To See If Sector Control Module Side Matches Garrison Group Side
+						// If group doesn't exist or side is not the same, create a new group.
 						if ((_sectorside isNotEqualTo (side _grpi)) or (_grpi isEqualTo grpNull)) then 
 						{
 							_grpi = createGroup [_sectorside, true];
@@ -159,7 +159,7 @@ _logic spawn {
 							_x set [1,_grpi];				
 						};
 
-						// -- Spawn New Units & Reset Group Behavior
+						// Spawn New Units & Reset Group Behavior
 						if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear)) or _isfirstspawn == 1) then 
 						{
 							[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
@@ -174,10 +174,10 @@ _logic spawn {
 						};
 					}
 
-					// -- Do if there are NO Synchronized Sector Control Modules
+					// Do if there are NO Synchronized Sector Control Modules
 					else 
 					{
-						// -- Create Group If It's Destroyed Or Doesn't Exist Yet.
+						// Create Group If It's Destroyed Or Doesn't Exist Yet.
 						if (_grpi isEqualTo grpNull) then 
 						{
 							_grpi = createGroup [_defaultside, true];
@@ -186,7 +186,7 @@ _logic spawn {
 							_x set [1,_grpi];						
 						};
 
-						// -- Spawn New Units & Reset Group Behavior
+						// Spawn New Units & Reset Group Behavior
 						if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear)) or _isfirstspawn == 1) then 
 						{
 							[_grpi, _maxunits, _spawnpos, true, _unitpool] call _spawnnewunits;
@@ -195,7 +195,7 @@ _logic spawn {
 					};
 				};		 
 
-				// -- Keep Patrols Moving
+				// Keep Patrols Moving
 				if(
 					((QUOTE(Patrol) in _combattask) or (QUOTE(Search) in _combattask)) && 
 					(_orderrefresh/_interval >= _orderi)
@@ -214,7 +214,7 @@ _logic spawn {
 			_isfirstspawn = 0;
 		};
 
-		// -- Go to sleep for a bit.
+		// Go to sleep for a bit.
 		sleep _interval;
 	};
 };

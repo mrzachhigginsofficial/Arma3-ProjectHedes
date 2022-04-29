@@ -18,7 +18,7 @@ Main Thread
 
 _logic spawn {
     
-    // -- Initialize Variables
+    // Initialize Variables
     private _i = 0;
     private _triggeri = objNull;
     private _grpi = grpNull;
@@ -28,14 +28,14 @@ _logic spawn {
     private _moveloc = [0,0];
     private _isfirstspawn = 1;
 
-    // -- Get Module Properties
+    // Get Module Properties
     private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull]};
     private _interval = _this getVariable ["SimulationInterval",30];
     private _maxcivs = _this getVariable ["NumbersofCivs",5];
 	private _newunitinitfnc = compile (_this getVariable ["UnitInit", {}]);
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 
-	// -- Initialize Default Trigger Area	
+	// Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
 		private _newtrigger = createtrigger ["emptydetector", position _this];
@@ -44,12 +44,12 @@ _logic spawn {
 		_areatriggers pushBack [_newtrigger, grpNull];
 	};
 
-    // -- Disable Simulation on Triggers
+    // Disable Simulation on Triggers
     {
         (_x # 0) enableSimulationGlobal false;
     } foreach _areatriggers;
 
-    // -- THIRD PARTY FUNCTION by phronk
+    // THIRD PARTY FUNCTION by phronk
     _civflee = {
         _this addEventHandler["firedNear", {
             _animation = selectRandom ["ApanPknlMstpSnonWnonDnon_G01"];
@@ -72,19 +72,19 @@ _logic spawn {
         }];
     };
 
-    // -- Main Loop
+    // Main Loop
     while { _this isNotEqualTo objNull } do 
 	{
         if (simulationEnabled _this) then
 		{
             if !(isNil "HEDES_DEBUG") then {systemchat format["%1 fired with interval of %2.",_this, _interval]};
 
-            // -- Iterate Over Each Trigger Area
+            // Iterate Over Each Trigger Area
             {
                 _triggeri = _x # 0;
                 _grpi = _x # 1;
 
-                // -- Create New Group If Needed. And Probably Investigate Players For Warcrimes
+                // Create New Group If Needed. And Probably Investigate Players For Warcrimes
                 if (_grpi isEqualTo grpNull) then 
                 {
                     _grpi = createGroup [CIVILIAN, false];
@@ -92,7 +92,7 @@ _logic spawn {
                     _x set [1, _grpi];
                 };
 
-                // -- Refill Units
+                // Refill Units
                 _i = 0;
                 while {!([_grpi, _maxcivs] call FUNCMAIN(IsGroupFull)) && _i < _maxcivs} do {
 
@@ -116,7 +116,7 @@ _logic spawn {
                     _i = _i + 1;
                 };
 
-                // -- Keep them walking
+                // Keep them walking
                 {	
                     if (simulationEnabled _x && (speed _x) < 1) then 
                     {
@@ -157,7 +157,7 @@ _logic spawn {
             _isfirstspawn = 0;
         };
 
-        // -- Go to sleep for a bit.
+        // Go to sleep for a bit.
         sleep _interval;
     };
 };

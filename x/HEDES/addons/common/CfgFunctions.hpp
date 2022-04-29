@@ -10,6 +10,7 @@ class CfgFunctions
             PATHTO_FNC(FindHiddenRanPosInMarker)
             PATHTO_FNC(FindHypotenuse);
             PATHTO_FNC(FindRanPosInMarker)
+            PATHTO_FNC(GenerateUID)
             PATHTO_FNC(IsEnemyPlayersNear)
             PATHTO_FNC(IsGroupFull)
             PATHTO_FNC(IsPlayersNearGroup)

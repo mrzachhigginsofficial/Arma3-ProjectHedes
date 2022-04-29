@@ -2,9 +2,10 @@ class CfgFunctions
 {
     class PREFIX 
     {
-        class airportmodules
+        class COMPONENT
         {
-            //PATHTO_FNC(InitAirportManager)
+            PATHTO_FNC(InitDestructionClient)
+            PATHTO_FNC(InitDestructionManager)
         };
     };
 };

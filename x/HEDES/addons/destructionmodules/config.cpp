@@ -2,7 +2,7 @@
 
 class CfgPatches {
 	class ADDON {
-		name = "Project Hedes Destruction modules";
+		name = "Project Hedes Destruction Modules";
 		author = "ZanchoElGrande";
 		url = "";
 		requiredAddons[] = { "CBA_main" };

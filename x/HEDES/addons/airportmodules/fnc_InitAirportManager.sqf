@@ -117,7 +117,7 @@ _logic spawn {
 
 		if (simulationEnabled _this) then 
 		{
-			// -- Cleanup Runways 
+			// Cleanup Runways 
 			_jetunits = [];
 			_jets apply {_x # 1} apply {units _x apply {_jetunits pushback _x}} ;
 			{
@@ -140,25 +140,25 @@ _logic spawn {
 				_tocleanup apply {deleteVehicle _x};
 			} foreach _cleaners;
 
-			// -- Create New Groups If Cleaned 
+			// Create New Groups If Cleaned 
 			_jets apply {
 				if ((_x # 1) isEqualTo grpNull) then { _x set [1, createGroup [_side, true]] };
 			};
 
-			// -- Spawn New Jets
+			// Spawn New Jets
 			if (count(_jets) < _maxjets) then 
 			{
 				_jets pushBack (_unitpool call _newvehicle);
 			};
 
-			// -- Recall Low Fuel
+			// Recall Low Fuel
 			_jets select { fuel (_x # 0) < _minfuel && !((_x # 0) getVariable "landing")} apply 
 			{ 
 				[(_x # 1), _home] call _assignland;
 				_x set [2, time];
 			};
 
-			// -- Assign New Crew
+			// Assign New Crew
 			_jets select {((assignedDriver (_x # 0)) isEqualTo objNull or count(units(_x # 1)) isEqualTo 0) && (_x # 0) getVariable "landing"} apply
 			{
 				if(damage (_x # 0) isEqualTo 0 and (_x # 0) isNotEqualTo objNull) then {
@@ -170,11 +170,11 @@ _logic spawn {
 				};
 			};
 
-			// -- Tracking Array Cleanup 
+			// Tracking Array Cleanup 
 			_jets = _jets - (_jets select {(_x # 0) isEqualTo objNull});
 			_jets = _jets - (_jets select {(_x # 1) isEqualTo grpNull});
 
-			// -- Something Wrong Conditions 
+			// Something Wrong Conditions 
 			_jets select {
 				_x params ["_jet","_grp","_time"];	
 				(							

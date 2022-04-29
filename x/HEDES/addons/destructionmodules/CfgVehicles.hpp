@@ -41,11 +41,11 @@ class CfgVehicles
 		};
 	};
 
-	class GVAR(Artillery): GVAR(BASE)
+	class GVAR(DestroyTown): GVAR(BASE)
 	{
-		displayName = "Ambient Airplane Sim (Early Access)";
+		displayName = "Ambient Destroy Town";
 		function = QUOTE(FUNCMAIN(InitDestructionManager));
-		scope = 1;
+		scope = 2;
 
 		class Attributes: Attributes
 		{

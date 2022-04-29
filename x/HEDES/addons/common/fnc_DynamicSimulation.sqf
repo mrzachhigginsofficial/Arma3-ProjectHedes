@@ -14,7 +14,7 @@ Set _isinplane if units are going to parachute out.
 params["_var",["_evaluator",FUNCMAIN(IsPlayersNearGroup)],["_isinplane", false],["_delay",15]];
 
 // ***************************************************
-// -- Group Simulation Loop
+// Group Simulation Loop
 // ***************************************************
 private _GroupSimulationLoop = {
 	params["_grp","_evaluator","_isinplane"];
@@ -41,7 +41,7 @@ private _GroupSimulationLoop = {
 };
 
 // ***************************************************
-// -- Object Simulation Loop
+// Object Simulation Loop
 // ***************************************************
 private _ObjectSimulationLoop = {
 	params["_obj","_evaluator","_isinplane"];
@@ -66,10 +66,10 @@ private _ObjectSimulationLoop = {
 };
 
 // ***************************************************
-// -- Spawn Proper Simulation Thread
+// Spawn Proper Simulation Thread
 // ***************************************************
 
-sleep _delay; // -- Give Unit Or Group Chance To Setup
+sleep _delay; // Give Unit Or Group Chance To Setup
 
 switch (typeName _var) do {
 	case "GROUP" : { 
