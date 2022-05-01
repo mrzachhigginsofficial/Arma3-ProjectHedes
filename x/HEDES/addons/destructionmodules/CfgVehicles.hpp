@@ -182,4 +182,20 @@ class CfgVehicles
 			};
 		};
 	};
+
+	class GVAR(SearchLight): GVAR(BASE)
+	{
+		displayName = "SearchLight";
+		function = QUOTE(FUNCMAIN(InitSearchLight));
+		scope = 2;
+
+		class Attributes: Attributes
+		{
+			class StructuredTextSearchLightDesc : StructuredText3Base
+			{
+				property = "StructuredTextSearchLightDesc";
+				description = "<t size='1.5'>Ambient Search Lights</t><br/>Warning, this is a proof of concept. It might work, but it's a hack job. If you know how to mod and want to help, go to the github, check the source, then reach out to me.";
+			};
+		};
+	};
 };

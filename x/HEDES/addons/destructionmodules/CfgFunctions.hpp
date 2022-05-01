@@ -8,6 +8,7 @@ class CfgFunctions
             PATHTO_FNC(InitDestructionManager)
             PATHTO_FNC(MoveSmoke)
             PATHTO_FNC(InitSoundSource)
+            PATHTO_FNC(InitSearchLight)
         };
     };
 };
