@@ -108,6 +108,13 @@ class CfgVehicles
 				tooltip = "Disabling damage helps with eliminating clutter by allowing them to always be forced off field and cleaned up. The down side is, you don't get to shoot them down anymore.";
 				defaultValue = "true";
 			};
+			class UnitsAlwaysPlayObjective : Checkbox
+			{
+				property = "UnitsAlwaysPlayObjective";
+				displayName = "Should Units Always Play Objective";
+				tooltip = "Determines whether units should always play the objective. When selected, units will receive new attack orders at the configured simulation interval and always move to current combat point.";
+				defaultValue = "true";
+			};
 			class SimulationInterval : SliderTimerRespawnBase
 			{
 				property = "SimulationInterval";

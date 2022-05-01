@@ -108,7 +108,7 @@ _logic spawn {
                         _civunit setPosATL [(getPosATL _civunit) # 0, (getPosATL _civunit) # 1 ,0];
                         _civunit setSpeedMode "LIMITED";
                         _civunit forceWalk true;
-                        {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS"];
+                        {_civunit disableAI  _x} foreach ["SUPPRESSION","MINEDETECTION","CHECKVISIBLE","AIMINGERROR","WEAPONAIM","TARGET","LIGHTS","RADIOPROTOCOL"];
                         _civunit call _civflee;
                         [_civunit] call FUNCMAIN(AppendCleanupSystemObjects);
                         _civunit call _newunitinitfnc;

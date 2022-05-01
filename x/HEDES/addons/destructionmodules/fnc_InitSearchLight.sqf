@@ -14,7 +14,7 @@ private _logic = param [0, objNull];
 
 _logic spawn {
 	_this setDir random 360;
-	_light = createSimpleObject ["A3\data_f\VolumeLight_searchLight.p3d", getpos _this, true];  
+	_light = createSimpleObject ["A3\data_f\VolumeLight_searchLight.p3d", getpos _this, false];  
 	_fakeanimsoldier = "C_Soldier_VR_F" createVehicle getPos _this; 
 	_fakeanimsoldier allowDamage false;
 	_fakeanimsoldier enableStamina false;

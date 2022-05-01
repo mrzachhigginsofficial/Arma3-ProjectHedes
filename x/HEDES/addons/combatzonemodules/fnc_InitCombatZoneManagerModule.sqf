@@ -24,6 +24,7 @@ _logic spawn {
 	private _debug_objs = [];
 	private _interval = _this getVariable ["SimulationInterval",120];
 	private _disabledmg = _this getVariable ["DisableDamage",true];
+	private _playobjective = _this getVariable ["UnitsAlwaysPlayObjective", true];
 
 
 	// Build Side Configuration Settings
@@ -75,21 +76,30 @@ _logic spawn {
 	{
 		if (simulationEnabled _this) then
 		{
-			// Find New Combat Zone Area
+			// Find new combat zone area.
 			_combatzone = selectRandom (_points select {simulationEnabled (_x select 0)});
 			_pointmodule = _combatzone # 0;
 			_pointranpos = (_combatzone # 1) call BIS_fnc_randomPosTrigger;
 			_pointranpos = [_pointranpos, 0, 10] call BIS_fnc_findSafePos;
 
-			// If The Combat Zone Position Is Valid... Continue
+			// If the conbat zone position is valid, continue.
 			if (_pointranpos isNotEqualTo [0,0]) then 
 			{
-				// Iterate Through Each Side Config
+
+				// Iterate through each side config.
 				{				
 					_config = _x;	
 						
-					// Filter Out Dead/Null Units
+					// Filter out dead/null values.
 					_config set [6,((_config # 6) - [objNull]) select {alive _x}];	
+
+					// Update all unit orders.
+					if _playobjective then 
+					{
+						_grouptoreset = (_config # 6) select {isTouchingGround _x} apply {group _x}; 
+						_grouptoreset = _grouptoreset arrayIntersect _grouptoreset;
+						{[_x, _pointranpos] call BIS_fnc_taskAttack; } foreach _grouptoreset;
+					};
 
 					// Get LZ Module Properties
 					_combatlz = switch (_config # 0) do 
