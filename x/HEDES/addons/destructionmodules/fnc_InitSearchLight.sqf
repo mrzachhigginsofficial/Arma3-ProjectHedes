@@ -20,13 +20,12 @@ _logic spawn {
 	_fakeanimsoldier enableStamina false;
 	hideObject _fakeanimsoldier; 
 	sleep random[3,4,7];
+	[_fakeanimsoldier, 0.1] remoteExec ["setAnimSpeedCoef", 0, true];
 	_fakeanimsoldier switchmove "AinvPpneMstpSrasWpstDnon_G01";
-	_fakeanimsoldier setAnimSpeedCoef 0.25;
 	_fakeanimsoldier attachTo [_this,[0,0,0]]; 
 	_fakeanimsoldier disableAI "ALL"; 
 	_fakeanimsoldier enableAI "ANIM";  
 	_light attachTo [_fakeanimsoldier,[0,0,0],"head",true]; 
-
 	_fakeanimsoldier enableDynamicSimulation true;
 	_light enableDynamicSimulation true;
 };
