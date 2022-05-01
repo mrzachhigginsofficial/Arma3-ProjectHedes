@@ -18,7 +18,7 @@ _logic spawn {
 	_fakeanimsoldier = "C_Soldier_VR_F" createVehicle getPos _this; 
 	_fakeanimsoldier allowDamage false;
 	_fakeanimsoldier enableStamina false;
-	hideObject _fakeanimsoldier; 
+	hideObjectGlobal _fakeanimsoldier; 
 	sleep random[3,4,7];
 	[_fakeanimsoldier, 0.1] remoteExec ["setAnimSpeedCoef", 0, true];
 	_fakeanimsoldier switchmove "AinvPpneMstpSrasWpstDnon_G01";
