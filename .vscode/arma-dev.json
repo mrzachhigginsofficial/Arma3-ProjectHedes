@@ -29,7 +29,8 @@
 		"x/HEDES/addons/destructionmodules"
 	],
 	"clientMods": [
-		"!Workshop\\@CBA_A3"
+		"!Workshop\\@CBA_A3",
+		"!Workshop\\@3den Enhanced"
 	],
 	"ftpConnection": {}
 }

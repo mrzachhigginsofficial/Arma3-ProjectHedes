@@ -2,13 +2,12 @@
 ---------------------------------------------
 Destruction Module Client
 Author: ZanchoElGrande
-
 ---------------------------------------------
 */
 
 #include "script_component.hpp"
 
-params ["_areaarr", "_fireposlist", ["_canfiredamage", false],["_smokedamage",0],["_firedamage", 0], ["_id", nil]];
+params ["_areaarr", "_fireposlist", ["_canfiredamage", false],["_smokedamage",0],["_firedamage", 0], ["_id", nil],["_flickerlights",false]];
 
 {
 	private _ps1 = "#particlesource" createVehicleLocal _x;
@@ -35,55 +34,35 @@ params ["_areaarr", "_fireposlist", ["_canfiredamage", false],["_smokedamage",0]
 	_lightpoint setLightDayLight false;
 	_lightpoint setLightAttenuation [0,0,0,1];
 	_lightpoint setLightAmbient [0.15,0.05,0];
-
 } foreach _fireposlist;
 
-HEDES_fnc_MoveSmoke = {
-	params["_id","_positions"];
-	
-	private _objsid = format["%1_OBJS",_id];
 
-	if (isNil _objsid) then 
-	{
-		missionNamespace setVariable [_objsid,[]];
-	};
-
-	{deleteVehicle _x;} foreach (missionNamespace getVariable _objsid);
-
-	private _objlist = (missionNamespace getVariable _objsid);
-	{
-		if (player distance2D _x < viewDistance) then
+// Flicker lights.
+if _flickerlights then 
+{
+	_areaarr spawn {
+		private _obj = _this # 0;
+		private _areaarr = _this;
+		private _range =  dynamicSimulationDistance "GROUP";
+		private _lamps = nearestObjects [_obj, ["Lamps_base_F", "PowerLines_base_F", "PowerLines_Small_base_F"], 200]; 
+		_lamps = _lamps inAreaArray _areaarr;
+		
+		while {_obj isNotEqualTo objNull} do 
 		{
-			_smoke = "#particlesource" createVehicleLocal _x;
-			_smoke setParticleClass "HouseDestrSmokeLong";
-			_objlist pushBack _smoke;
+			if((player distance2D _obj) < _range) then 
+			{
+				{ 
+					[_x, true] call BIS_fnc_switchLamp; 
+				} foreach _lamps select {random 1 < .25};
+
+				sleep .05;
+
+				{ 
+					[_x, false] call BIS_fnc_switchLamp; 
+				} foreach _lamps select {random 1 < .5};
+			};
+
+			sleep random [.1,.2,5];
 		};
-	} foreach _positions;
-};
-
-
-_areaarr spawn {
-	private _obj = _this # 0;
-	private _areaarr = _this;
-	
-	while {_obj isNotEqualTo objNull} do 
-	{
-		if((player distance2D _obj) < dynamicSimulationDistance "GROUP") then 
-		{
-			private _lamps = nearestObjects [_obj, ["Lamps_base_F", "PowerLines_base_F", "PowerLines_Small_base_F"], 200]; 
-			_lamps = _lamps inAreaArray _areaarr;
-
-			{ 
-				[_x, true] call BIS_fnc_switchLamp; 
-			} foreach _lamps select {random 1 < .25};
-
-			sleep .05;
-
-			{ 
-				[_x, false] call BIS_fnc_switchLamp; 
-			} foreach _lamps select {random 1 < .5};
-		};
-
-		sleep random [.1,.2,5];
 	};
 };

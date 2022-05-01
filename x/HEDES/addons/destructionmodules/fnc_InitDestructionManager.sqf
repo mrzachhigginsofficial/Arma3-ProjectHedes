@@ -21,13 +21,15 @@ _logic spawn {
 	private _list = nearestObjects [_this, ["House", "Building"], _radius];
 	_list = _list inAreaArray _areaarr;
 
-	private _weightruin = .25;
-	private _weightalivefire = .5;
-	private _weightruinsfire = .5;
-	private _weightfirepos = .15;
-	private _weightlargesmoke = .1;
 
-	private _smokeupdateinterval = 10;
+	private _weightruin =  _this getVariable ["RuinWeight",.25];
+	private _weightalivefire = _this getVariable ["AliveFireWeight",.5];
+	private _weightruinsfire = _this getVariable ["RuinsFireWeight",.5];
+	private _weightfirepos = _this getVariable ["AliveFirePositionWeight",.15];
+	private _weightlargesmoke =  _this getVariable ["LargeSmokeWeight",.1];
+	private _flickerlights = _this getVariable ["FlickerLocalLightsOnClient", true];
+
+	private _smokeupdateinterval = _this getVariable ["SmokeUpdateInterval",25];
 	private _cansmokedamage = false;
 	private _canfiredamage = false;
 	private _smokedamage = .1;
@@ -78,7 +80,7 @@ _logic spawn {
 	} foreach (_ruins select {random 1 < _weightruinsfire});	
 
 	// Broadcast update to clients.
-	private _emitters = [_areaarr, _fireposlist, _canfiredamage, _smokedamage, _firedamage, _id];
+	private _emitters = [_areaarr, _fireposlist, _canfiredamage, _smokedamage, _firedamage, _id, _flickerlights];
 	_emitters remoteExec [QUOTE(FUNCMAIN(InitDestructionClient)),0,true];
 
 	// Spawn thread to periodically move large smoke clouds.
@@ -93,7 +95,7 @@ _logic spawn {
 				_newpositions pushBack _x
 			} foreach (_fireposlist select {random 1 < _weightlargesmoke});
 
-			[_id, _newpositions] remoteExec ["HEDES_fnc_MoveSmoke", 0, false];
+			[_id, _newpositions] remoteExec [QUOTE(FUNCMAIN(MoveSmoke)), 0, false];
 
 			sleep random [_smokeupdateinterval, _smokeupdateinterval * 1.8, _smokeupdateinterval * 2];
 		};
