@@ -25,6 +25,7 @@ _logic spawn {
 	private _interval = _this getVariable ["SimulationInterval",120];
 	private _disabledmg = _this getVariable ["DisableDamage",true];
 	private _playobjective = _this getVariable ["UnitsAlwaysPlayObjective", true];
+	private _maxtimeout = 600;
 
 
 	// Build Side Configuration Settings
@@ -34,24 +35,24 @@ _logic spawn {
 	private _eastSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" });
 	if(count(_eastSpawns) > 0) then 
 	{
-		_sideconfigs pushback [EAST,_this getVariable ["EastVehicle",""],_this getVariable ["EastUnitPool",""],getPos (selectRandom _eastSpawns),_this getVariable ["EastIsHeli",true],_this getVariable ["EastMaxUnits",80],[]];
+		_sideconfigs pushback [EAST,_this getVariable ["EastVehicle",""],_this getVariable ["EastUnitPool",""],getPos (selectRandom _eastSpawns),_this getVariable ["EastIsHeli",true],_this getVariable ["EastMaxUnits",80],[],[]];
 	};
 
 	// Add West
 	private _westSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" });
 	if(count(_westSpawns) > 0) then 
 	{
-		_sideconfigs pushback [WEST,_this getVariable ["WestVehicle",""],_this getVariable ["WestUnitPool",""],getPos (selectRandom _westSpawns),_this getVariable ["WestIsHeli",true],_this getVariable ["WestMaxUnits",80],[]]
+		_sideconfigs pushback [WEST,_this getVariable ["WestVehicle",""],_this getVariable ["WestUnitPool",""],getPos (selectRandom _westSpawns),_this getVariable ["WestIsHeli",true],_this getVariable ["WestMaxUnits",80],[],[]]
 	};
 
 	// Add Independent
 	private _guerSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" });
 	if (count(_guerSpawns) > 0) then 
 	{
-		_sideconfigs pushback [INDEPENDENT,_this getVariable ["GUERVehicle",""],_this getVariable ["GUERUnitPool",[]],getPos (selectRandom _guerSpawns),_this getVariable ["GUERIsHeli",true],_this getVariable ["GUERMaxUnits",80],[]];
+		_sideconfigs pushback [INDEPENDENT,_this getVariable ["GUERVehicle",""],_this getVariable ["GUERUnitPool",[]],getPos (selectRandom _guerSpawns),_this getVariable ["GUERIsHeli",true],_this getVariable ["GUERMaxUnits",80],[],[]];
 	}; 
 
-	// Configure Trigger Area For All Combat Zones & The Same For LZ's
+	// Configure trigger area for all combat zone's and lz's.
 	private _newtrigger = objNull;
 	private _createtriggerfnc = {
 		_newtrigger = createtrigger ["emptydetector", position _this];
@@ -85,24 +86,31 @@ _logic spawn {
 			// If the conbat zone position is valid, continue.
 			if (_pointranpos isNotEqualTo [0,0]) then 
 			{
-
 				// Iterate through each side config.
-				{				
-					_config = _x;	
+				{		
+					_x params ["_side","_cfgvehicle","_unitpool","_spawn","_isHeli","_maxunits","_activeunits","_activehelis"];
+					_config = _x;
+
+					// Delete lost heli's.
+					{
+						{deleteVehicle _x} foreach (crew _x);
+						deleteVehicle _x;
+					} foreach (_activehelis select {(_x getVariable "starttime") + _maxtimeout < time});
 						
 					// Filter out dead/null values.
-					_config set [6,((_config # 6) - [objNull]) select {alive _x}];	
+					_config set [6,(_activeunits - [objNull]) select {alive _x}];	
+					_config set [7,_activehelis - [objNull] select {alive _x}];
 
 					// Update all unit orders.
 					if _playobjective then 
 					{
-						_grouptoreset = (_config # 6) select {isTouchingGround _x} apply {group _x}; 
+						_grouptoreset = (_activeunits select {isTouchingGround _x} apply {group _x}); 
 						_grouptoreset = _grouptoreset arrayIntersect _grouptoreset;
 						{[_x, _pointranpos] call BIS_fnc_taskAttack; } foreach _grouptoreset;
 					};
 
 					// Get LZ Module Properties
-					_combatlz = switch (_config # 0) do 
+					_combatlz = switch (_side) do 
 					{
 						case EAST: {
 							selectRandom(synchronizedObjects _pointmodule select {typeOf _x == "HEDES_CombatZoneModules_EastLZ"})};
@@ -122,13 +130,13 @@ _logic spawn {
 						_debug_objs pushBack ("VR_3DSelector_01_default_F" createVehicle _combatlzpos);
 					};
 
-					// Try To Spawn New Units
-					if(count(_config # 6) < (_config # 5) && (_combatlzpos isNotEqualTo [0,0])) then
+					// Spawn new units if side not full
+					if(count _activeunits < _maxunits && (_combatlzpos isNotEqualTo [0,0])) then
 					{
 						// Spawn Vehicle With Crew and Fireteams
-						_groups = [_config # 0, _config # 1, call compile(_config # 2), _config # 3] call FUNCMAIN(SpawnVehicleAndCrew);
+						_groups = [_side, _cfgvehicle, call compile(_unitpool), _spawn] call FUNCMAIN(SpawnVehicleAndCrew);
 						_groups apply {_x allowFleeing 0};
-						while {count(units (_groups # 1)) > (_config # 5)} do 
+						while {count(units (_groups # 1)) > _maxunits} do 
 						{
 							deleteVehicle (selectRandom units (_groups # 1));
 						};
@@ -142,19 +150,26 @@ _logic spawn {
 							units(_groups # 0) apply {_x allowDamage false};
 							vehicle (leader (_groups # 0)) allowDamage false;
 						};
-
+						
 						// Setup Unit and Vehicle Orders						
-						(_groups + [_combatlzpos, _x # 3, _x # 4]) spawn FUNCMAIN(FlightPlanner);
+						(_groups + [_combatlzpos, _spawn, _isHeli]) spawn FUNCMAIN(FlightPlanner);
 						[_groups # 1, _pointranpos] call BIS_fnc_taskAttack; 
 
+						// Add timeout tag to heli and push to end of tracking array
+						private _vehicle = vehicle (leader (_groups # 0));
+						_vehicle setVariable ["starttime",time];
+						_activehelis pushBack _vehicle;
+
 						// Add Units To Cleanup
-						[_groups # 1, FUNCMAIN(IsPlayersNearGroup),_x # 4] spawn FUNCMAIN(DynamicSimulation);
+						[_groups # 1, FUNCMAIN(IsPlayersNearGroup), _isHeli] spawn FUNCMAIN(DynamicSimulation);
 						(vehicle (leader (_groups # 0))) call FUNCMAIN(AppendCleanupSystemObjects);
 						_groups call FUNCMAIN(AppendCleanupSystemObjects);
 
 						// Add New Units To Active Unit Array
-						_groups apply {(_config # 6) append (units _x)};				
-					};
+						_groups apply {_activeunits append (units _x)};	
+						_config set [6,_activeunits];
+					};					
+
 				} foreach _sideconfigs;
 			};			
 			
