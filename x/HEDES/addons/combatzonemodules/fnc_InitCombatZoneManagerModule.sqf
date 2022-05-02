@@ -35,21 +35,21 @@ _logic spawn {
 	private _eastSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" });
 	if(count(_eastSpawns) > 0) then 
 	{
-		_sideconfigs pushback [EAST,_this getVariable ["EastVehicle",""],_this getVariable ["EastUnitPool",""],getPos (selectRandom _eastSpawns),_this getVariable ["EastIsHeli",true],_this getVariable ["EastMaxUnits",80],[],[]];
+		_sideconfigs pushback [EAST,_this getVariable ["EastVehicle",""],call compile (_this getVariable ["EastUnitPool",""]),getPos (selectRandom _eastSpawns),_this getVariable ["EastSpawnerType","HeliLand"],_this getVariable ["EastMaxUnits",80],[],[]];
 	};
 
 	// Add West
 	private _westSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" });
 	if(count(_westSpawns) > 0) then 
 	{
-		_sideconfigs pushback [WEST,_this getVariable ["WestVehicle",""],_this getVariable ["WestUnitPool",""],getPos (selectRandom _westSpawns),_this getVariable ["WestIsHeli",true],_this getVariable ["WestMaxUnits",80],[],[]]
+		_sideconfigs pushback [WEST,_this getVariable ["WestVehicle",""],call compile (_this getVariable ["WestUnitPool",""]),getPos (selectRandom _westSpawns),_this getVariable ["WestSpawnerType","HeliLand"],_this getVariable ["WestMaxUnits",80],[],[]]
 	};
 
 	// Add Independent
 	private _guerSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" });
 	if (count(_guerSpawns) > 0) then 
 	{
-		_sideconfigs pushback [INDEPENDENT,_this getVariable ["GUERVehicle",""],_this getVariable ["GUERUnitPool",[]],getPos (selectRandom _guerSpawns),_this getVariable ["GUERIsHeli",true],_this getVariable ["GUERMaxUnits",80],[],[]];
+		_sideconfigs pushback [INDEPENDENT,_this getVariable ["GUERVehicle",""],call compile (_this getVariable ["GUERUnitPool",[]]),getPos (selectRandom _guerSpawns),_this getVariable ["GUERSpawnerType","HeliLand"],_this getVariable ["GUERMaxUnits",80],[],[]];
 	}; 
 
 	// Configure trigger area for all combat zone's and lz's.
@@ -66,9 +66,13 @@ _logic spawn {
 	{
 		_point = _x;
 		_point set [1,(_point # 0) call _createtriggerfnc]; // Attach Trigger To CombatZone
-		synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_EastLZ" } apply {_x call _createtriggerfnc}; // Attach Trigger To LZ
-		synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_WestLZ" } apply {_x call _createtriggerfnc}; // Attach Trigger To LZ
-		synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_GuerLZ" } apply {_x call _createtriggerfnc}; // Attach Trigger To LZ
+		if (count(synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_EastLZ" }) > 0) then 
+			{synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_EastLZ" } apply {_x call _createtriggerfnc}}; // Attach Trigger To LZ
+		if (count(synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_WestLZ" }) > 0) then 
+			{synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_WestLZ" } apply {_x call _createtriggerfnc}}; // Attach Trigger To LZ
+		if (count(synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_GuerLZ" }) > 0) then 
+			{synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_GuerLZ" } apply {_x call _createtriggerfnc}}; // Attach Trigger To LZ
+		
 	} foreach _points;
 
 
@@ -88,13 +92,13 @@ _logic spawn {
 			{
 				// Iterate through each side config.
 				{		
-					_x params ["_side","_cfgvehicle","_unitpool","_spawn","_isHeli","_maxunits","_activeunits","_activehelis"];
+					_x params ["_side","_cfgvehicle","_unitpool","_spawnpos","_spawntype","_maxunits","_activeunits","_activehelis"];
 					_config = _x;
 
 					// Delete lost heli's.
 					{
-						{deleteVehicle _x} foreach (crew _x);
-						deleteVehicle _x;
+						{_x setDamage 1} foreach (crew _x);
+						_x setDamage 1;
 					} foreach (_activehelis select {(_x getVariable "starttime") + _maxtimeout < time});
 						
 					// Filter out dead/null values.
@@ -120,56 +124,96 @@ _logic spawn {
 							selectRandom(synchronizedObjects _pointmodule select {typeOf _x == "HEDES_CombatZoneModules_GuerLZ"})};
 					};
 									
-					// Get Combat Zone Landing Area Triggers
-					_combatlztrg = _combatlz getVariable "trigger";
-					_combatlzpos = _combatlztrg call BIS_fnc_randomPosTrigger;
-					_combatlzpos = [_combatlzpos, 0, 10] call BIS_fnc_findSafePos;	
-
 					if !(isNil "HEDES_DEBUG") then 
 					{
 						_debug_objs pushBack ("VR_3DSelector_01_default_F" createVehicle _combatlzpos);
 					};
 
 					// Spawn new units if side not full
-					if(count _activeunits < _maxunits && (_combatlzpos isNotEqualTo [0,0])) then
+					if(count _activeunits < _maxunits) then
 					{
-						// Spawn Vehicle With Crew and Fireteams
-						_groups = [_side, _cfgvehicle, call compile(_unitpool), _spawn] call FUNCMAIN(SpawnVehicleAndCrew);
-						_groups apply {_x allowFleeing 0};
-						while {count(units (_groups # 1)) > _maxunits} do 
+						// Spawn Units Based On Spawner Type
+						switch _spawntype do 
 						{
-							deleteVehicle (selectRandom units (_groups # 1));
-						};
-						units(_groups # 0) apply {_x disableAI "SUPPRESSION"};
-						units(_groups # 0) apply {_x disableAI "RADIOPROTOCOL"};
-						units(_groups # 0) apply {_x disableAI "MINEDETECTION"};
+							case "HeliLand": {
 
-						// Disable Damage On Heli & Crew If Configured 
-						if _disabledmg then 
-						{
-							units(_groups # 0) apply {_x allowDamage false};
-							vehicle (leader (_groups # 0)) allowDamage false;
-						};
-						
-						// Setup Unit and Vehicle Orders						
-						(_groups + [_combatlzpos, _spawn, _isHeli]) spawn FUNCMAIN(FlightPlanner);
-						[_groups # 1, _pointranpos] call BIS_fnc_taskAttack; 
+								_combatlztrg = _combatlz getVariable "trigger";
+								_combatlzpos = _combatlztrg call BIS_fnc_randomPosTrigger;
+								_combatlzpos = [_combatlzpos, 0, 10] call BIS_fnc_findSafePos;	
 
-						// Add timeout tag to heli and push to end of tracking array
-						private _vehicle = vehicle (leader (_groups # 0));
-						_vehicle setVariable ["starttime",time];
-						_activehelis pushBack _vehicle;
+								if (_combatlzpos isNotEqualTo [0,0]) then
+								{
+									// Spawn Vehicle With Crew and Fireteams
+									_groups = [_side, _cfgvehicle, _unitpool, _spawnpos] call FUNCMAIN(SpawnVehicleAndCrew);
+									_groups apply {_x allowFleeing 0};
 
-						// Add Units To Cleanup
-						[_groups # 1, FUNCMAIN(IsPlayersNearGroup), _isHeli] spawn FUNCMAIN(DynamicSimulation);
-						(vehicle (leader (_groups # 0))) call FUNCMAIN(AppendCleanupSystemObjects);
-						_groups call FUNCMAIN(AppendCleanupSystemObjects);
+									// Keep group count under max units
+									while {count(units (_groups # 1)) > _maxunits} do 
+									{
+										deleteVehicle (selectRandom units (_groups # 1));
+									};
 
-						// Add New Units To Active Unit Array
-						_groups apply {_activeunits append (units _x)};	
-						_config set [6,_activeunits];
-					};					
+									// Disable AI
+									{
+										_unit = _x;
+										{_unit disableAI _x} foreach ["SUPPRESSION","RADIOPROTOCOL","MINEDETECTION"];
+									} foreach (units (_groups # 0));
 
+									// Disable damage on heli and crew if configured
+									if _disabledmg then 
+									{
+										units(_groups # 0) apply {_x allowDamage false};
+										vehicle (leader (_groups # 0)) allowDamage false;
+									};
+									
+									// Setup unit and vehicle orders					
+									(_groups + [_combatlzpos, _spawnpos, true]) spawn FUNCMAIN(FlightPlanner);
+									[_groups # 1, _pointranpos] call BIS_fnc_taskAttack; 
+
+									// Add timeout tag to heli and push to end of tracking array
+									private _vehicle = vehicle (leader (_groups # 0));
+									_vehicle setVariable ["starttime",time];
+									_activehelis pushBack _vehicle;
+									_config set [7,_activehelis];
+
+									// Add units to cleanup array
+									[_groups # 1, FUNCMAIN(IsPlayersNearGroup), true] spawn FUNCMAIN(DynamicSimulation);
+									(vehicle (leader (_groups # 0))) call FUNCMAIN(AppendCleanupSystemObjects);
+									_groups call FUNCMAIN(AppendCleanupSystemObjects);
+
+									// Add new units to active unit array.
+									_groups apply {_activeunits append (units _x)};	
+									_config set [6,_activeunits];
+								};
+							};	
+
+							case "InfantryFoot": {
+								// Spawn random infantry group.
+								_newgroup = createGroup [_side, true];
+								while{count(units _newgroup) < 5} do 
+								{
+									_newgroup createUnit [selectRandom _unitpool, _spawnpos, [], 0, "FORM"];
+								};
+
+								// Disable AI
+								{
+									_unit = _x;
+									{_unit disableAI _x} foreach ["SUPPRESSION","RADIOPROTOCOL","MINEDETECTION"];
+								} foreach (units _newgroup);
+
+								// Assign Orders
+								[_newgroup, _pointranpos] call BIS_fnc_taskAttack; 
+
+								// Add units to cleanup array
+								[_newgroup, FUNCMAIN(IsPlayersNearGroup), true] spawn FUNCMAIN(DynamicSimulation);
+								_newgroup call FUNCMAIN(AppendCleanupSystemObjects);
+
+								// Add to trackers.
+								_activeunits append (units _newgroup);	
+								_config set [6,_activeunits];
+							};					
+						};						
+					};		
 				} foreach _sideconfigs;
 			};			
 			

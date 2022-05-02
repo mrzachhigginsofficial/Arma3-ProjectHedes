@@ -53,6 +53,25 @@ class CfgVehicles
 				control = "StructuredText6";
 				description = "<t size='1.5'>Project Hedes Combat Zone Child Object</t><br/><br/>This is a child object of the Project Hedes Combat Zone Manager Module. Please refer to the documentation link in the modules attribute window for more information.";
 			};
+
+			class SpawnerTypeBase : Combo
+			{
+				displayName = "Spawner Type";
+				tooltip = "The type of spawner.";
+				defaultValue = """HeliLand""";
+
+				class Values
+				{
+					class HeliLand	{
+						name = "Helicopter Insertion"; 
+						value = "HeliLand";
+					};
+					class InfantryFoot {
+						name = "Infantry on Foot"; 
+						value = "InfantryFoot";
+					};
+				};
+			};
 		};
 
 		class ModuleDescription: ModuleDescription
@@ -137,12 +156,9 @@ class CfgVehicles
 				tooltip = "Name of the vehicle that will transport units.";
 				defaultValue = """O_Heli_Light_02_unarmed_F""";
 			};
-			class EastIsHeli : Checkbox
+			class EastSpawnerType : SpawnerTypeBase
 			{
-				property = "EastIsHeli";
-				displayName = "Is Vehicle a Heli?";
-				tooltip = "Is the vehicle type a helicopter?";
-				defaultValue = "true";
+				property = "EastSpawnerType";
 			};
 			class EastMaxUnits : Edit
 			{
@@ -170,12 +186,9 @@ class CfgVehicles
 				tooltip = "Name of the vehicle that will transport units.";
 				defaultValue = """I_Heli_light_03_unarmed_F""";
 			};
-			class WestIsHeli : Checkbox
+			class WestSpawnerType : SpawnerTypeBase
 			{
-				property = "WestIsHeli";
-				displayName = "Is Vehicle a Heli?";
-				tooltip = "Is the vehicle type a helicopter?";
-				defaultValue = "true";
+				property = "WestSpawnerType";
 			};
 			class WestMaxUnits : Edit
 			{
@@ -203,13 +216,10 @@ class CfgVehicles
 				tooltip = "Name of the vehicle that will transport units.";
 				defaultValue = """I_Heli_light_03_F""";
 			};
-			class GUERIsHeli : Checkbox
+			class GUERSpawnerType : SpawnerTypeBase
 			{
-				property = "GUERIsHeli";
-				displayName = "Is Vehicle a Heli?";
-				tooltip = "Is the vehicle type a helicopter?";
-				defaultValue = "true";
-			}
+				property = "GUERSpawnerType";
+			};
 			class GUERMaxUnits : Edit
 			{
 				property = "GUERMaxUnits";
