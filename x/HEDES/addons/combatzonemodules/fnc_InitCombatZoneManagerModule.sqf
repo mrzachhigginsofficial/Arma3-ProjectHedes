@@ -31,7 +31,14 @@ _logic spawn {
 	private _sideconfigs = _this call FUNCMAIN(InitCombatZoneManagerConfig);
 	private _points = _this call FUNCMAIN(InitCombatZonePoints);
 
-	sleep 1;
+	// Create Simulation Thread 
+	private _maintenanceid = ["COMATZONEDYNSIMTHREAD"] call FUNCMAIN(GenerateUID);
+	[_maintenanceid, FUNCMAIN(IsPlayersNearGroup), true] spawn FUNCMAIN(DynamicSimulation);
+	private _appendunits = {
+		params["_maintenanceid","_grp"];
+		if(isNil _maintenanceid) then {missionNameSpace setVariable [_maintenanceid,[]]};
+		missionNameSpace setVariable [_maintenanceid,(missionNameSpace getVariable _maintenanceid) + [_grp]];
+	};
 
 	//  Main Loop
 	while {_this isNotEqualTo objNull} do 
@@ -133,7 +140,7 @@ _logic spawn {
 									_config set [7,_activehelis];
 
 									// Add units to cleanup array
-									[_groups # 1, FUNCMAIN(IsPlayersNearGroup), true] spawn FUNCMAIN(DynamicSimulation);
+									[_maintenanceid, (_groups # 1)] call _appendunits;
 									(vehicle (leader (_groups # 0))) call FUNCMAIN(AppendCleanupSystemObjects);
 									_groups call FUNCMAIN(AppendCleanupSystemObjects);
 
@@ -161,7 +168,7 @@ _logic spawn {
 								[_newgroup, _pointranpos] call BIS_fnc_taskAttack; 
 
 								// Add units to cleanup array
-								[_newgroup, FUNCMAIN(IsPlayersNearGroup), true] spawn FUNCMAIN(DynamicSimulation);
+								[_maintenanceid, _newgroup] call _appendunits;
 								_newgroup call FUNCMAIN(AppendCleanupSystemObjects);
 
 								// Add to trackers.
@@ -178,4 +185,6 @@ _logic spawn {
 
 		sleep _interval;
 	};
+
+	missionNameSpace setVariable [_maintenanceid,nil];
 };
