@@ -5,9 +5,11 @@ Author: ZanchoElGrande
 ---------------------------------------------
 */
 
-params[["_simdelay",15]];
+#include "script_component.hpp"
 
-private _maintenanceid = ["COMATZONEDYNSIMTHREAD"] call FUNCMAIN(GenerateUID);
+params[["_prefix","COMATZONEDYNSIMTHREAD"],["_simdelay",15]];
+
+private _maintenanceid = [_prefix] call FUNCMAIN(GenerateUID);
 [_maintenanceid, FUNCMAIN(IsPlayersNearGroup), true, _simdelay] spawn FUNCMAIN(DynamicSimulation);
 
 _maintenanceid

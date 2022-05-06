@@ -46,7 +46,7 @@ _logic spawn {
 	private _orderi = 0;
 
 	// Create Simulation Thread 
-	private _maintenanceid = [_simdelay] call FUNCMAIN(CreateDynamicSimulationThread);
+	private _maintenanceid = ["AMBIENTGARRISONSIMTHREAD",_simdelay] call FUNCMAIN(CreateDynamicSimulationThread);
 	private _appendunits = {
 		params["_maintenanceid","_grp"];
 		if(isNil _maintenanceid) then {missionNameSpace setVariable [_maintenanceid,[]]};

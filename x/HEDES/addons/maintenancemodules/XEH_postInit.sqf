@@ -21,7 +21,7 @@ if (!isServer) exitWith {};
 			_candidate = _x select 0;
 			_nearplayers = allPlayers findIf {(_x distance2D _candidate) < dynamicSimulationDistance "GROUP"};
 
-			if(count _nearplayers isEqualTo -1) then 
+			if(_nearplayers isEqualTo -1) then 
 			{
 				deleteVehicle _candidate;
 			};
