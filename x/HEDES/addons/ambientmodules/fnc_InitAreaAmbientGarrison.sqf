@@ -45,6 +45,14 @@ _logic spawn {
 	private _orderrefresh = _this getVariable ["OrderRefreshInterval",300];
 	private _orderi = 0;
 
+	// Create Simulation Thread 
+	private _maintenanceid = [_simdelay] call FUNCMAIN(CreateDynamicSimulationThread);
+	private _appendunits = {
+		params["_maintenanceid","_grp"];
+		if(isNil _maintenanceid) then {missionNameSpace setVariable [_maintenanceid,[]]};
+		missionNameSpace setVariable [_maintenanceid,(missionNameSpace getVariable _maintenanceid) + [_grp]];
+	};
+
 	// Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
@@ -155,7 +163,7 @@ _logic spawn {
 						{
 							_grpi = createGroup [_sectorside, true];
 							_grpi setSpeedMode _speedmode;
-							[_grpi] spawn FUNCMAIN(DynamicSimulation);
+							[_maintenanceid, _grpi] call _appendunits;
 							_x set [1,_grpi];				
 						};
 
@@ -182,7 +190,7 @@ _logic spawn {
 						{
 							_grpi = createGroup [_defaultside, true];
 							_grpi setSpeedMode _speedmode;
-							[_grpi,nil,nil,_simdelay] spawn FUNCMAIN(DynamicSimulation);
+							[_maintenanceid, _grpi] call _appendunits;
 							_x set [1,_grpi];						
 						};
 

@@ -4,6 +4,7 @@ class CfgFunctions
     {
         class COMPONENT
         {
+            PATHTO_FNC(CreateDynamicSimulationThread)
             PATHTO_FNC(CreateModuleTrigger)
             PATHTO_FNC(GetData)
             PATHTO_FNC(SetData)

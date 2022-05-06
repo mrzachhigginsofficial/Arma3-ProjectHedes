@@ -32,8 +32,7 @@ _logic spawn {
 	private _points = _this call FUNCMAIN(InitCombatZonePoints);
 
 	// Create Simulation Thread 
-	private _maintenanceid = ["COMATZONEDYNSIMTHREAD"] call FUNCMAIN(GenerateUID);
-	[_maintenanceid, FUNCMAIN(IsPlayersNearGroup), true] spawn FUNCMAIN(DynamicSimulation);
+	private _maintenanceid = [] call FUNCMAIN(CreateDynamicSimulationThread);
 	private _appendunits = {
 		params["_maintenanceid","_grp"];
 		if(isNil _maintenanceid) then {missionNameSpace setVariable [_maintenanceid,[]]};
