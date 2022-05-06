@@ -27,54 +27,11 @@ _logic spawn {
 	private _playobjective = _this getVariable ["UnitsAlwaysPlayObjective", true];
 	private _maxtimeout = 600;
 
-
 	// Build Side Configuration Settings
-	private _sideconfigs = [];
+	private _sideconfigs = _this call FUNCMAIN(InitCombatZoneManagerConfig);
+	private _points = _this call FUNCMAIN(InitCombatZonePoints);
 
-	// Add East
-	private _eastSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_EastSpawn" });
-	if(count(_eastSpawns) > 0) then 
-	{
-		_sideconfigs pushback [EAST,_this getVariable ["EastVehicle",""],call compile (_this getVariable ["EastUnitPool",""]),getPos (selectRandom _eastSpawns),_this getVariable ["EastSpawnerType","HeliLand"],_this getVariable ["EastMaxUnits",80],[],[]];
-	};
-
-	// Add West
-	private _westSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_WestSpawn" });
-	if(count(_westSpawns) > 0) then 
-	{
-		_sideconfigs pushback [WEST,_this getVariable ["WestVehicle",""],call compile (_this getVariable ["WestUnitPool",""]),getPos (selectRandom _westSpawns),_this getVariable ["WestSpawnerType","HeliLand"],_this getVariable ["WestMaxUnits",80],[],[]]
-	};
-
-	// Add Independent
-	private _guerSpawns = (synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_GuerSpawn" });
-	if (count(_guerSpawns) > 0) then 
-	{
-		_sideconfigs pushback [INDEPENDENT,_this getVariable ["GUERVehicle",""],call compile (_this getVariable ["GUERUnitPool",[]]),getPos (selectRandom _guerSpawns),_this getVariable ["GUERSpawnerType","HeliLand"],_this getVariable ["GUERMaxUnits",80],[],[]];
-	}; 
-
-	// Configure trigger area for all combat zone's and lz's.
-	private _newtrigger = objNull;
-	private _createtriggerfnc = {
-		_newtrigger = createtrigger ["emptydetector", position _this];
-		_newtrigger settriggerarea (_this getvariable ["objectArea",[50,50,0,false]]);
-		_newtrigger setPos (getPos _this);
-		_newtrigger enableSimulationGlobal false;
-		_this setVariable ["trigger",_newtrigger];
-		_newtrigger
-	};
-	private _points = synchronizedObjects _this select { typeOf _x == "HEDES_CombatZoneModules_Point" } apply {[_x, objNull]};
-	{
-		_point = _x;
-		_point set [1,(_point # 0) call _createtriggerfnc]; // Attach Trigger To CombatZone
-		if (count(synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_EastLZ" }) > 0) then 
-			{synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_EastLZ" } apply {_x call _createtriggerfnc}}; // Attach Trigger To LZ
-		if (count(synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_WestLZ" }) > 0) then 
-			{synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_WestLZ" } apply {_x call _createtriggerfnc}}; // Attach Trigger To LZ
-		if (count(synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_GuerLZ" }) > 0) then 
-			{synchronizedObjects (_point # 0) select { typeOf _x == "HEDES_CombatZoneModules_GuerLZ" } apply {_x call _createtriggerfnc}}; // Attach Trigger To LZ
-		
-	} foreach _points;
-
+	sleep 1;
 
 	//  Main Loop
 	while {_this isNotEqualTo objNull} do 
@@ -82,9 +39,8 @@ _logic spawn {
 		if (simulationEnabled _this) then
 		{
 			// Find new combat zone area.
-			_combatzone = selectRandom (_points select {simulationEnabled (_x select 0)});
-			_pointmodule = _combatzone # 0;
-			_pointranpos = (_combatzone # 1) call BIS_fnc_randomPosTrigger;
+			_point = selectRandom (_points select {simulationEnabled _x});
+			_pointranpos = (_point getVariable "trigger") call BIS_fnc_randomPosTrigger;
 			_pointranpos = [_pointranpos, 0, 10] call BIS_fnc_findSafePos;
 
 			// If the conbat zone position is valid, continue.
@@ -117,16 +73,11 @@ _logic spawn {
 					_combatlz = switch (_side) do 
 					{
 						case EAST: {
-							selectRandom(synchronizedObjects _pointmodule select {typeOf _x == "HEDES_CombatZoneModules_EastLZ"})};
+							selectRandom(synchronizedObjects _point select {typeOf _x == "HEDES_CombatZoneModules_EastLZ"})};
 						case WEST: {
-							selectRandom(synchronizedObjects _pointmodule select {typeOf _x == "HEDES_CombatZoneModules_WestLZ"})};
+							selectRandom(synchronizedObjects _point select {typeOf _x == "HEDES_CombatZoneModules_WestLZ"})};
 						case INDEPENDENT: {
-							selectRandom(synchronizedObjects _pointmodule select {typeOf _x == "HEDES_CombatZoneModules_GuerLZ"})};
-					};
-									
-					if !(isNil "HEDES_DEBUG") then 
-					{
-						_debug_objs pushBack ("VR_3DSelector_01_default_F" createVehicle _combatlzpos);
+							selectRandom(synchronizedObjects _point select {typeOf _x == "HEDES_CombatZoneModules_GuerLZ"})};
 					};
 
 					// Spawn new units if side not full
@@ -141,10 +92,15 @@ _logic spawn {
 								_combatlzpos = _combatlztrg call BIS_fnc_randomPosTrigger;
 								_combatlzpos = [_combatlzpos, 0, 10] call BIS_fnc_findSafePos;	
 
+								if !(isNil "HEDES_DEBUG") then 
+								{
+									_debug_objs pushBack ("VR_3DSelector_01_default_F" createVehicle _combatlzpos);
+								};
+
 								if (_combatlzpos isNotEqualTo [0,0]) then
 								{
 									// Spawn Vehicle With Crew and Fireteams
-									_groups = [_side, _cfgvehicle, _unitpool, _spawnpos] call FUNCMAIN(SpawnVehicleAndCrew);
+									_groups = [_side, _cfgvehicle, _unitpool, selectRandom _spawnpos] call FUNCMAIN(SpawnVehicleAndCrew);
 									_groups apply {_x allowFleeing 0};
 
 									// Keep group count under max units
@@ -167,7 +123,7 @@ _logic spawn {
 									};
 									
 									// Setup unit and vehicle orders					
-									(_groups + [_combatlzpos, _spawnpos, true]) spawn FUNCMAIN(FlightPlanner);
+									(_groups + [_combatlzpos, selectRandom _spawnpos, true]) spawn FUNCMAIN(FlightPlanner);
 									[_groups # 1, _pointranpos] call BIS_fnc_taskAttack; 
 
 									// Add timeout tag to heli and push to end of tracking array
@@ -192,7 +148,7 @@ _logic spawn {
 								_newgroup = createGroup [_side, true];
 								while{count(units _newgroup) < 5} do 
 								{
-									_newgroup createUnit [selectRandom _unitpool, _spawnpos, [], 0, "FORM"];
+									_newgroup createUnit [selectRandom _unitpool, selectRandom _spawnpos, [], 0, "FORM"];
 								};
 
 								// Disable AI
