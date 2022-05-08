@@ -35,20 +35,6 @@ class CfgSFX
 		sounds[] = {sound0};
 		empty[] = {"x\HEDES\addons\destructionmodules\sounds\AmbientCombat2_loop.ogg", db10, 1.0, 600, 1, 0, 0, 0};
 	};
-	class EnglishRadioChatter1
-	{
-		name = "_HEDES - Eng. Radio Chatter 1";
-		sound0[] = {"x\HEDES\addons\destructionmodules\sounds\EngRadioChatter1.ogg", db0, 1.0, 25, 1, 0, 0, 0};
-		sounds[] = {sound0};
-		empty[] = {"x\HEDES\addons\destructionmodules\sounds\EngRadioChatter1.ogg", db0, 1.0, 25, 1, 0, 0, 0};
-	};
-	class EnglishRadioChatter2
-	{
-		name = "_HEDES - Eng. Radio Chatter 2";
-		sound0[] = {"x\HEDES\addons\destructionmodules\sounds\EngRadioChatter2.ogg", db0, 1.0, 25, 1, 0, 0, 0};
-		sounds[] = {sound0};
-		empty[] = {"x\HEDES\addons\destructionmodules\sounds\EngRadioChatter2.ogg", db0, 1.0, 25, 1, 0, 0, 0};
-	};
 	class SirenChicagoTornado
 	{
 		name = "_HEDES - Broken Chicago Tornado Siren";

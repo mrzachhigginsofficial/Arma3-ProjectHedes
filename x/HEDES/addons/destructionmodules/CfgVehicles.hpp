@@ -2,16 +2,6 @@ class CfgVehicles
 {
 	class Logic;
 
-	/* CfgSFX References */
-	class SirenChicagoTornadoSound : Logic
-	{
-		sound = "SirenChicagoTornado";
-	};
-	class SirenLvivBombAlertSound : Logic
-	{
-		sound = "SirenLvivBombAlert";
-	};
-
 	/* 3den Modules - Base Classes */
 	class Module_F: Logic
 	{
@@ -160,9 +150,9 @@ class CfgVehicles
 
 	class GVAR(SoundEffectSource): GVAR(BASE)
 	{
-		displayName = "SoundEffectSource";
+		displayName = "Sound Effect Source";
 		function = QUOTE(FUNCMAIN(InitSoundSource));
-		canSetArea = 1;
+		isGlobal = 2;
 		scope = 2;
 
 		class Attributes: Attributes
