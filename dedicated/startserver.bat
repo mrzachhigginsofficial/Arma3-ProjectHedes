@@ -1,3 +1,0 @@
-xcopy "C:\Users\zachh\Documents\Arma 3\missions\TestMPMap.Altis" "D:\SteamLibrary\steamapps\common\Arma 3\MPMissions\TestMPMap.Altis"
-
-"D:\SteamLibrary\steamapps\common\Arma 3\arma3server_x64.exe"  -autoInit  "-profiles=C:\Users\zachh\Documents\Arma 3" "-config=C:\Users\zachh\Documents\Project Hedes\dedicated\server.cfg" -serverMod="c:\Users\zachh\Documents\Project Hedes\build\@ProjectHedesServer;!Workshop\@CBA_A3"
