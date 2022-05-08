@@ -3,6 +3,6 @@ class CfgFactionClasses
 	class NO_CATEGORY;
 	class GVAR(COMPONENT) : NO_CATEGORY
 	{
-		displayName = "Project Hedes Ambient Modules";
+		displayName = "Project Hedes Garrison Modules";
 	}; 
 };

@@ -18,7 +18,7 @@ Main Thread
 
 _logic spawn {
 
-	// -- Initialize Variables
+	// Initialize Variables
 	private _rndpos = [];
 	private _newvehgrp = grpNull;
 	private _vehicle = objNull;
@@ -32,7 +32,7 @@ _logic spawn {
 	private _maxtry = 5;
 	private _isfirstspawn = 1;
 
-	// -- Get Module Properties
+	// Get Module Properties
 	private _newunitinitfnc = compile(_this getVariable ["UnitInit", ""]);
 	private _maxvehs = _this getVariable ["NumberOfvehicles", 5];
 	private _speed = _this getVariable ["vehiclespeed", "LIMITED"];
@@ -41,7 +41,10 @@ _logic spawn {
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x, []]};
 	private _interval = _this getVariable ["SimulationInterval",15];
 
-	// -- Initialize Trigger Area	
+	// Create Simulation Thread 
+	private _maintenanceid = ["AMBIENTVEHSIMTHREAD",0] call FUNCMAIN(CreateDynamicSimulationThread);
+
+	// Initialize Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
 		private _newtrigger = createtrigger ["emptydetector",position _this];
@@ -50,52 +53,52 @@ _logic spawn {
 		_areatriggers pushback [_newtrigger,[]];
 	};
 
-	// -- Disable Simulation on Triggers
+	// Disable Simulation on Triggers
    {
       (_x # 0) enableSimulationGlobal false;
    } foreach _areatriggers;
 
-	// -- Main Loop
+	// Main Loop
 	while {_this isNotEqualTo objNull} do 
 	{
 		if(simulationEnabled _this) then
 		{
 			if !(isNil "HEDES_DEBUG") then {systemchat format["%1 fired with interval of %2.",_this, _interval]};
 
-			// -- Iterate Over Each Trigger Area 
+			// Iterate Over Each Trigger Area 
 			{
 				_trigger = _x # 0;
 				_veharr = _x # 1;
 
-				// -- Spawn New Vehicles
+				// Spawn New Vehicles
 				try
 				{
 					_i = 0;
 					while {count(_veharr) < _maxvehs && _i < _maxtry} do
 					{	
-						// -- Find Random Position					
+						// Find Random Position					
 						_rndpos = if(_isfirstspawn == 1) then {
 							[_trigger call BIS_fnc_randomPosTrigger, 5, 50, 10] call BIS_fnc_findSafePos
 						} else {
 							[_trigger, true] call FUNCMAIN(FindHiddenRanPosInMarker)
 						};
 
-						// -- Spawn Vehicle and Group
+						// Spawn Vehicle and Group
 						if (_rndpos isNotEqualTo [0,0]) then 
 						{				
 							_newvehgrp = [_rndpos, random 360, selectRandom(call compile _unitpool), _side] call BIS_fnc_spawnvehicle;
 							
-							// -- Put All Units On Correct Side
+							// Put All Units On Correct Side
 							_newvehgrp set [2,createGroup _side];
 							(_newvehgrp select 1) joinSilent (_newvehgrp select 2);
 							(_newvehgrp select 0) forcespeed (call compile _speed);
 							(_newvehgrp select 0) call FUNCMAIN(AppendCleanupSystemObjects);
 							(_newvehgrp select 1) call FUNCMAIN(AppendCleanupSystemObjects);
 
-							// -- Unit Init
+							// Unit Init
 							(_newvehgrp select 1) apply {_x call _newunitinitfnc};
 
-							[_newvehgrp select 2, FUNCMAIN(IsPlayersNearGroup)] spawn FUNCMAIN(DynamicSimulation);
+							[_maintenanceid, _newvehgrp select 2] call FUNCMAIN(AppendDynamicSimulation);
 
 							_veharr pushback _newvehgrp;
 						};
@@ -106,7 +109,7 @@ _logic spawn {
 					_exception call BIS_fnc_log
 				};
 
-				// -- Action Evaluator
+				// Action Evaluator
 				{
 					try	
 					{
@@ -114,7 +117,7 @@ _logic spawn {
 						_crewarr = _x # 1;
 						_vehiclegrp = _x # 2;
 
-						// -- These conditions make it impossible for the units to complete their task.
+						// These conditions make it impossible for the units to complete their task.
 						if(
 							count(_crewarr select {alive _x}) > 0 and			// 1. Check If There Are Alive Crewmembers
 							(
@@ -132,7 +135,7 @@ _logic spawn {
 							)
 						) then 
 						{				
-							// -- Leave And Try To Join A Surviving Group Within Simulation Range
+							// Leave And Try To Join A Surviving Group Within Simulation Range
 							_firstalivecrew = _crewarr select {alive _x} select 0;
 							_neararr = _firstalivecrew nearEntities ["Man", dynamicSimulationDistance "GROUP"] 
 								select {alive _x} 
@@ -157,13 +160,13 @@ _logic spawn {
 								_this setDamage 1;
 							}
 						} 
-						// -- We Can Move On
+						// We Can Move On
 						else 
 						{
 							if (speed _vehicle < .5) then 
 							{
 								_radius = [_trigger] call FUNCMAIN(FindHypotenuse);
-								_roads = _trigger nearRoads _radius;
+								_roads = _trigger nearRoads (_radius/2);
 
 								if (count(_roads) > 0) then 
 								{
@@ -181,7 +184,7 @@ _logic spawn {
 
 				} forEach _veharr;
 
-				// -- Update Vehicle Array
+				// Update Vehicle Array
 				_veharr = _veharr - (_veharr select {_x select 0 == objNull}); 		//Remove Missing Vehicles.
 				_veharr = _veharr - (_veharr select {damage (_x select 0) == 1}); 	//Remove Dead Vehicles.
 				_veharr = _veharr - (_veharr select {count(_x select 1 select {alive _x}) == 0});
@@ -193,7 +196,7 @@ _logic spawn {
 			_isfirstspawn = 0;
 		};		
 
-		// -- Go to sleep for a bit.
+		// Go to sleep for a bit.
 		sleep _interval;
 	};
 };

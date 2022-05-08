@@ -2,7 +2,7 @@
 
 class CfgPatches {
 	class ADDON {
-		name = "Project Hedes Destruction modules";
+		name = "Project Hedes Destruction Modules";
 		author = "ZanchoElGrande";
 		url = "";
 		requiredAddons[] = { "CBA_main" };
@@ -12,5 +12,6 @@ class CfgPatches {
 };
 
 #include "CfgFunctions.hpp"
+#include "CfgSFX.hpp"
 #include "CfgVehicles.hpp"
 #include "CfgFactionClasses.hpp"

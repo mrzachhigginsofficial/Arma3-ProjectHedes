@@ -18,7 +18,7 @@ Main Thread
 
 _logic spawn {
 
-	// -- Initialize Variables
+	// Initialize Variables
 	private _spawnpos = [0,0,0];
 	private _triggeri = objNull;
 	private _grpi = grpNull;
@@ -29,7 +29,7 @@ _logic spawn {
 	private _wpname = QUOTE(HEDES_GARRISON);
 	private _isfirstspawn = 1;
 
-	// -- Get Module Properties
+	// Get Module Properties
 	private _newunitsarr = [];
 	private _newunitinitfnc = compile (_this getVariable ["UnitInit", ""]);
 	private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
@@ -37,7 +37,7 @@ _logic spawn {
 	private _simdelay = _this getVariable ["SimulationDelay",15];
 	private _defaultside = call compile (_this getVariable ["GarrisonSide","EAST"]);
 	private _behaviour = _this getVariable "UnitCombatBehaviour";
-	private _combattask = _this getVariable "UnitCombatTask";
+	private _combattaskfnc = compile (_this getVariable "UnitCombatTask");
 	private _speedmode = _this getVariable "SpeedMode";
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull,0]};
 	private _sectors = synchronizedObjects _this select { typeOf _x == "ModuleSector_F" };
@@ -45,7 +45,10 @@ _logic spawn {
 	private _orderrefresh = _this getVariable ["OrderRefreshInterval",300];
 	private _orderi = 0;
 
-	// -- Initialize Default Trigger Area	
+	// Create Simulation Thread 
+	private _maintenanceid = ["AMBIENTGARRISONSIMTHREAD",_simdelay] call FUNCMAIN(CreateDynamicSimulationThread);
+
+	// Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
 		private _newtrigger = createtrigger ["emptydetector", position _this];
@@ -55,36 +58,12 @@ _logic spawn {
 		_areatriggers pushBack [_newtrigger,grpNull,0];
 	};
 
-	// -- Disable Simulation on Triggers
+	// Disable Simulation on Triggers
    {
       (_x # 0) enableSimulationGlobal false;
    } foreach _areatriggers;
 
-	// -- Configure Unit Behavior 
-	private _combattaskfnc = {};
-	switch (_combattask) do {
-		case QUOTE(CBA - Defend): {
-			_combattaskfnc = {(_this # 0) call CBA_fnc_taskDefend;}
-		};
-		case QUOTE(CBA - Patrol): {
-			_combattaskfnc = {[(_this # 0), getPos (_this # 1), (_this # 2)] call CBA_fnc_taskPatrol;}
-		};
-		case QUOTE(CBA - Waypoint Garrison): {
-			_combattaskfnc = {[(_this # 0), getPos (_this # 1)] execVM QUOTE(\x\cba\addons\ai\fnc_waypointGarrison.sqf);}
-		};
-		case QUOTE(CBA - Search Nearby): {
-			_combattaskfnc = {[(_this # 0), (_this # 1)] call CBA_fnc_taskSearchArea;}
-		};
-		case QUOTE(BIS - Defend): {
-			_combattaskfnc = {[(_this # 0), getPosATL (_this # 1)] call BIS_fnc_taskDefend;}
-		};
-		case QUOTE(BIS - Patrol): {
-			_combattaskfnc = {[(_this # 0), getPos (_this # 1), triggerArea (_this # 1) select 0] call BIS_fnc_taskPatrol;}
-		};
-		default { };
-	};
-
-	// -- Unit Spawning and Side Switching Function 
+	// Unit Spawning and Side Switching Function 
 	private _spawnnewunits = {
 		params["_pvtgrp","_pvtmaxunits","_pvtspawnpos",["_pvtspawncustom", false],["_pvtunitpool",[]]];
 		private _pvti = 0;
@@ -122,12 +101,12 @@ _logic spawn {
 		};
 	};
 	
-	// -- Main Loop
+	// Main Loop
 	while { _this isNotEqualTo objNull } do 
 	{
 		if (simulationEnabled _this) then
 		{
-			// -- Iterate Over Each Trigger Area
+			// Iterate Over Each Trigger Area
 			{
 				_triggeri = _x # 0;
 				_grpi = _x # 1;
@@ -141,7 +120,7 @@ _logic spawn {
 
             if (_spawnpos isNotEqualTo [0,0]) then 
 				{
-					// -- Do if there are Synchronized Sector Control Modules (For Sector Control)
+					// Do if there are Synchronized Sector Control Modules (For Sector Control)
 					if ((count _sectors) > 0) then 
 					{
 						_sector = _sectors # 0;
@@ -149,17 +128,17 @@ _logic spawn {
 						_sectorside = _sector getVariable "owner";		
 						if (_sectorside == sideUnknown) then {_sectorside = _defaultside};
 
-						// -- Check To See If Sector Control Module Side Matches Garrison Group Side
-						// -- If group doesn't exist or side is not the same, create a new group.
+						// Check To See If Sector Control Module Side Matches Garrison Group Side
+						// If group doesn't exist or side is not the same, create a new group.
 						if ((_sectorside isNotEqualTo (side _grpi)) or (_grpi isEqualTo grpNull)) then 
 						{
 							_grpi = createGroup [_sectorside, true];
 							_grpi setSpeedMode _speedmode;
-							[_grpi] spawn FUNCMAIN(DynamicSimulation);
+							[_maintenanceid, _grpi] call FUNCMAIN(AppendDynamicSimulation);
 							_x set [1,_grpi];				
 						};
 
-						// -- Spawn New Units & Reset Group Behavior
+						// Spawn New Units & Reset Group Behavior
 						if (!([_this, side _grpi] call FUNCMAIN(IsEnemyPlayersNear)) or _isfirstspawn == 1) then 
 						{
 							[_grpi, _maxunits, _spawnpos] call _spawnnewunits;
@@ -174,19 +153,19 @@ _logic spawn {
 						};
 					}
 
-					// -- Do if there are NO Synchronized Sector Control Modules
+					// Do if there are NO Synchronized Sector Control Modules
 					else 
 					{
-						// -- Create Group If It's Destroyed Or Doesn't Exist Yet.
+						// Create Group If It's Destroyed Or Doesn't Exist Yet.
 						if (_grpi isEqualTo grpNull) then 
 						{
 							_grpi = createGroup [_defaultside, true];
 							_grpi setSpeedMode _speedmode;
-							[_grpi,nil,nil,_simdelay] spawn FUNCMAIN(DynamicSimulation);
+							[_maintenanceid, _grpi] call FUNCMAIN(AppendDynamicSimulation);
 							_x set [1,_grpi];						
 						};
 
-						// -- Spawn New Units & Reset Group Behavior
+						// Spawn New Units & Reset Group Behavior
 						if (!([_this, _defaultside] call FUNCMAIN(IsEnemyPlayersNear)) or _isfirstspawn == 1) then 
 						{
 							[_grpi, _maxunits, _spawnpos, true, _unitpool] call _spawnnewunits;
@@ -194,27 +173,12 @@ _logic spawn {
 						};
 					};
 				};		 
-
-				// -- Keep Patrols Moving
-				if(
-					((QUOTE(Patrol) in _combattask) or (QUOTE(Search) in _combattask)) && 
-					(_orderrefresh/_interval >= _orderi)
-				) then 
-				{
-					[_grpi] call CBA_fnc_clearWaypoints;
-					[_grpi, _triggeri] call _combattaskfnc;
-					_x set [2, 0];
-				} else 
-				{
-					_x set [2, _orderi + 1];
-				};
-
 			} foreach _areatriggers;
 
 			_isfirstspawn = 0;
 		};
 
-		// -- Go to sleep for a bit.
+		// Go to sleep for a bit.
 		sleep _interval;
 	};
 };

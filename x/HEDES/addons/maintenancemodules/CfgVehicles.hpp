@@ -63,7 +63,7 @@ class CfgVehicles
 			{
 				property = "StructuredTextGlobalDocLink";
 				control = "StructuredText2";
-				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module-Unit-Maintenance'>Link: Maintenance Module Documentation</a></t>";
+				description = "<t size='1.5'><a href='https://github.com/mrzachhigginsofficial/Arma3-ProjectHedes/wiki/Module-Unit-Maintenance'>Link: Maintenance Module Documentation</a></t><br/>A note... the maintenance thread is always running. This simply allows you to fine tune the parameters.";
 			};
 			class LifeSpanValue : SliderTimerRespawnBase
 			{
