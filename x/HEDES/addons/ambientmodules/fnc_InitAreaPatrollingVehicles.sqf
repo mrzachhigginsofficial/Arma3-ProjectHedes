@@ -41,6 +41,9 @@ _logic spawn {
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x, []]};
 	private _interval = _this getVariable ["SimulationInterval",15];
 
+	// Create Simulation Thread 
+	private _maintenanceid = ["AMBIENTVEHSIMTHREAD",0] call FUNCMAIN(CreateDynamicSimulationThread);
+
 	// Initialize Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
@@ -95,7 +98,7 @@ _logic spawn {
 							// Unit Init
 							(_newvehgrp select 1) apply {_x call _newunitinitfnc};
 
-							[_newvehgrp select 2, FUNCMAIN(IsPlayersNearGroup)] spawn FUNCMAIN(DynamicSimulation);
+							[_maintenanceid, _newvehgrp select 2] call FUNCMAIN(AppendDynamicSimulation);
 
 							_veharr pushback _newvehgrp;
 						};
@@ -163,7 +166,7 @@ _logic spawn {
 							if (speed _vehicle < .5) then 
 							{
 								_radius = [_trigger] call FUNCMAIN(FindHypotenuse);
-								_roads = _trigger nearRoads _radius;
+								_roads = _trigger nearRoads (_radius/2);
 
 								if (count(_roads) > 0) then 
 								{

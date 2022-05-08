@@ -55,7 +55,7 @@ class CfgVehicles
 	{
 		displayName = "Cleanup Units Maintenance Module";
 		function = QUOTE(FUNCMAIN(InitCleanupSystemModule));
-		scope = 1;
+		scope = 2;
 
 		class Attributes: Attributes
 		{

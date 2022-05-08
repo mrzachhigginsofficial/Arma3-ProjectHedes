@@ -37,7 +37,7 @@ _logic spawn {
 	private _simdelay = _this getVariable ["SimulationDelay",15];
 	private _defaultside = call compile (_this getVariable ["GarrisonSide","EAST"]);
 	private _behaviour = _this getVariable "UnitCombatBehaviour";
-	private _combattask = _this getVariable "UnitCombatTask";
+	private _combattaskfnc = compile (_this getVariable "UnitCombatTask");
 	private _speedmode = _this getVariable "SpeedMode";
 	private _areatriggers = synchronizedObjects _this select {_x isKindOf "EmptyDetector"} apply {[_x,grpNull,0]};
 	private _sectors = synchronizedObjects _this select { typeOf _x == "ModuleSector_F" };
@@ -47,11 +47,6 @@ _logic spawn {
 
 	// Create Simulation Thread 
 	private _maintenanceid = ["AMBIENTGARRISONSIMTHREAD",_simdelay] call FUNCMAIN(CreateDynamicSimulationThread);
-	private _appendunits = {
-		params["_maintenanceid","_grp"];
-		if(isNil _maintenanceid) then {missionNameSpace setVariable [_maintenanceid,[]]};
-		missionNameSpace setVariable [_maintenanceid,(missionNameSpace getVariable _maintenanceid) + [_grp]];
-	};
 
 	// Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
@@ -67,30 +62,6 @@ _logic spawn {
    {
       (_x # 0) enableSimulationGlobal false;
    } foreach _areatriggers;
-
-	// Configure Unit Behavior 
-	private _combattaskfnc = {};
-	switch (_combattask) do {
-		case QUOTE(CBA - Defend): {
-			_combattaskfnc = {(_this # 0) call CBA_fnc_taskDefend;}
-		};
-		case QUOTE(CBA - Patrol): {
-			_combattaskfnc = {[(_this # 0), getPos (_this # 1), (_this # 2)] call CBA_fnc_taskPatrol;}
-		};
-		case QUOTE(CBA - Waypoint Garrison): {
-			_combattaskfnc = {[(_this # 0), getPos (_this # 1)] execVM QUOTE(\x\cba\addons\ai\fnc_waypointGarrison.sqf);}
-		};
-		case QUOTE(CBA - Search Nearby): {
-			_combattaskfnc = {[(_this # 0), (_this # 1)] call CBA_fnc_taskSearchArea;}
-		};
-		case QUOTE(BIS - Defend): {
-			_combattaskfnc = {[(_this # 0), getPosATL (_this # 1)] call BIS_fnc_taskDefend;}
-		};
-		case QUOTE(BIS - Patrol): {
-			_combattaskfnc = {[(_this # 0), getPos (_this # 1), triggerArea (_this # 1) select 0] call BIS_fnc_taskPatrol;}
-		};
-		default { };
-	};
 
 	// Unit Spawning and Side Switching Function 
 	private _spawnnewunits = {
@@ -163,7 +134,7 @@ _logic spawn {
 						{
 							_grpi = createGroup [_sectorside, true];
 							_grpi setSpeedMode _speedmode;
-							[_maintenanceid, _grpi] call _appendunits;
+							[_maintenanceid, _grpi] call FUNCMAIN(AppendDynamicSimulation);
 							_x set [1,_grpi];				
 						};
 
@@ -190,7 +161,7 @@ _logic spawn {
 						{
 							_grpi = createGroup [_defaultside, true];
 							_grpi setSpeedMode _speedmode;
-							[_maintenanceid, _grpi] call _appendunits;
+							[_maintenanceid, _grpi] call FUNCMAIN(AppendDynamicSimulation);
 							_x set [1,_grpi];						
 						};
 
@@ -202,21 +173,6 @@ _logic spawn {
 						};
 					};
 				};		 
-
-				// Keep Patrols Moving
-				if(
-					((QUOTE(Patrol) in _combattask) or (QUOTE(Search) in _combattask)) && 
-					(_orderrefresh/_interval >= _orderi)
-				) then 
-				{
-					[_grpi] call CBA_fnc_clearWaypoints;
-					[_grpi, _triggeri] call _combattaskfnc;
-					_x set [2, 0];
-				} else 
-				{
-					_x set [2, _orderi + 1];
-				};
-
 			} foreach _areatriggers;
 
 			_isfirstspawn = 0;

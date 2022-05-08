@@ -35,6 +35,9 @@ _logic spawn {
 	private _newunitinitfnc = compile (_this getVariable ["UnitInit", {}]);
     private _unitpool = call compile (_this getVariable ["UnitPool","[]"]);
 
+    // Create Simulation Thread 
+	private _maintenanceid = ["AMBIENTCIVSSIMTHREAD",0] call FUNCMAIN(CreateDynamicSimulationThread);
+
 	// Initialize Default Trigger Area	
 	if (count(_areatriggers) == 0) then 
 	{
@@ -64,7 +67,7 @@ _logic spawn {
             };
             _this # 0 spawn {
                 while {
-                    (allPlayers findIf {[objNull, "VIEW"] checkVisibility [eyePos _x, eyePos _this] > .2}) > -1
+                    (allPlayers findIf {[objNull, "IFIRE"] checkVisibility [eyePos _x, eyePos _this] > .01}) > -1
                     } do {sleep 5};
                 deleteVehicle _this;
             };
@@ -77,8 +80,6 @@ _logic spawn {
 	{
         if (simulationEnabled _this) then
 		{
-            if !(isNil "HEDES_DEBUG") then {systemchat format["%1 fired with interval of %2.",_this, _interval]};
-
             // Iterate Over Each Trigger Area
             {
                 _triggeri = _x # 0;
@@ -88,7 +89,7 @@ _logic spawn {
                 if (_grpi isEqualTo grpNull) then 
                 {
                     _grpi = createGroup [CIVILIAN, false];
-                    [_grpi, FUNCMAIN(IsPlayersNearGroup)] spawn FUNCMAIN(DynamicSimulation);
+                    [_maintenanceid, _grpi] call FUNCMAIN(AppendDynamicSimulation);
                     _x set [1, _grpi];
                 };
 

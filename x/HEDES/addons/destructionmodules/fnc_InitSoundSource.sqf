@@ -18,4 +18,13 @@ _logic spawn {
 	_trigger setTriggerInterval .25;
 	_trigger setSoundEffect ["", "", "", _sound];
 	_trigger setTriggerStatements ["player in thisList", "", ""];
+
+	private _syncs = synchronizedObjects _this;
+	if(count _syncs > 0) then {
+		while {count _syncs > 0} do {
+			_syncs = _syncs - [objNull];
+			sleep 2;
+		};		
+		deleteVehicle _trigger;
+	};
 };

@@ -119,33 +119,33 @@ class CfgVehicles
 			{
 				displayName = "AI's Task Type";
 				tooltip = "What will the AI do.";
-				defaultValue = """CBA - Waypoint Garrison""";
+				defaultValue = "";
 				
 				class Values
 				{
 					class cba_defend {
 						name = "CBA - Defend"; 
-						value = "CBA - Defend";
+						value = "(_this # 0) call CBA_fnc_taskDefend;";
 					};
 					class cba_patrol {
 						name = "CBA - Patrol"; 
-						value = "CBA - Patrol";
+						value = "[(_this # 0), getPos (_this # 1), (_this # 2)] call CBA_fnc_taskPatrol;";
 					};
 					class cba_searchnearby {
-						name = "CBA - Search Nearby"; 
-						value = "CBA - Search Nearby";
+						name = "CBA - Search Area"; 
+						value = "[(_this # 0), (_this # 1)] call CBA_fnc_taskSearchArea;";
 					};
 					class cba_wpgarrison {
 						name = "CBA - Waypoint Garrison"; 
-						value = "CBA - Waypoint Garrison";
+						value = "[(_this # 0), getPos (_this # 1)] execVM '\x\cba\addons\ai\fnc_waypointGarrison.sqf'";
 					};
 					class bis_defend {
 						name = "BIS - Defend"; 
-						value = "BIS - Defend";
+						value = "[(_this # 0), getPosATL (_this # 1)] call BIS_fnc_taskDefend;";
 					};
 					class bis_patrol {
 						name = "BIS - Patrol"; 
-						value = "BIS - Patrol";
+						value = "[(_this # 0), getPos (_this # 1), triggerArea (_this # 1) select 0] call BIS_fnc_taskPatrol;";
 					};
 				};
 			};
