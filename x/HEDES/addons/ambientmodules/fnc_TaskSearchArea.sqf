@@ -64,12 +64,7 @@ private _pos = [_area] call CBA_fnc_randPosArea;
 if ((_pos isEqualTo []) || {_area isEqualTo ""} || {isNull _group}) exitWith {ERROR_3("Bad Input [_pos: %1][_area: %2][_group: %3]", _pos, _area, _group);};
 
 // Prepare recursive function call statement
-private _statements = [
-    format["
-        if (count (waypoints group this select {waypointname _x == '%1'}) isEqualTo 0) then {
-            [this] call %1;
-        };",QGVAR(TaskSearchArea)]
-];
+private _statements = [format["[this] call %1", QFUNCMAIN(taskSearchArea)]];
 
 // Prepare building search statement
 private _building = nearestBuilding _pos;
