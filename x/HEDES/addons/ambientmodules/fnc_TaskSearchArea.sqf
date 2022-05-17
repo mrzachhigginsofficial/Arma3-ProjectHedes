@@ -1,10 +1,3 @@
-/*
-This contains the fixes suggested in CBA PR 1544. They are taking too long to fix it, so I'm adding the fixes here so at least we can enjoy them. This fix includes adding a timeout to the function so the units don't get stuck in an infinite loop due to pathing issues.
-https://github.com/CBATeam/CBA_A3/pull/1545
-
-**************************************************************************************************
-*/
-
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
 Function: CBA_fnc_taskSearchArea
@@ -40,15 +33,15 @@ params [
     ["_formation", "NO CHANGE", [""]],
     ["_onComplete", "", [""]],
     ["_timeout", [0, 0, 0], [[]], 3],
-    ["_timeoutCoef",-1],
-    ["_maxTimeout", -1]
+    ["_searchTimeoutCoef", -1],
+    ["_searchMaxTimeout", -1]
 ];
 
 _group = _group call CBA_fnc_getGroup;
 if !(local _group) exitWith {}; // Don't create waypoints on each machine
 
 // Collect arguments for use in recursive calls (not using `select` to include default values)
-private _args = [_area, _behaviour, _combat, _speed, _formation, _onComplete, _timeout];
+private _args = [_area, _behaviour, _combat, _speed, _formation, _onComplete, _timeout, _searchTimeoutCoef, _searchMaxTimeout];
 
 // Retrieve cached arguments in case of recursive call
 if (isNil {param [1]}) then {
@@ -62,7 +55,7 @@ if (isNil {param [1]}) then {
 
     _group setVariable [QGVAR(taskSearch), _args];
 };
-_args params ["_area", "_behaviour", "_combat", "_speed", "_formation", "_onComplete", "_timeout"];
+_args params ["_area", "_behaviour", "_combat", "_speed", "_formation", "_onComplete", "_timeout", "_searchTimeoutCoef", "_searchMaxTimeout"];
 
 // Select a random position in the area
 private _pos = [_area] call CBA_fnc_randPosArea;
@@ -71,7 +64,12 @@ private _pos = [_area] call CBA_fnc_randPosArea;
 if ((_pos isEqualTo []) || {_area isEqualTo ""} || {isNull _group}) exitWith {ERROR_3("Bad Input [_pos: %1][_area: %2][_group: %3]", _pos, _area, _group);};
 
 // Prepare recursive function call statement
-private _statements = ["[this] call HEDES_fnc_taskSearchArea"];
+private _statements = [
+    format["
+        if (count (waypoints group this select {waypointname _x == '%1'}) isEqualTo 0) then {
+            [this] call %1;
+        };",QGVAR(TaskSearchArea)]
+];
 
 // Prepare building search statement
 private _building = nearestBuilding _pos;
@@ -79,7 +77,7 @@ if ((_building distanceSqr _pos) < 400) then {
     // Clear waypoint to prevent getting stuck in a search loop
     _statements append [
         "deleteWaypoint [group this, currentWaypoint (group this)]",
-        format["[group this,%1,%2] call HEDES_fnc_searchNearby",_timeoutCoef,_maxTimeout]
+        format["[group this, %2, %3] call %1", QFUNCMAIN(searchNearby), _searchTimeoutCoef, _searchMaxTimeout]
     ];
 };
 
@@ -88,7 +86,7 @@ _statements pushBack _onComplete;
 _onComplete = _statements joinString ";";
 
 // Add the waypoint
-[
+private _wp = [
     _group,
     _pos,
     -1,
@@ -101,3 +99,5 @@ _onComplete = _statements joinString ";";
     _timeout,
     5
 ] call CBA_fnc_addWaypoint;
+
+_wp setWaypointName QGVAR(TaskSearchArea);

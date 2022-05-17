@@ -1,10 +1,3 @@
-/*
-This contains the fixes suggested in CBA PR 1544. They are taking too long to fix it, so I'm adding the fixes here so at least we can enjoy them. This fix includes adding a timeout to the function so the units don't get stuck in an infinite loop due to pathing issues.
-https://github.com/CBATeam/CBA_A3/pull/1545
-
-**************************************************************************************************
-*/
-
 #include "script_component.hpp"
 /* ----------------------------------------------------------------------------
 Function: CBA_fnc_searchNearby
@@ -22,7 +15,7 @@ Author:
     Rommel, SilentSpike
 ---------------------------------------------------------------------------- */
 
-params ["_group",["_timeoutCoef",-1],["_maxTimeout",-1]];
+params ["_group", ["_searchTimeoutCoef", -1], ["_searchMaxTimeout", -1]];
 
 _group = _group call CBA_fnc_getGroup;
 if !(local _group) exitWith {}; // Don't create waypoints on each machine
@@ -30,41 +23,59 @@ if !(local _group) exitWith {}; // Don't create waypoints on each machine
 private _building = nearestBuilding (leader _group);
 if ((leader _group) distanceSqr _building > 250e3) exitwith {};
 
-[_group, _building, _timeoutCoef, _maxTimeout] spawn {
-    params ["_group", "_building","_timeoutCoef","_maxTimeout"];
+[_group, _building, _searchTimeoutCoef, _searchMaxTimeout] spawn {
+    params ["_group", "_building", "_searchTimeoutCoef", "_searchMaxTimeout"];
     private _leader = leader _group;
+
+    // Get building positions 
+    private _positions = _building buildingPos -1;
+
+    // Setup unit timeout limiters
+    _timeout = if (_searchTimeoutCoef > 0 && _searchMaxTimeout > 0) then {
+        (count _positions * _searchTimeoutCoef) min _searchMaxTimeout
+    } else {
+        -1
+    };
+    _timeoutTag = QGVAR(searchTimeout);
+    _timeStartTag = QGVAR(searchTimeStart);
+    {
+        _x setVariable [_timeoutTag, _timeout];
+        _x setVariable [_timeStartTag, time];
+    } forEach units _group;
 
     // Add a waypoint to regroup after the search
     _group lockWP true;
-    private _wp = _group addWaypoint [getPosASL _leader, -1, currentWaypoint _group];
-    private _cond = "({unitReady _x || !(alive _x)} count thisList) == count thisList";
-    private _comp = format ["this setFormation '%1'; this setBehaviour '%2'; deleteWaypoint [group this, currentWaypoint (group this)];", formation _group, behaviour _leader];
-    _wp setWaypointStatements [_cond, _comp];
+    private _cond = {
+        (
+            {
+                unitReady _x || 
+                !(alive _x) || 
+                if(_x getVariable QGVAR(searchTimeout) > 0) then {
+                    (_x getVariable QGVAR(searchTimeout)) + (_x getVariable QGVAR(searchTimeStart)) < time
+                } else {
+                    false
+                }
+            } count thisList
+        ) isEqualTo count thisList
+    };
+    private _comp = format [
+        "((units group this) - [this]) doFollow this;
+        this setFormation '%1'; 
+        this setBehaviour '%2'; 
+        deleteWaypoint [group this, currentWaypoint (group this)];", 
+        formation _group, behaviour _leader];
+    private _wp = _group addWaypoint [getPosASL _leader, 30, currentWaypoint _group];
+    _wp setWaypointStatements [toString _cond, _comp];
+    _wp setWaypointName QGVAR(TaskRegroup);
 
     // Prepare group to search
     _group setBehaviour "Combat";
     _group setFormDir ([_leader, _building] call BIS_fnc_dirTo);
 
-    // Leader will only wait outside if group larger than 2
-    if (count (units _group) <= 2) then {
-        _leader = objNull;
-    };
-
     // Search while there are still available positions
-    private _positions = _building buildingPos -1;
-
-    // Create limiters for each unit
-    private _timeout = if (_timeoutCoef > -1 && _maxTimeout > -1) then {
-		 (count _positions * _timeoutCoef) min _maxTimeout
-    } else {
-        -1 
-    };
-    private _timetag = QGVAR(StartSearchTime);
-    {_x setVariable [_timetag,time]} forEach units _group;
-
     while {_positions isNotEqualTo []} do {
-        // Update units in case of death
-        private _units = (units _group) - [_leader];
+
+        private _units = (units _group);
 
         // Abort search if the group has no units left
         if (_units isEqualTo []) exitWith {};
@@ -72,15 +83,26 @@ if ((leader _group) distanceSqr _building > 250e3) exitwith {};
         // Send all available units to the next available position
         {
             if (_positions isEqualTo []) exitWith {};
-            if (unitReady _x || (if (_timeout > -1) then {(_x getVariable _timetag) + _timeout < time} else {false})) then {
-                private _pos = _positions deleteAt 0;
-                _x commandMove _pos;
-                _x setVariable [_timetag,time];
-                sleep 2;
+
+            _unitTimeout = if (_timeout > 0) then {
+                (_x getVariable _timeoutTag) + (_x getVariable _timeStartTag) < time
+            } else {
+                false
             };
 
-            sleep .25;
+            if (unitReady _x || _unitTimeout) then {
+                if _unitTimeout then {ERROR_1("Potential pathing issue during search at position: %1", getPos _x)};
+
+                private _pos = _positions deleteAt 0;
+                _x setVariable [_timeStartTag,time];
+                _x commandMove _pos;
+            };
         } forEach _units;
+
+        sleep 2;
     };
+
+    ((units _group) - [_leader]) doFollow _leader;
+
     _group lockWP false;
 };
