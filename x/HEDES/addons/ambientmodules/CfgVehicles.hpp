@@ -123,6 +123,10 @@ class CfgVehicles
 				
 				class Values
 				{
+					class hedes_searchnearby {
+						name = "HEDES - Search Area"; 
+						value = "[(_this # 0), (_this # 1)] call Hedes_fnc_TaskSearchBuildings;";
+					};
 					class cba_defend {
 						name = "CBA - Defend"; 
 						value = "(_this # 0) call CBA_fnc_taskDefend;";
