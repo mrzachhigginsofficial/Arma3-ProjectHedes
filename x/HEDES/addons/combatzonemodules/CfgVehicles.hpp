@@ -72,6 +72,16 @@ class CfgVehicles
 					};
 				};
 			};
+			class EditCodeMulti5Base
+			{
+				control = "EditCodeMulti5";
+				expression = "_this setVariable ['%s',_value];";
+				defaultValue = """true""";
+			};			
+			class Checkbox : Checkbox
+			{
+				expression = "_this setVariable ['%s',_value];";
+			}
 		};
 
 		class ModuleDescription: ModuleDescription
@@ -178,6 +188,18 @@ class CfgVehicles
 				defaultValue = """['O_soldier_F','O_soldier_PG_F','O_soldier_UAV_F','O_medic_F','O_soldier_SL_F','O_soldier_A_F','O_soldier_LAT_F','O_soldier_AR_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
+			class EastOrderOverride : Checkbox
+			{
+				property = "EastOrderOverride";
+				displayName = "Override unit orders?";
+				tooltip = "Determines if unit init function should override unit attack orders.";
+				defaultValue = "false";
+			};
+			class EastUnitInit : EditCodeMulti5Base {
+				property = "EastUnitInit";
+				displayName = "East Unit Init Function.";
+				tooltip = "Expression executed with spawned group passed as _this (_this).";
+			};	
 			// WEST
 			class WestVehicle : Edit
 			{
@@ -208,6 +230,18 @@ class CfgVehicles
 				defaultValue = """['B_medic_F','B_soldier_TL_F','B_soldier_M_F','B_soldier_LAT_F','B_soldier_F','B_soldier_GL_F','B_soldier_A_F','B_soldier_AR_F']""";
 				expression = "_this setVariable ['%s',_value];";
 			};	
+			class WestOrderOverride : Checkbox
+			{
+				property = "WestOrderOverride";
+				displayName = "Override unit orders?";
+				tooltip = "Determines if unit init function should override unit attack orders.";
+				defaultValue = "false";
+			};
+			class WestUnitInit : EditCodeMulti5Base {
+				property = "WestUnitInit";
+				displayName = "West Unit Init Function.";
+				tooltip = "Expression executed with spawned group passed as _this (_this).";
+			};	
 			//GUER
 			class GUERVehicle : Edit
 			{
@@ -237,6 +271,18 @@ class CfgVehicles
 				tooltip = "Array of units. Must be formatted as array: ['var1','var2']. Types are from CfgVehicles. Only vehicles here, not infantry.";
 				defaultValue = """['I_soldier_TL_F','I_medic_F','I_soldier_AT_F','I_soldier_AR_F','I_soldier_TL_F','I_soldier_AA_F','I_soldier_A_F']""";
 				expression = "_this setVariable ['%s',_value];";
+			};	
+			class GUEROrderOverride : Checkbox
+			{
+				property = "GUEROrderOverride";
+				displayName = "Override unit orders?";
+				tooltip = "Determines if unit init function should override unit attack orders.";
+				defaultValue = "false";
+			};
+			class GUERUnitInit : EditCodeMulti5Base {
+				property = "GUERUnitInit";
+				displayName = "Independent Unit Init Function.";
+				tooltip = "Expression executed with spawned group passed as _this (_this).";
 			};	
 		};
 	};

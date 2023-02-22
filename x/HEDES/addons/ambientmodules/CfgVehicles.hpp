@@ -140,7 +140,7 @@ class CfgVehicles
 						value = "[(_this # 0), (_this # 1)] call CBA_fnc_taskSearchArea;";
 					};
 					class cba_wpgarrison {
-						name = "CBA - Waypoint Garrison"; 
+						name = "CBA - WP Garrison"; 
 						value = "[(_this # 0), getPos (_this # 1)] execVM '\x\cba\addons\ai\fnc_waypointGarrison.sqf'";
 					};
 					class bis_defend {

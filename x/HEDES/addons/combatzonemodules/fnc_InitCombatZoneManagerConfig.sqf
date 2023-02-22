@@ -21,7 +21,9 @@ private _sideconfigs = [];
 			call compile (_this getVariable [format["%1UnitPool",_x],""]),
 			_spawns apply {getPos _x},
 			_this getVariable [format["%1SpawnerType",_x],"HeliLand"],
-			_this getVariable [format["%1MaxUnits",_x],80],[],[]
+			_this getVariable [format["%1MaxUnits",_x],80],[],[],
+			_this getVariable [format["%1UnitInit",_x],"null"],
+			_this getVariable [format["%1OrderOverride",_x],false]
 		];
 	};
 } foreach ["East","West","Guer"];
