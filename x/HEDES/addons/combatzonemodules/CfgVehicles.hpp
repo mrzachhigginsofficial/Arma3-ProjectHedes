@@ -198,7 +198,7 @@ class CfgVehicles
 			class EastUnitInit : EditCodeMulti5Base {
 				property = "EastUnitInit";
 				displayName = "East Unit Init Function.";
-				tooltip = "Expression executed with spawned group passed as _this (_this).";
+				tooltip = "Expression executed with spawned group passed as this (this). Example: (units group) apply {_x setPos (getPos player)}";
 			};	
 			// WEST
 			class WestVehicle : Edit
@@ -240,7 +240,7 @@ class CfgVehicles
 			class WestUnitInit : EditCodeMulti5Base {
 				property = "WestUnitInit";
 				displayName = "West Unit Init Function.";
-				tooltip = "Expression executed with spawned group passed as _this (_this).";
+				tooltip = "Expression executed with spawned group passed as this (this). Example: (units group) apply {_x setPos (getPos player)}";
 			};	
 			//GUER
 			class GUERVehicle : Edit
@@ -282,7 +282,7 @@ class CfgVehicles
 			class GUERUnitInit : EditCodeMulti5Base {
 				property = "GUERUnitInit";
 				displayName = "Independent Unit Init Function.";
-				tooltip = "Expression executed with spawned group passed as _this (_this).";
+				tooltip = "Expression executed with spawned group passed as this (this). Example: (units group) apply {_x setPos (getPos player)}";
 			};	
 		};
 	};
