@@ -34,6 +34,26 @@ _logic spawn {
 	// Create Simulation Thread 
 	private _maintenanceid = ["COMATZONEDYNSIMTHREAD",0] call FUNCMAIN(CreateDynamicSimulationThread);
 
+	// Unit Orders Function
+	private _issueunitorders = {
+		_this params ["_iuo_group","_iuo_ranpos","_iuo_override","_iuo_unitinit"];
+		_iuo_group call compile _iuo_unitinit;
+
+		if !(_iuo_override) then 
+		{
+			[_iuo_group, _iuo_ranpos] call BIS_fnc_taskAttack; 
+			if !(isNil "HEDES_DEBUG") then 
+			{
+				systemChat format["%1 unit orders were issued by combat manager module.", _side]
+			};
+		} else {
+			if !(isNil "HEDES_DEBUG") then 
+			{
+				systemChat format["%1 unit orders were overridden by the combat manager module.", _side]
+			};
+		};
+	};
+
 	//  Main Loop
 	while {_this isNotEqualTo objNull} do 
 	{
@@ -49,7 +69,7 @@ _logic spawn {
 			{
 				// Iterate through each side config.
 				{		
-					_x params ["_side","_cfgvehicle","_unitpool","_spawnpos","_spawntype","_maxunits","_activeunits","_activehelis"];
+					_x params ["_side","_cfgvehicle","_unitpool","_spawnpos","_spawntype","_maxunits","_activeunits","_activehelis","_unitinit","_orderoverride"];
 					_config = _x;
 
 					// Delete lost heli's.
@@ -63,7 +83,7 @@ _logic spawn {
 					_config set [7,_activehelis - [objNull] select {alive _x}];
 
 					// Update all unit orders.
-					if _playobjective then 
+					if (_playobjective && !_orderoverride) then 
 					{
 						_grouptoreset = (_activeunits select {isTouchingGround _x} apply {group _x}); 
 						_grouptoreset = _grouptoreset arrayIntersect _grouptoreset;
@@ -123,9 +143,11 @@ _logic spawn {
 										vehicle (leader (_groups # 0)) allowDamage false;
 									};
 									
-									// Setup unit and vehicle orders					
+									// Setup pilot and vehicle orders					
 									(_groups + [_combatlzpos, selectRandom _spawnpos, true]) spawn FUNCMAIN(FlightPlanner);
-									[_groups # 1, _pointranpos] call BIS_fnc_taskAttack; 
+
+									// Setup Infantry Orders
+									[(_groups # 1), _pointranpos, _orderoverride, _unitinit] call _issueunitorders;
 
 									// Add timeout tag to heli and push to end of tracking array
 									private _vehicle = vehicle (leader (_groups # 0));
@@ -158,8 +180,8 @@ _logic spawn {
 									{_unit disableAI _x} foreach ["SUPPRESSION","RADIOPROTOCOL","MINEDETECTION"];
 								} foreach (units _newgroup);
 
-								// Assign Orders
-								[_newgroup, _pointranpos] call BIS_fnc_taskAttack; 
+								// Setup Infantry Orders
+								[_newgroup, _pointranpos, _orderoverride, _unitinit] call _issueunitorders;
 
 								// Add units to cleanup array
 								[_maintenanceid, _newgroup] call FUNCMAIN(AppendDynamicSimulation);

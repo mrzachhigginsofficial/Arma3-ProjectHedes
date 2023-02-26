@@ -26,7 +26,6 @@ _logic spawn {
 	private _sectorside = sideUnknown;
 	private _i = 0;
 	private _maxtry = 5;
-	private _wpname = QUOTE(HEDES_GARRISON);
 	private _isfirstspawn = 1;
 
 	// Get Module Properties

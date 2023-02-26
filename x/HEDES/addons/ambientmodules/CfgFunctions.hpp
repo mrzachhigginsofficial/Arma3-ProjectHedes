@@ -8,6 +8,7 @@ class CfgFunctions
             PATHTO_FNC(InitAreaAmbientGarrison)
 			PATHTO_FNC(InitAreaPatrollingVehicles)
             PATHTO_FNC(InitEmptyVehicles)
+            PATHTO_FNC(TaskSearchBuildings)
         };
     };
 };

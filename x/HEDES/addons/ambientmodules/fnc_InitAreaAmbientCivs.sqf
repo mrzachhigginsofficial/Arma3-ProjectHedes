@@ -55,7 +55,7 @@ _logic spawn {
     // THIRD PARTY FUNCTION by phronk
     _civflee = {
         _this addEventHandler["firedNear", {
-            _animation = selectRandom ["ApanPknlMstpSnonWnonDnon_G01"];
+            _animation = selectRandom ["ApanPknlMstpSnonWnonDnon_G01","ApanPercMstpSnonWnonDnon_ApanPpneMstpSnonWnonDnon"];
             _this # 0 playMoveNow _animation;
             _this # 0 setspeedMode "FULL";
             _this # 0 forceWalk false;
